@@ -97,15 +97,6 @@ export const ChatContextProvider = ({ children }) => {
     fetchChats();
   }, [currentConvoId]);
 
-  const handleNewConvo = async () => {
-    try {
-      chat.setCurrentConvoId("");
-      chat.setMessages("");
-      navigate("/new-chat");
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   useEffect(() => {
     console.log(
