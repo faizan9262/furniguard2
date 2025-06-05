@@ -17,10 +17,7 @@ export const ChatContextProvider = ({ children }) => {
   const [allConvo, setAllConvo] = useState({});
   const [currentConvoId, setCurrentConvoId] = useState("");
   const [messages, setMessages] = useState([]);
-  const [convoId, setConvoId] = useState("");
-
-  console.log("Convo ID: ",convoId);
-  
+  const [convoId, setConvoId] = useState("");  
 
   useEffect(() => {
     if (auth.isLoggedIn) {
