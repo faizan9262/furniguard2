@@ -11,7 +11,7 @@ import {
   resetPassword,
   updatePassword,
   updateProfile,
-} from "../helper/api-communication.js";
+} from "../helper/api-communicator.js";
 
 const AuthContext = createContext();
 
@@ -22,29 +22,37 @@ export const AuthProvider = ({ children }) => {
   const [passwordOtpSent, setPasswordOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState("");
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const data = await authStatus();
-      if (data) {
-        setUser({
-          email: data.email,
-          name: data.name,
-          profilePic: data.profilePic,
-          isEmailVerified: data.emailVerified,
-        });
-        setIsLoggedIn(true)
-      } else {
-        setUser({
-          email: "",
-          name: "",
-          profilePic: "",
-          isEmailVerified: "",
-        });
-        setIsLoggedIn(false)
-      }
-    };
-    checkAuth();
+    if(user){
+      const checkAuth = async () => {
+        setLoading(true)
+        const data = await authStatus();
+        // console.log("User Data:",data);
+        if (data) {
+          setUser({
+            email: data.email,
+            name: data.name,
+            profilePic: data.profilePic,
+            isEmailVerified: data.emailVerified,
+          });
+          setLoading(false)
+          setIsLoggedIn(true)
+        } else {
+          setLoading(true)
+          setUser({
+            email: "",
+            name: "",
+            profilePic: "",
+            isEmailVerified: "",
+          });
+          setLoading(false)
+          setIsLoggedIn(false)
+        }
+      };
+      checkAuth();
+    }
   }, []);
   
 
@@ -56,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       setUser({
         email: data.email,
         name: data.name,
-        profilePic: user.profilePic,
+        profilePicture: user?.profilePicture,
       });
       setIsLoggedIn(true);
     }
@@ -117,9 +125,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  const updateProfilePic = async (formData) => {
-    const data = await updateProfile(formData);
-    console.log("User",data);
+  const updateProfilePic = async (imageUrl) => {
+    const data = await updateProfile(imageUrl);
+    // console.log("User",data);
     if (data) {
       setUser((prevUser) => ({
         ...prevUser,

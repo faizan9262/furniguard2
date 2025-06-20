@@ -1,60 +1,161 @@
 import React, { useState } from "react";
-import { Button } from "./components/ui/button";
-import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "./components/ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
+import { Button } from "../components/components/ui/button";
+import { BedDoubleIcon, Calendar, CalendarClock, CalendarClockIcon, HeartIcon, HomeIcon, InfoIcon, LayoutPanelLeftIcon, ListTodoIcon, Menu, SofaIcon, User2 } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "../components/components/ui/sheet";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../components/components/ui/avatar";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom"; // ✅ Step 1: Import
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ Step 2: Get current path
+  const location = useLocation(); 
   const [open, setOpen] = useState(false);
 
   // Helper to check active path
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    const currentPath = location.pathname;
+  
+    if (path === "/products") {
+      // If it's a product detail or any other category except livingroom or layout
+      return (
+        currentPath.startsWith("/products") &&
+        !currentPath.startsWith("/products/livingroom") &&
+        !currentPath.startsWith("/products/layout")
+      );
+    }
+  
+    if (path === "/rooms") {
+      return currentPath.startsWith("/products/livingroom") || currentPath === "/rooms";
+    }
+  
+    if (path === "/layout") {
+      return currentPath.startsWith("/products/layout") || currentPath === "/layout";
+    }
+
+    if (path === "/designers") {
+      return currentPath.startsWith("/designers");
+    }  
+
+    if (path === "/appointments") {
+      return currentPath.startsWith("/appointments");
+    }  
+
+  
+    return currentPath === path;
+  };
+
+  // console.log("Name: ",auth?.user?.profilePic);
+  
+  
 
   return (
-    <header className="w-full sticky top-0 bg-gray-900 px-5 z-50">
+    <header className="w-full sticky bg-[#2d9b67] top-0 px-5 z-50">
       <div className="flex h-14 items-center justify-between">
+        <div className="flex md:hidden gap-3">
+          <Avatar
+            onClick={() => {
+              navigate("/profile");
+            }}
+            className="w-10 border-white border-2 h-10"
+          >
+            <AvatarImage src={auth.user.profilePic} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
         {/* Logo */}
         <div
           onClick={() => navigate("/")}
-          className="text-2xl cursor-pointer font-space font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+          className="text-xl md:text-2xl cursor-pointer bg-[#326951] text-white font-space font-bold border-2 py-1 px-2 rounded-full"
         >
-          Aim.ai
+          FurniGuard &reg;
         </div>
 
         {/* Desktop Nav */}
         {auth.isLoggedIn && (
-          <nav className="hidden md:flex font-space gap-6">
+          <nav className="hidden md:flex text-white font-space gap-6">
             <Button
               onClick={() => navigate("/")}
               className={`text-xl  font-semibold ${
-                isActive("/") ? "bg-indigo-300" : "text-white"
+                isActive("/") ? "bg-[#326951] border-2 border-white" : "text-white"
               }`}
               variant="ghost"
             >
-              Home
+              <HomeIcon /> Home
+            </Button>
+
+            <Button
+              onClick={() => navigate("/appointments")}
+              className={`text-xl  font-semibold ${
+                isActive("/appointments") ? "bg-[#326951] border-2 border-white" : "text-white"
+              }`}
+              variant="ghost"
+            >
+               <CalendarClock /> Appointments
+            </Button>
+
+            <Button
+              onClick={() => navigate("/products")}
+              className={`text-xl  font-semibold ${
+                isActive("/products") ? "bg-[#326951] border-2 border-white" : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <SofaIcon /> Products
             </Button>
             <Button
-              onClick={() => navigate("/chats")}
-              className={`text-xl  font-semibold ${
-                isActive("/chats") ? "bg-indigo-300" : "text-white"
+              onClick={() => navigate("/rooms")}
+              className={`text-xl font-semibold ${
+                isActive("/rooms") ? "bg-[#326951] border-2 border-white" : "text-white"
               }`}
               variant="ghost"
             >
-              Chats
+              <BedDoubleIcon /> Rooms
+            </Button>
+            <Button
+              onClick={() => navigate("/layout")}
+              className={`text-xl font-semibold ${
+                isActive("/layout") ? "bg-[#326951] border-2 border-white" : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <LayoutPanelLeftIcon /> Layouts
+            </Button>
+            <Button
+              onClick={() => navigate("/designers")}
+              className={`text-xl font-semibold ${
+                isActive("/designers") ? "bg-[#326951] border-2 border-white" : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <User2 /> Designers
+            </Button>
+
+            <Button
+              onClick={() => navigate("/wishlist")}
+              className={`text-xl font-semibold ${
+                isActive("/wishlist") ? "bg-[#326951] border-2 border-white" : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <HeartIcon /> Wishlist
             </Button>
             <Button
               onClick={() => navigate("/about")}
               className={`text-xl font-semibold ${
-                isActive("/about") ? "bg-indigo-300" : "text-white"
+                isActive("/about") ? "bg-[#326951] border-2 border-white" : "text-white"
               }`}
               variant="ghost"
             >
-              About
+              <InfoIcon /> About
             </Button>
           </nav>
         )}
@@ -64,7 +165,7 @@ const Navbar = () => {
           {auth.isLoggedIn ? (
             <Avatar
               onClick={() => navigate("/profile")}
-              className="hidden md:block"
+              className="hidden md:block border-white border-2 w-11 h-11"
             >
               <AvatarImage src={auth.user.profilePic} />
               <AvatarFallback>CN</AvatarFallback>
@@ -73,7 +174,7 @@ const Navbar = () => {
             <Button
               className="border-2 border-white hover:border-none text-lg rounded-md py-2 px-4 text-white font-semibold"
               variant="ghost"
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/register")}
             >
               Sign Up
             </Button>
@@ -88,64 +189,107 @@ const Navbar = () => {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="md:hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white border-none"
+                  className="md:hidden bg-[#326951] border-2 text-white"
                 >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="bg-gray-900 h-[32%] rounded-md m-3 border-2 border-white w-1/2"
+                className="bg-primary h-[80%] rounded-sm m-3 border-2 border-white w-53"
               >
-                <nav className="flex flex-col font-space gap-4 mt-6">
-                  <div className="flex items-center gap-3">
+                <nav className="flex flex-col items-start font-space gap-4 mt-10">
+                  <div className="flex items-center justify-center gap-1">
                     <Avatar
                       onClick={() => {
                         navigate("/profile");
                         setOpen(false);
                       }}
-                      className="ml-4 w-12 h-12"
+                      className="ml-4 w-8 border-white border-2 h-8"
                     >
-                      <AvatarImage src={auth.user.profilePic} />
+                      <AvatarImage src={auth?.user?.profilePic} />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <p className="text-white  text-xl">Faizan</p>
+                    <div className="flex flex-col items-start justify-center">
+                    <p className="font-bold text-white  text-sm">
+                      {auth?.user?.name}
+                    </p>
+                    <p className="font-light text-white  text-xs">
+                      {auth?.user?.email}
+                    </p>
+                    </div>
                   </div>
                   <Button
-                    onClick={() => {
-                      navigate("/");
-                      setOpen(false);
-                    }} // ✅ Close sheet
-                    variant="ghost"
-                    className={`w-full justify-start text-xl ${
-                      isActive("/") ? "text-indigo-300" : "text-white"
+                    onClick={() => navigate("/")}
+                    className={`text-xl font-semibold ${
+                      isActive("/") ? "bg-[#326951] border-2 border-white" : "text-white"
                     }`}
+                    variant="ghost"
                   >
-                    Home
+                    <HomeIcon /> Home
                   </Button>
                   <Button
-                    onClick={() => {
-                      navigate("/chats");
-                      setOpen(false);
-                    }}
-                    variant="ghost"
-                    className={`w-full justify-start text-xl ${
-                      isActive("/chats") ? "text-indigo-300" : "text-white"
+                    onClick={() => navigate("/appointments")}
+                    className={`text-xl  font-semibold ${
+                      isActive("/appointments") ? "bg-[#326951] border-2 border-white" : "text-white"
                     }`}
+                    variant="ghost"
                   >
-                    Chats
+                    <CalendarClock /> Appointments
                   </Button>
                   <Button
-                    onClick={() => {
-                      navigate("/about");
-                      setOpen(false);
-                    }}
-                    variant="ghost"
-                    className={`w-full justify-start text-xl ${
-                      isActive("/about") ? "text-indigo-300" : "text-white"
+                    onClick={() => navigate("/products")}
+                    className={`text-xl  font-semibold ${
+                      isActive("/products") ? "bg-[#326951] border-2 border-white" : "text-white"
                     }`}
+                    variant="ghost"
                   >
-                    About
+                    <SofaIcon /> Products
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/rooms")}
+                    className={`text-xl font-semibold ${
+                      isActive("/rooms") ? "bg-[#326951] border-2 border-white" : "text-white"
+                    }`}
+                    variant="ghost"
+                  >
+                   <BedDoubleIcon /> Rooms
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/layout")}
+                    className={`text-xl font-semibold ${
+                      isActive("/layout") ? "bg-[#326951] border-2 border-white" : "text-white"
+                    }`}
+                    variant="ghost"
+                  >
+                    <LayoutPanelLeftIcon /> Layouts
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/designers")}
+                    className={`text-xl font-semibold ${
+                      isActive("/designers") ? "bg-[#326951] border-2 border-white" : "text-white"
+                    }`}
+                    variant="ghost"
+                  >
+                    <User2 /> Designers
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/whislist")}
+                    className={`text-xl font-semibold ${
+                      isActive("/wishlist") ? "bg-[#326951] border-2 border-white" : "text-white"
+                    }`}
+                    variant="ghost"
+                  >
+                    <HeartIcon /> Wishlist
+                  </Button>
+                  <Button
+                    onClick={() => navigate("/about")}
+                    className={`text-xl font-semibold ${
+                      isActive("/about") ? "bg-[#326951] border-2 border-white" : "text-white"
+                    }`}
+                    variant="ghost"
+                  >
+                    <InfoIcon /> About
                   </Button>
                 </nav>
               </SheetContent>

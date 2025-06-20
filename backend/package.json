@@ -4,34 +4,32 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "vercel-build": "echo 'No build step required'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^2.6.1",
-    "concurrently": "^9.1.2",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "gapi-script": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.15.1",
-    "multer": "^2.0.1",
-    "multer-storage-cloudinary": "^4.0.0",
-    "nodemailer": "^7.0.3",
-    "openai": "^5.0.2",
+    "mongoose": "^8.7.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.7",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.27",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "passport-google-oauth20": "^2.0.0",
+    "react-google-login": "^5.2.2",
+    "streamifier": "^0.1.1",
+    "validator": "^13.12.0"
   }
 }

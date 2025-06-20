@@ -1,84 +1,59 @@
 import React from "react";
-import { Facebook, Twitter, Github, Linkedin } from "lucide-react";
-import { Button } from "@/components/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaXTwitter, FaLinkedin } from "react-icons/fa6";
+import { Separator } from "@/components/components/ui/separator";
+import { Card, CardContent } from "@/components/components/ui/card";
 
 const Footer = () => {
-    const navigate = useNavigate()
   return (
-    <footer className="bg-gray-950 border-t border-white/10 text-gray-300 px-6 md:px-16 py-12">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-start">
-        {/* Brand Section */}
-        <div className="space-y-3">
-          <h2 className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent text-2xl font-bold font-space">Aim.ai</h2>
-          <p className="text-sm text-gray-400 font-manrope leading-relaxed">
-            Your AI companion for smarter, faster, and more insightful
-            conversations. Powered by next-gen models.
-          </p>
-        </div>
+    <footer className="bg-[#326951] text-white border-t-2 border-black">
+      <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* About Section */}
+        <Card className="bg-transparent border-none shadow-none text-white">
+          <CardContent className="p-0 space-y-4">
+            <h2 className="text-2xl font-bold text-primary">FURNIGUARD&reg;</h2>
+            <p className="text-sm leading-relaxed">
+              Redefining furniture aesthetics and durability. At FURNIGUARD, we blend contemporary design with unmatched craftsmanship to deliver comfort and style to your home.
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* Resources / Highlights */}
-        <div className="space-y-3 font-manrope">
-          <h3 className="text-xl font-space font-semibold text-white">
-            Resources & Highlights
-          </h3>
-          <ul className="space-y-2 text-sm">
-            <li className="text-gray-400">
-              💡 Tips on getting better AI responses
-            </li>
-            <li className="text-gray-400">
-              🚀 Latest performance & model updates
-            </li>
-            <li className="text-gray-400">
-              🧠 Learn how Aim.Ai improves over time
-            </li>
-            <li className="text-gray-400">
-              🎯 Customization features coming soon!
-            </li>
-          </ul>
-        </div>
+        {/* Store Locations */}
+        <Card className="bg-transparent border-none shadow-none text-white">
+          <CardContent className="p-0 space-y-4">
+            <h2 className="text-xl font-semibold text-primary">Store Locations</h2>
+            <p className="text-sm leading-relaxed">
+              Mumbai, Kolkata, Hyderabad, Chennai, Bengaluru, Jaipur, Ahmedabad, Prayagraj, Pune, Agra, Varanasi, Lucknow, Visakhapatnam, Chandigarh, Kanpur, Surat, Delhi, Nagpur, Madurai, Kochi, Patna, Jodhpur, Coimbatore, Guwahati, Nashik, Ludhiana, Amritsar, Jabalpur
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* Social & CTA */}
-        <div className="space-y-4 font-manrope">
-          <h3 className="text-xl font-semibold font-space text-white">Stay Connected</h3>
-          <div className="flex gap-4">
-            <a
-              href="#"
-              aria-label="Facebook"
-              className="hover:text-blue-500 transition"
-            >
-              <Facebook />
-            </a>
-            <a
-              href="#"
-              aria-label="Twitter"
-              className="hover:text-sky-400 transition"
-            >
-              <Twitter />
-            </a>
-            <a
-              href="#"
-              aria-label="GitHub"
-              className="hover:text-gray-300 transition"
-            >
-              <Github />
-            </a>
-            <a
-              href="#"
-              aria-label="LinkedIn"
-              className="hover:text-blue-300 transition"
-            >
-              <Linkedin />
-            </a>
-          </div>
-          <Button onClick={()=>navigate('/')} className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white w-full md:w-auto">
-            Start Chatting
-          </Button>
-        </div>
+        {/* Social Links */}
+        <Card className="bg-transparent border-none shadow-none text-white">
+          <CardContent className="p-0">
+            <h2 className="text-xl font-semibold text-primary mb-4">Follow Us</h2>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-3 cursor-pointer hover:text-primary transition">
+                <FaInstagram className="w-5 h-5" /> <span>Instagram</span>
+              </li>
+              <li className="flex items-center gap-3 cursor-pointer hover:text-primary transition">
+                <FaXTwitter className="w-5 h-5" /> <span>Twitter</span>
+              </li>
+              <li className="flex items-center gap-3 cursor-pointer hover:text-primary transition">
+                <FaLinkedin className="w-5 h-5" /> <span>LinkedIn</span>
+              </li>
+              <li className="flex items-center gap-3 cursor-pointer hover:text-primary transition">
+                <FaYoutube className="w-5 h-5" /> <span>YouTube</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="mt-10 border-t border-white/10 pt-6 text-sm text-center text-gray-500">
-        © {new Date().getFullYear()} Aim.Ai — All rights reserved.
+      <Separator className="bg-primary" />
+
+      <div className="py-4 text-center text-sm text-white">
+        All rights reserved &copy; 2024 - 2029 <span className="text-primary font-semibold">FURNIGUARD</span>
       </div>
     </footer>
   );

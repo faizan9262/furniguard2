@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {toast} from 'sonner'
 import { useAuth } from "../context/AuthContext";
-import { Label } from "@/components/components/ui/label";
-import { Input } from "@/components/components/ui/input";
-import { Button } from "@/components/components/ui/button";
-import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const auth = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,108 +31,58 @@ const Login = () => {
     }
   };
 
-
-  const handleForgotPassword = async()=>{
-    if(!auth.email){
-      toast.error("Pvovide Your Email to Generate Otp.")
-    }
-    try {
-      toast.loading("Sending Password Reset Otp To Yout Email",{id:'reset-password'})
-      await auth.sendOtpForPasswordReset(auth.email)
-      toast.success("6 digit OTP Sent to your email.",{id:'reset-password'})
-      navigate('/reset-password')
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message, { id: "reset-password" });
-    }
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="max-w-md w-4/5 md:w-full bg-gray-800 rounded-lg shadow-lg p-4 md:p-8 md:space-y-6 space-y-3">
-        <h2 className="text-xl md:text-3xl font-bold text-white text-center">
-          Login Here
-        </h2>
-
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          {/* Email */}
-          <div>
-            <Label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-300"
-            >
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              value={auth.email}
-              onChange={(e)=>auth.setEmail(e.target.value)}
-              required
-              placeholder="you@example.com"
-              className="mt-1 block w-full rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-gray-100 placeholder-gray-500 shadow-sm"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <Label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-300"
-            >
-              Password
-            </Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                name="password"
-                required
-                placeholder="Enter your password"
-                className="mt-1 block w-full rounded-md border border-gray-700 bg-gray-900 px-3 py-2 pr-10 text-gray-100 placeholder-gray-500 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 focus:ring-1"
-              />
-              <div
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-400 hover:text-gray-200"
+    <form onSubmit={handleSubmit}>
+      <div className="bg-slate-200">
+        <div className="mx-4 sm:mx-[10%] min-h-screen flex items-center justify-center relative">
+          {/* Overlay Loader */}
+          <div className="w-full sm:w-2/5 flex flex-col p-4 shadow-lg gap-3 bg-white items-center rounded-lg z-10">
+            <div className="flex justify-between gap-4 items-center">
+              <span
+                onClick={() => navigate("/")}
+                className="text-xl sm:text-2xl font-semibold shadow-lg border-2 border-secondary text-white bg-secondary cursor-pointer rounded-full py-1 px-3 "
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                FURNIGUARD&reg;
+              </span>
+              <h1 className="text-xl sm:text-3xl text-primary font-medium">Login Here</h1>
+            </div>
+            <div className="w-full flex flex-col gap-2 sm:gap-4 mt-2">
+              <div className="flex flex-col mx-4 gap-1">
+                <label className="text-sm sm:text-lg text-primary mx-2 sm:mx-3">Email</label>
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  name="email"
+                  className="w-full text-sm sm:text-base py-2 text-primary outline-none rounded-full px-3 bg-slate-100 border-2 border-primary"
+                  type="email"
+                  placeholder="Enter Email"
+                />
+              </div>
+              <div className="flex flex-col mx-4 gap-1">
+                <label className="text-sm sm:text-lg text-primary mx-2 sm:mx-3">Password</label>
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  name="password"
+                  className="w-full text-sm sm:text-base py-2 text-primary outline-none rounded-full px-3 bg-slate-100 border-2 border-primary"
+                  type="password"
+                  placeholder="Enter Password"
+                />
               </div>
             </div>
+            <div className="flex px-4 flex-col w-full items-center gap-4 justify-between">
+            
+                <button className="flex items-center justify-center gap-2 bg-primary text-white rounded-full px-5 w-full py-2 text-base sm:text-lg font-medium shadow-md hover:bg-secondary transition-all duration-300">
+                  Log in
+                </button>
+              <p className="text-sm sm:text-base text-primary cursor-pointer">
+                <Link to={"/register"}>Don't have an account?</Link>
+              </p>
+            </div>
           </div>
-
-          {/* Forgot password */}
-          <div className="flex justify-between items-center text-sm">
-            <span
-              onClick={handleForgotPassword}
-              className="text-indigo-400 cursor-pointer hover:text-indigo-300 transition-colors"
-            >
-              Forgot password?
-            </span>
-          </div>
-
-          {/* Submit button */}
-          <Button
-            type="submit"
-            className="w-full border-1 border-white hover:border-none text-lg rounded-md py-1 px-4 text-white font-semibold"
-            variant="ghost"
-          >
-            Login
-          </Button>
-        </form>
-
-        {/* Already have account */}
-        <p className="text-center cursor-pointer text-gray-400 text-sm">
-          Already have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-indigo-400 hover:text-indigo-300 font-medium"
-          >
-            Sign Up
-          </span>
-        </p>
+        </div>
       </div>
-    </div>
+    </form>
   );
 };
 

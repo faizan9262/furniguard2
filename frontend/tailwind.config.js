@@ -12,8 +12,8 @@ module.exports = {
         foreground: '#E0E7FF',
         muted: '#8F9BB3',
         primary: {
-          DEFAULT: '#00FFD1',
-          foreground: '#0A101E',
+          DEFAULT: '#rgb(45, 155, 103)',
+          foreground: 'rgb(50, 105, 81)',
         },
         accent: {
           DEFAULT: '#8C6FFC',

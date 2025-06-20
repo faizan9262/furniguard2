@@ -1,156 +1,194 @@
 import React from "react";
-import { Button } from "@/components/components/ui/button";
-import { Card, CardContent } from "@/components/components/ui/card";
 import { motion } from "framer-motion";
 import {
-  Bot,
-  Rocket,
-  Users,
-  Lightbulb,
-  Code,
-  BrainCog,
-  Settings,
-  Code2,
-  Database,
-  Server,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import Footer from "@/components/Footer";
+  FaPuzzlePiece,
+  FaPalette,
+  FaHandshake,
+  FaShieldAlt,
+  FaAward,
+  FaRocket,
+  FaGlobeAsia,
+} from "react-icons/fa";
+import { assets } from "../assets/assets";
+import Footer from "../components/Footer";
 
-const features = [
+const highlights = [
   {
-    icon: <Bot className="text-pink-400 w-6 h-6" />,
-    title: "AI-Powered Conversations",
+    icon: <FaRocket className="text-3xl text-[#2d9b67]" />,
+    title: "Our Mission",
     description:
-      "Interact naturally with our smart assistant powered by state-of-the-art AI models. Built for speed and understanding.",
+      "To revolutionize interiors by delivering personalized, sustainable, and high-performance furniture and design experiences.",
   },
   {
-    icon: <Rocket className="text-indigo-400 w-6 h-6" />,
-    title: "Blazing Fast",
+    icon: <FaShieldAlt className="text-3xl text-[#2d9b67]" />,
+    title: "Core Values",
     description:
-      "Enjoy seamless response time and optimized performance for every chat session—whether it's your first or your hundredth.",
+      "Integrity, innovation, craftsmanship, and client-centricity drive our everyday decisions and design ethos.",
   },
   {
-    icon: <Users className="text-green-400 w-6 h-6" />,
-    title: "User-Centric Design",
+    icon: <FaHandshake className="text-3xl text-[#2d9b67]" />,
+    title: "Client Commitment",
     description:
-      "Crafted with love to ensure a simple, intuitive experience across all screen sizes and devices.",
+      "We don't just deliver spaces—we deliver trust, long-term relationships, and unmatched after-sales service.",
   },
   {
-    icon: <Lightbulb className="text-yellow-400 w-6 h-6" />,
-    title: "Always Learning",
+    icon: <FaGlobeAsia className="text-3xl text-[#2d9b67]" />,
+    title: "Global Vision",
     description:
-      "Aim.Ai constantly evolves with your usage to better understand your needs and preferences.",
+      "Expanding our presence across continents while staying rooted in local culture and design heritage.",
   },
 ];
 
-const techStack = [
+const storyTimeline = [
   {
-    icon: <Code className="text-cyan-400 w-5 h-5" />,
-    label: "React + Vite",
+    year: "2014",
+    text: "FurniGuard was born out of a passion for transforming everyday spaces into extraordinary experiences.",
   },
   {
-    icon: <Server className="text-cyan-400 w-5 h-5" />,
-    label: "Node + Express",
+    year: "2017",
+    text: "Introduced modular design systems and expanded production capabilities to cater to commercial interiors.",
   },
   {
-    icon: <Database className="text-cyan-400 w-5 h-5" />,
-    label: "MongoDB + Mongoose",
+    year: "2020",
+    text: "Shifted toward sustainable materials and eco-friendly manufacturing processes.",
   },
   {
-    icon: <BrainCog className="text-purple-400 w-5 h-5" />,
-    label: "OpenAI GPT",
+    year: "2024",
+    text: "Launched smart-furniture solutions integrated with home automation and ergonomic innovations.",
+  },
+];
+
+const expertise = [
+  {
+    title: "Space Planning",
+    description:
+      "Optimize every square foot with tailored layouts based on functionality and lifestyle.",
+    icon: <FaPuzzlePiece className="text-3xl text-[#2d9b67]" />,
   },
   {
-    icon: <Settings className="text-orange-400 w-5 h-5" />,
-    label: "ShadCN + TailwindCSS",
+    title: "Color Psychology",
+    description:
+      "Use color science to evoke mood and harmony, shaping how you feel in a space.",
+    icon: <FaPalette className="text-3xl text-[#2d9b67]" />,
+  },
+  {
+    title: "Premium Materials",
+    description:
+      "We source only the finest, sustainable woods, fabrics, and metals from certified suppliers.",
+    icon: <FaAward className="text-3xl text-[#2d9b67]" />,
   },
 ];
 
 const About = () => {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/");
-  };
-
   return (
     <>
-      <div className="min-h-screen px-6 md:px-16 py-20 bg-gray-950 text-white">
+      <div className="bg-[#fffefc] py-2 px-4 sm:px-[10%]">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="max-w-6xl mx-auto text-center space-y-16"
         >
-          {/* Hero Section */}
-          <section className="space-y-6 font-space">
-            <h1 className="text-4xl md:text-5xl font-bold">
-              <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Welcome to Aim.Ai
-              </span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
-              An AI-powered assistant tailored to bring you smart, fast, and
-              friendly conversations — whenever you need them.
-            </p>
-          </section>
+          <img
+            src={assets.logo}
+            alt="FurniGuard Logo"
+            className="mx-auto h-24"
+          />
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#326951]">
+            Who We Are
+          </h1>
+          <p className="mt-3 max-w-xl mx-auto text-gray-600">
+            At FurniGuard, we don't just furnish spaces—we shape stories, define
+            identities, and craft sanctuaries. Here’s everything you should know
+            about us.
+          </p>
+        </motion.div>
 
-          {/* Feature Cards */}
-          <section className="grid sm:grid-cols-2 gap-6 text-left">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
+        {/* Highlights */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-5">
+          {highlights.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+              className="bg-[#2d9b67]/10 p-6 rounded-2xl shadow-sm text-center"
+            >
+              <div className="mb-3 flex justify-center">{item.icon}</div>
+              <h3 className="text-xl font-semibold text-[#326951] mb-1">
+                {item.title}
+              </h3>
+              <p className="text-sm text-gray-600">{item.description}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Our Journey */}
+        <motion.div
+          className="mb-10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="text-3xl font-bold text-center text-[#326951] mb-10">
+            Our Journey
+          </h2>
+          <div className="flex flex-col gap-6">
+            {storyTimeline.map((event, idx) => (
+              <div
+                key={idx}
+                className="border-l-4 border-[#2d9b67] pl-6 relative"
               >
-                <Card className="bg-gray-800 border border-white/10 hover:border-white/20 hover:shadow-lg transition duration-300">
-                  <CardContent className="p-6 py-3 space-y-4">
-                    <div className="flex items-center gap-3">
-                      {feature.icon}
-                      <h3 className="text-xl font-semibold font-space text-white">
-                        {feature.title}
-                      </h3>
-                    </div>
-                    <p className="text-gray-400 space-manrope">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                <div className="absolute -left-3 top-1 w-5 h-5 bg-[#2d9b67] rounded-full"></div>
+                <h4 className="text-lg font-semibold text-[#326951]">
+                  {event.year}
+                </h4>
+                <p className="text-gray-600 text-sm mt-1">{event.text}</p>
+              </div>
             ))}
-          </section>
+          </div>
+        </motion.div>
 
-          {/* Vision and Mission */}
-          <section className="text-left space-y-6">
-            <h2 className="text-3xl font-bold font-space text-white text-center">
-              Our Vision & Mission
-            </h2>
-            <p className="text-gray-300 font-manrope text-md leading-relaxed max-w-3xl mx-auto text-center">
-              At Aim.Ai, our vision is to make artificial intelligence
-              accessible and meaningful for everyone. Our mission is to empower
-              users with intuitive AI tools that can assist, understand, and
-              grow alongside them.
-            </p>
-          </section>
+        {/* Expertise */}
+        <div className="grid md:grid-cols-3 gap-8 mb-10">
+          {expertise.map((item, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              className="p-6 bg-white shadow-md rounded-2xl text-center"
+            >
+              <div className="mb-4 flex justify-center">{item.icon}</div>
+              <h4 className="text-xl font-semibold text-[#326951]">
+                {item.title}
+              </h4>
+              <p className="text-sm text-gray-600 mt-2">{item.description}</p>
+            </motion.div>
+          ))}
+        </div>
 
-          {/* Tech Stack */}
-          <section className="text-center space-y-4">
-            <h2 className="text-2xl font-space font-semibold text-white">
-              Technology Used In <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Aim.Ai</span>
-            </h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              {techStack.map((tech, i) => (
-                <span
-                  key={i}
-                  className="w-60 font-space flex items-center justify-center gap-1 border border-white/10 bg-gray-800 py-2 rounded-lg text-gray-200 hover:bg-gray-700 transition"
-                >
-                  {tech.icon}
-                  {tech.label}
-                </span>
-              ))}
-            </div>
-          </section>
+        {/* Vision Statement */}
+        <motion.div
+          className="text-center mb-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <blockquote className="text-xl italic text-gray-600 max-w-2xl mx-auto">
+            "We believe a well-designed space elevates not just the surroundings
+            but the soul. Design is a responsibility—and we carry it with
+            pride."
+          </blockquote>
+          <p className="mt-2 text-sm text-[#326951]">— Team FurniGuard</p>
         </motion.div>
       </div>
+
       <Footer />
     </>
   );
