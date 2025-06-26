@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
             name: data.name,
             profilePic: data.profilePic,
             isEmailVerified: data.emailVerified,
+            role:data.role
           });
           setLoading(false)
           setIsLoggedIn(true)
@@ -61,11 +62,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const data = await loginUser(email, password);
+    // console.log("After Login :",data);
+    
     if (data) {
       setUser({
         email: data.email,
         name: data.name,
-        profilePicture: user?.profilePicture,
+        profilePicture: data.profilePic,
+        role:data.role
       });
       setIsLoggedIn(true);
     }
@@ -107,7 +111,7 @@ export const AuthProvider = ({ children }) => {
   const sendOtpForPasswordReset = async (email) => {
     const data = await sendPasswordResetMail(email);
     if (data) {
-      console.log("Password Reset Email Sent.");
+      // console.log("Password Reset Email Sent.");
       setPasswordOtpSent(true);
     }
   };
@@ -115,14 +119,14 @@ export const AuthProvider = ({ children }) => {
   const resetYourPassword = async (otp, newPassword, email) => {
     const data = await resetPassword(otp, newPassword, email);
     if (data) {
-      console.log("Password Reset Successfully");
+      // console.log("Password Reset Successfully");
     }
   };
 
   const updateYourPassword = async (oldPassword, newPassword) => {
     const data = await updatePassword(oldPassword, newPassword);
     if (data) {
-      console.log("Password Updated Successfully");
+      // console.log("Password Updated Successfully");
     }
   };
   

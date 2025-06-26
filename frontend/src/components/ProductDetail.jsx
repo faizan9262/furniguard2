@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProduct } from "../context/ProductContext";
 import { FaArrowRight, FaStar } from "react-icons/fa";
@@ -17,7 +17,26 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const [rating, setRating] = useState({});
 
+  const [showAllRatings, setShowAllRatings] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3); 
+
+  useEffect(() => {
+    const updateCount = () => {
+      const width = window.innerWidth;
+      if (width < 640) setVisibleCount(2); 
+      else if (width < 1024) setVisibleCount(3); 
+      else setVisibleCount(4); 
+    };
+
+    updateCount(); 
+    window.addEventListener("resize", updateCount);
+    return () => window.removeEventListener("resize", updateCount);
+  }, []);
+
   const products = product.products.find((p) => p._id === id);
+  const relatedProducts = product.products.filter(
+    (p) => p._id !== products._id && p.category === products.category
+  );
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -31,13 +50,10 @@ const ProductDetail = () => {
     fetchRating();
   }, [id]);
 
-  console.log("Product Rating: ", rating);
 
   if (!products) {
     return <div>Product not found</div>;
   }
-
-  console.log("Cuurrent: ", products);
 
   const handleAddWishlist = async (productId) => {
     try {
@@ -90,7 +106,7 @@ const ProductDetail = () => {
           transition={{ duration: 0.6 }}
           className="space-y-6"
         >
-          <h1 className="text-4xl font-bold text-[#2d9b67]">{products.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#2d9b67]">{products.name}</h1>
           <div className="flex items-center gap-2">
             {[...Array(5)].map((_, i) => (
               <FaStar
@@ -110,7 +126,7 @@ const ProductDetail = () => {
               <span className="text-sm text-gray-400">No ratings</span>
             )}
           </div>
-          <p className="text-lg text-gray-700 leading-relaxed">
+          <p className="text-md ms:text-lg text-gray-700 leading-relaxed">
             {products.description}
           </p>
 
@@ -230,39 +246,45 @@ const ProductDetail = () => {
               </Card>
             ))}
         </div>
+        {!showAllRatings && rating.length > visibleCount && (
+          <div className="text-center">
+            <Button variant="outline" onClick={() => setShowAllRatings(true)}>
+              View All Ratings
+            </Button>
+          </div>
+        )}
       </section>
 
       {/* Related Products */}
       <div className="mt-20">
         <h2 className="text-2xl sm:text-3xl font-bold text-[#2d9b67] mb-6">
-          Related Products
+          Similar Styles, Same Wow
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
+          {relatedProducts?.map((p, i) => (
             <motion.div
               key={i}
               whileHover={{ scale: 1.03 }}
               className="relative overflow-hidden rounded-2xl bg-white shadow-lg border border-[#c1e5d3] p-4 group"
+              onClick={() => navigate(`/products/${p.category}/${p._id}`)}
             >
               <img
-                src={products.image}
+                src={p.image}
                 alt=""
                 className="w-full h-60 object-cover rounded-xl mb-3"
               />
               <div className="space-y-1">
-                <h3 className="text-lg font-bold text-[#2d9b67]">
-                  {products.name}
-                </h3>
+                <h3 className="text-lg font-bold text-[#2d9b67]">{p.name}</h3>
                 <p className="text-sm text-gray-500">
                   Elegant & modern design crafted for durability.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <Badge variant="outline">Living Room</Badge>
+                  <Badge variant="outline">{p.category}</Badge>
                   <Badge variant="outline">Modern</Badge>
                 </div>
               </div>
               <div className="absolute top-3 right-3 bg-[#2d9b67] text-white px-2 py-1 text-xs rounded-full">
-                ₹{products.price}
+                ₹{p.price}
               </div>
             </motion.div>
           ))}

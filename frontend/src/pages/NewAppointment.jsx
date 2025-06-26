@@ -62,8 +62,6 @@ const NewAppointment = () => {
     setSelectedProductDetails(newDetails);
   }, [selectedProduct, product.products]);
 
-  // console.log("products: ",product.products);
-
   const selectedDesignerDetails = selectedDesigner;
 
   const appointmentData = {
@@ -160,7 +158,6 @@ const NewAppointment = () => {
 
       {/* Designer + Calendar */}
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Designer (75%) */}
         <DesignerSelectorCard
           designer={designer}
           selectedDesigner={selectedDesigner}
@@ -226,8 +223,6 @@ const NewAppointment = () => {
           handleClick={handleClick}
         />
       </div>
-
-      {/* Submit Button */}
     </motion.div>
   );
 };

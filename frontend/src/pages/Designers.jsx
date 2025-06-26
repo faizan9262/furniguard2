@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import DesignerCard from "../components/DesignerCard";
-import { designers } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { Input } from "../components/components/ui/input";
 import { Label } from "../components/components/ui/label";
@@ -19,8 +18,6 @@ const Designers = () => {
   const [experienceFilter, setExperienceFilter] = useState("");
 
   const designer = useDesiner()
-
-  // console.log("Designer in deginers page: ",designer.designers);
   
 
   const filterDesigners = designer.designers.filter((item) => {

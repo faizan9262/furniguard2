@@ -1,6 +1,4 @@
 import React, { useRef } from "react";
-import BedCard from "./BedCard";
-import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useProduct } from "../context/ProductContext";

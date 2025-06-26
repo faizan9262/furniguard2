@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Header from '../components/Header.jsx'
 import SectionTitle from '../components/SectionTitle.jsx'
 import Design from '../components/Design.jsx'
 import LivingRoom from '../components/LivingRoom.jsx'
 import BedRoom from '../components/BedRoom.jsx'
 import Stairs from '../components/Stairs.jsx'
-import { useProduct } from '../context/ProductContext.jsx'
+import Footer from '@/components/Footer.jsx'
 
 const Home = () => {
-  const product = useProduct()
    
   return (
     <>
@@ -21,6 +20,7 @@ const Home = () => {
       <LivingRoom />
       <SectionTitle text={'Beautiful Staicase Designs'} />
       <Stairs />
+      <Footer />
     </>
   )
 }

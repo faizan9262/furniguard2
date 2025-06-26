@@ -30,10 +30,7 @@ const Wishlist = () => {
     
     fetchWishlist();
   }, []);
-  // console.log("Count: ",user.wishlistCount);
-
   
-
   const handleRemoveFromWishlist = async (productId) => {
     try {
       toast.loading("Removing from wishlist", { id: "wishlist" });

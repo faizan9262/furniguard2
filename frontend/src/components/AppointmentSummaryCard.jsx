@@ -1,5 +1,10 @@
 import React from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/components/ui/card";
 import { format } from "date-fns";
 
 const AppointmentSummaryCard = ({
@@ -36,7 +41,9 @@ const AppointmentSummaryCard = ({
         <div className="grid sm:grid-cols-2 gap-2">
           <div>
             <p className="text-muted-foreground">Designer</p>
-            <p className="font-medium">{selectedDesignerDetails?.user?.username}</p>
+            <p className="font-medium">
+              {selectedDesignerDetails?.user?.username}
+            </p>
           </div>
           <div>
             <p className="text-muted-foreground">Appointment Date</p>

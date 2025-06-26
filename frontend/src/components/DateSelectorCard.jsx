@@ -6,7 +6,7 @@ import {
   CardContent,
 } from "@/components/components/ui/card";
 import { CalendarIcon, HomeIcon, Building2Icon, VideoIcon, MapPinIcon } from "lucide-react";
-import { Calendar } from "@/components/components/ui/calendar"; // Adjust import if you renamed
+import { Calendar } from "@/components/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/components/ui/radio-group";
 import { Label } from "@/components/components/ui/label";
 import { Input } from "@/components/components/ui/input";

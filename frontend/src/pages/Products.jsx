@@ -17,7 +17,6 @@ const Products = () => {
   const product = useProduct();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // console.log("Products:",product.products);
   const categories = [
     { key: "all", label: "All" },
     { key: "furniture", label: "Furniture" },

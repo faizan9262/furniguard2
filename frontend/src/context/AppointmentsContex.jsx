@@ -9,7 +9,7 @@ export const AppointmentsContexProvider = (props) => {
   useEffect(()=>{
     const getAllAppointmentsOfUser = async()=>{
       const data = await getAllAppointments() 
-    //   console.log("Data:",data);
+      // console.log("Data:",data);
       setAllAppointments(data)
     }
     getAllAppointmentsOfUser()

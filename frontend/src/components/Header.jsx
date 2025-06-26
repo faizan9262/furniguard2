@@ -1,6 +1,6 @@
 import React from "react";
 import { assets } from "../assets/assets";
-import { FaArrowRight, FaPaintRoller, FaLightbulb } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/components/ui/button";
 import { motion } from "framer-motion";

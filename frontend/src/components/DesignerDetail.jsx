@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { designers } from "../assets/assets";
 import { Button } from "../components/components/ui/button";
 import { Card, CardContent } from "../components/components/ui/card";
 import { motion } from "framer-motion";
@@ -42,25 +41,28 @@ const sampleProjects = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Aman Kapoor",
-    quote:
-      "Working with this designer was an absolute pleasure. They transformed my home into a dream space!",
-  },
-  {
-    name: "Sara Mehta",
-    quote:
-      "Truly professional and deeply creative. Highly recommend for luxury interior design.",
-  },
-];
-
 const DesignerDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const DesignerContex = useDesiner();
   const designer = DesignerContex.designers.find((d) => d._id === id);
   const [rating, setRating] = useState({});
+
+  const [showAllRatings, setShowAllRatings] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
+
+  useEffect(() => {
+    const updateCount = () => {
+      const width = window.innerWidth;
+      if (width < 640) setVisibleCount(2);
+      else if (width < 1024) setVisibleCount(3);
+      else setVisibleCount(4);
+    };
+
+    updateCount(); 
+    window.addEventListener("resize", updateCount);
+    return () => window.removeEventListener("resize", updateCount);
+  }, []);
 
   useEffect(() => {
     const fetchRating = async () => {
@@ -74,9 +76,8 @@ const DesignerDetail = () => {
     fetchRating();
   }, [id]);
 
-  // console.log("Designer Rating: ", rating);
-
-  // console.log("Designer in detail page: ", designer);
+  console.log("Rating length: ",rating.length);
+  
 
   if (!designer) return <p className="text-center mt-10">Designer not found</p>;
 
@@ -173,50 +174,59 @@ const DesignerDetail = () => {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.isArray(rating) &&
-            rating.map((t, i) => (
-              <Card
-                key={i}
-                className="p-4 shadow-md hover:shadow-lg transition-shadow border border-muted rounded-2xl"
-              >
-                <CardContent className="space-y-4">
-                  {/* Feedback text */}
-                  <p className="text-gray-700 italic text-sm line-clamp-4">
-                    “{t.reviewText}”
-                  </p>
+            (showAllRatings ? rating : rating.slice(0, visibleCount)).map(
+              (t, i) => (
+                <Card
+                  key={i}
+                  className="p-4 shadow-md hover:shadow-lg transition-shadow border border-muted rounded-2xl"
+                >
+                  <CardContent className="space-y-4">
+                    {/* Feedback text */}
+                    <p className="text-gray-700 italic text-sm line-clamp-4">
+                      “{t.reviewText}”
+                    </p>
 
-                  <div className="flex items-center gap-3 mt-4">
-                    {/* User Avatar */}
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage src={t.userId.profilePicture} />
-                      <AvatarFallback>
-                        {t.userId.username?.[0]?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="flex items-center gap-3 mt-4">
+                      {/* User Avatar */}
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={t.userId.profilePicture} />
+                        <AvatarFallback>
+                          {t.userId.username?.[0]?.toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    {/* Username and Rating */}
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm text-foreground">
-                        {t.userId.username}
-                      </span>
-                      <div className="flex gap-1 mt-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`h-4 w-4 ${
-                              star <= t.rating
-                                ? "text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                            fill={star <= t.rating ? "#facc15" : "none"}
-                          />
-                        ))}
+                      {/* Username and Rating */}
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-sm text-foreground">
+                          {t.userId.username}
+                        </span>
+                        <div className="flex gap-1 mt-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-4 w-4 ${
+                                star <= t.rating
+                                  ? "text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
+                              fill={star <= t.rating ? "#facc15" : "none"}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              )
+            )}
         </div>
+        {!showAllRatings && rating.length > visibleCount && (
+          <div className="text-center">
+            <Button variant="outline" onClick={() => setShowAllRatings(true)}>
+              View All Ratings
+            </Button>
+          </div>
+        )}
       </section>
 
       {/* Work Areas */}

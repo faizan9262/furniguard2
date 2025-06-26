@@ -146,6 +146,7 @@ export const loginUser = async (req, res) => {
       name: user.username,
       email: user.email,
       profilePic: user.profilePicture,
+      role: user.role,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -240,6 +241,7 @@ export const verifyUser = async (req, res) => {
       email: user.email,
       profilePic: user.profilePicture,
       emailVerified: user.emailVerified,
+      role:user.role
     });
   } catch (error) {
     console.error(error);

@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import RoomCard from "./RoomCard";
-import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/components/ui/button";
 import { Separator } from "@/components/components/ui/separator";
@@ -27,7 +26,6 @@ const LivingRoom = () => {
       >
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
           {filteredLivingRooms.map((lv, i) => {
-            // Show first 2 always, others only on sm and above
             const visibilityClass = i < 2 ? "block" : "hidden sm:block";
 
             return (

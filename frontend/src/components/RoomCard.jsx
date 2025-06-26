@@ -5,7 +5,6 @@ import {
   CardTitle,
   CardDescription,
 } from "../components/components/ui/card";
-import { Sofa, LampDesk } from "lucide-react";
 import { FaRupeeSign } from "react-icons/fa";
 
 const RoomCard = ({ img_src, title ,description, price,onClick }) => {
@@ -14,7 +13,6 @@ const RoomCard = ({ img_src, title ,description, price,onClick }) => {
       onClick={onClick}
       className="group w-full max-w-sm rounded-3xl overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 p-0"
     >
-      {/* Image Section - no spacing */}
       <div className="relative w-full h-52 sm:h-64 md:h-72 lg:h-80">
         <img
           src={img_src}

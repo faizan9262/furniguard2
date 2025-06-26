@@ -19,6 +19,7 @@ import PasswordUpdate from "./pages/PasswordUpdate.jsx";
 import PasswordReset from "./pages/PasswordReset.jsx";
 import AppointmentDetailPage from "./pages/AppointmentDetails.jsx";
 import NewAppointment from "./pages/NewAppointment.jsx";
+import DesignerNotifications from "./pages/DesignerNotifications.jsx";
 
 function App() {
   return (
@@ -34,11 +35,16 @@ function App() {
           <Route path="/layout" element={<Layout />} />
           <Route path="/about" element={<About />} />
           <Route path="/rooms" element={<Rooms />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route path="/designers" element={<Designers />} />
           <Route path="/designers/:id" element={<DesignerDetail />} />
+          <Route path="/notifications" element={<DesignerNotifications />} />
+
           <Route path="/wishlist" element={<Wishlist />} />
+
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/appointments/:id" element={<AppointmentDetailPage />} />
           <Route path="/new-appointment" element={<NewAppointment />} />

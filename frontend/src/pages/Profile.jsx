@@ -9,12 +9,10 @@ import {
   FaUser,
   FaHeart,
   FaCalendarAlt,
-  FaArrowRight,
   FaSignOutAlt,
-  FaHistory,
 } from "react-icons/fa";
 import { PiListHeart } from "react-icons/pi";
-import { AiOutlineSchedule, AiTwotoneSchedule } from "react-icons/ai";
+import { AiOutlineSchedule } from "react-icons/ai";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +35,7 @@ const Profile = () => {
   });
 
   const handleEditProfilePic = () => {
-    fileInputRef.current?.click(); // Trigger hidden input
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = async (e) => {
@@ -83,13 +81,10 @@ const Profile = () => {
     toast.success("Logged out successfully");
     navigate("/login");
   };
-
-  console.log("Count in pf: ",auth.wishlistCount);
   
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#effaf2] to-[#c8ebd9] py-12 px-4 flex flex-col items-center justify-center">
-      {/* Top Heading / Introduction */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -25,7 +25,6 @@ const ProductSelectorCard = ({
   selectedProducts,
   removeProductFromList,
 }) => {
-  // Handle product selection with duplicate check
   const handleAddProduct = (prod) => {
     const alreadyAdded = selectedProducts.some((p) => p._id === prod._id);
     if (alreadyAdded) {

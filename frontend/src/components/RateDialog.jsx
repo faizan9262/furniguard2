@@ -9,8 +9,6 @@ import {
 } from "../components/components/ui/dialog";
 import {
   Card,
-  CardContent,
-  CardHeader,
   CardTitle,
 } from "../components/components/ui/card";
 import {

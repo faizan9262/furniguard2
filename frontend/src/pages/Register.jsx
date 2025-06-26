@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
@@ -30,12 +30,6 @@ const Register = () => {
       toast.error(error.message, { id: "signup" });
     }
   };
-
-  // useEffect(() => {
-  //   if (token) {
-  //     // navigate("/");
-  //   }
-  // }, [token, navigate]);
 
   return (
     <form onSubmit={handleSubmit}>

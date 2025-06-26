@@ -21,9 +21,7 @@ import {
   CalendarX2,
   Edit,
   MapPin,
-  MapIcon,
   Wallet,
-  UserCog,
   DollarSign,
   Percent,
 } from "lucide-react";
@@ -43,7 +41,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/components/ui/alert-dialog";
-import { FaRupeeSign } from "react-icons/fa";
 import RateComponent from "@/components/RateDialog";
 
 const AppointmentDetailPage = () => {
@@ -56,8 +53,6 @@ const AppointmentDetailPage = () => {
   const currentAppointment = appointment.allAppointments.find(
     (ap) => ap._id === id
   );
-
-  // console.log("ID: ",currentAppointment._id);
 
   console.log("Current: ", currentAppointment);
 

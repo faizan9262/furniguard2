@@ -1,10 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { FaArrowRight } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 
 const DesignBannerLeft = ({ img_src, title, description,onClick }) => {
-  const navigate = useNavigate();
 
   return (
     <motion.div

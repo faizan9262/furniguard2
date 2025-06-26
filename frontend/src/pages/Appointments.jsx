@@ -21,7 +21,7 @@ const Appointments = () => {
     (a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)
   );
 
-  // console.log("All Ap: ",allAppointmentsOfUser);
+  console.log("All Ap: ",appointments.allAppointments);
   
   const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();

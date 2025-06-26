@@ -1,6 +1,5 @@
 import React from "react";
 import DesignBannerLeft from "./DesignBannerLeft";
-import { assets } from "../assets/assets";
 import DesignBannerRight from "./DesignBannerRight";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
