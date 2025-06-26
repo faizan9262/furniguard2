@@ -12,7 +12,7 @@ export const ProductContextProvider = (props) => {
     const getAllProdductsfromDB = async()=>{
       const data = await getAllProducts() 
       // console.log("Data:",data);
-      setProducts(data.products)
+      setProducts(data.ratedProducts)
     }
     getAllProdductsfromDB()
   },[])

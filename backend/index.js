@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import designerRouter from "./routes/designer.route.js";
 import appointmentRouter from "./routes/appointment.route.js";
 import wishlistRouter from "./routes/wishlist.route.js";
+import ratingRouter from "./routes/rating.route.js";
 
 dotevn.config();
 
@@ -33,6 +34,7 @@ app.use("/api/products", productRouter);
 app.use("/api/designers", designerRouter);
 app.use("/api/appointment", appointmentRouter);
 app.use("/api/wishlist", wishlistRouter);
+app.use("/api/ratings", ratingRouter);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

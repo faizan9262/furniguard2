@@ -15,18 +15,24 @@ const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const navigate = useNavigate();
 
+  const user = useAuth()
+
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
         const response = await getAllWishlistProducts();
         setWishlist(response.data.products || []);
+        user.setWishlistCount(response.data.products.length)
       } catch (error) {
         console.error("Error fetching wishlist:", error.message);
       }
     };
-
+    
     fetchWishlist();
   }, []);
+  // console.log("Count: ",user.wishlistCount);
+
+  
 
   const handleRemoveFromWishlist = async (productId) => {
     try {

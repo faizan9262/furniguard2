@@ -14,7 +14,6 @@ import {
   CircleCheckBig,
   CircleDashed,
   CheckCircle2,
-  Loader2
 } from "lucide-react";
 
 const getStatusStyles = (status) => {

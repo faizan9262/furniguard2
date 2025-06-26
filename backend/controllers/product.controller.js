@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { ProductModel } from "../models/product.model.js";
+import { Rating } from "../models/rating.model.js";
+import mongoose from "mongoose";
 
 const addProduct = async (req, res) => {
   try {
@@ -61,9 +63,35 @@ const addProduct = async (req, res) => {
 const listProducts = async (req, res) => {
   try {
     const products = await ProductModel.find({});
+
+    const ratedProducts = await Promise.all(
+      products.map(async (product) => {
+        const stats = await Rating.aggregate([
+          {
+            $match: {
+              targetType: "product",
+              targetId: new mongoose.Types.ObjectId(product._id),
+            },
+          },
+          {
+            $group: {
+              _id: "$targetId",
+              averageRating: { $avg: "$rating" },
+              totalRatings: { $sum: 1 },
+            },
+          },
+        ]);
+        return {
+          ...product.toObject(),
+          averageRating: stats[0]?.averageRating || 0,
+          totalRatings: stats[0]?.totalRatings || 0,
+        };
+      })
+    );
+
     res.status(200).json({
       success: true,
-      products,
+      ratedProducts,
     });
   } catch (error) {
     console.error(error);

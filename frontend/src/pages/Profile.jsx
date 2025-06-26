@@ -84,6 +84,9 @@ const Profile = () => {
     navigate("/login");
   };
 
+  console.log("Count in pf: ",auth.wishlistCount);
+  
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#effaf2] to-[#c8ebd9] py-12 px-4 flex flex-col items-center justify-center">
       {/* Top Heading / Introduction */}
@@ -212,7 +215,7 @@ const Profile = () => {
                     </h4>
                     <p className="text-sm flex items-center gap-2">
                       <FaHeart className="text-[#2d9b67]" /> Total{" "}
-                      <strong>5 saved</strong> items
+                      <strong>{auth.wishlistCount} saved</strong> items
                     </p>
                   </div>
                   <Button

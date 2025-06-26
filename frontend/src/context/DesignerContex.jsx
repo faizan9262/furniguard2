@@ -11,16 +11,15 @@ export const DesignerContexProvider = (props) => {
   useEffect(() => {
     const getAllDesignerFromDB = async () => {
       const data = await getAllDesigners();
-    //   console.log("Data:",data);
+      // console.log("Data:",data);
       setDesigners(data);
     };
     getAllDesignerFromDB();
   }, []);
 
-//   useEffect(()=>{
-//     console.log("Designers: ",designers);
-    
-//   })
+  useEffect(()=>{
+    // console.log("Designers: ",designers);
+  })
 
   const value = {
     designers

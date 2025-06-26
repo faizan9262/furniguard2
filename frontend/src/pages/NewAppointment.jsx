@@ -19,6 +19,7 @@ import DesignerSelectorCard from "@/components/DesignerSelectorCard";
 import DesignerAppointmentCard from "@/components/DateSelectorCard";
 import BookAppointmentDialog from "@/components/BookAppointmentDialog";
 import AppointmentSummaryCard from "@/components/AppointmentSummaryCard";
+import { MdDeleteForever } from "react-icons/md";
 
 const categories = [
   "furniture",
@@ -89,6 +90,20 @@ const NewAppointment = () => {
       console.error(error);
       toast.error(error.message || "Something went wrong", { id: "new-ap" });
     }
+  };
+
+  const handleClearForm = () => {
+    setSelectedCategory(null);
+    setSelectedProduct(null);
+    setSelectedProductDetails(null);
+    setTempSelectedProduct(null);
+    setSelectedProducts([]);
+    setSelectedDesigner(null);
+    setSelectedDate(null);
+    setAppointmentMode("Online");
+    setLocationAddress("");
+    setNotes("");
+    toast.info("Form Cleared");
   };
 
   const subtotal = selectedProducts.reduce(
@@ -192,18 +207,27 @@ const NewAppointment = () => {
         notes={notes}
       />
 
+      <div className="flex justify-between">
+        <button
+          onClick={handleClearForm}
+          className="text-sm flex items-center gap-1 justify-center px-4 py-2 rounded-xl border border-red-500 text-red-500 hover:bg-red-50 transition-all"
+        >
+           Clear <MdDeleteForever size={18} />
+        </button>
+        <BookAppointmentDialog
+          selectedCategory={selectedCategory}
+          selectedProducts={selectedProducts}
+          selectedDesigner={selectedDesigner}
+          selectedDesignerDetails={selectedDesignerDetails}
+          selectedDate={selectedDate}
+          appointmentMode={appointmentMode}
+          locationAddress={locationAddress}
+          notes={notes}
+          handleClick={handleClick}
+        />
+      </div>
+
       {/* Submit Button */}
-      <BookAppointmentDialog
-        selectedCategory={selectedCategory}
-        selectedProducts={selectedProducts}
-        selectedDesigner={selectedDesigner}
-        selectedDesignerDetails={selectedDesignerDetails}
-        selectedDate={selectedDate}
-        appointmentMode={appointmentMode}
-        locationAddress={locationAddress}
-        notes={notes}
-        handleClick={handleClick}
-      />
     </motion.div>
   );
 };

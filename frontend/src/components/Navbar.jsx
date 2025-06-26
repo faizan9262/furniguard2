@@ -222,7 +222,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/")}
                     className={`text-xl font-semibold ${
-                      isActive("/") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -231,7 +231,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/appointments")}
                     className={`text-xl  font-semibold ${
-                      isActive("/appointments") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/appointments") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -240,7 +240,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/products")}
                     className={`text-xl  font-semibold ${
-                      isActive("/products") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/products") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -249,7 +249,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/rooms")}
                     className={`text-xl font-semibold ${
-                      isActive("/rooms") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/rooms") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -258,7 +258,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/layout")}
                     className={`text-xl font-semibold ${
-                      isActive("/layout") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/layout") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -267,16 +267,16 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/designers")}
                     className={`text-xl font-semibold ${
-                      isActive("/designers") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/designers") ? "bg-[#326951]mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
                     <User2 /> Designers
                   </Button>
                   <Button
-                    onClick={() => navigate("/whislist")}
+                    onClick={() => navigate("/wishlist")}
                     className={`text-xl font-semibold ${
-                      isActive("/wishlist") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/wishlist") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >
@@ -285,7 +285,7 @@ const Navbar = () => {
                   <Button
                     onClick={() => navigate("/about")}
                     className={`text-xl font-semibold ${
-                      isActive("/about") ? "bg-[#326951] border-2 border-white" : "text-white"
+                      isActive("/about") ? "bg-[#326951] mx-2 border-2 border-white" : "text-white"
                     }`}
                     variant="ghost"
                   >

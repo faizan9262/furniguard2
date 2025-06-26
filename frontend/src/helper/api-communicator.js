@@ -176,6 +176,53 @@ export const removeFromWishlist = async (productId) => {
   return response;
 };
 
+// Ratings
+
+export const submitCombinedRating = async (ratingData, designerId) => {
+  try {
+    const payload = {
+      designer: {
+        targetId: designerId,
+        rating: ratingData.designerRating,
+        reviewText: ratingData.feedback,
+      },
+      products: Object.keys(ratingData.productRatings).map((productId) => ({
+        targetId: productId,
+        rating: ratingData.productRatings[productId],
+        reviewText: ratingData.productFeedbacks[productId] || "",
+      })),
+    };
+
+    const response = await axios.put("/ratings/rate", payload);
+
+    if (response.status !== 200) {
+      throw new Error("Unable to submit ratings");
+    }
+    return response.data;
+  } catch (error) {
+    const message =
+      error?.response?.data?.message || "Failed to submit ratings";
+    throw new Error(message);
+  }
+};
+
+export const getDesignerRating = async (designerId)=>{
+  const response = await axios.get(`/ratings/designer/${designerId}`);
+  if (response.status !== 200) {
+    throw new Error("Unable to Load Designer Ratings");
+  }
+  const data = await response.data;
+  return data;
+}
+export const getProductRating = async (productId)=>{
+  const response = await axios.get(`/ratings/product/${productId}`);
+  if (response.status !== 200) {
+    throw new Error("Unable to Load Product Ratings");
+  }
+  const data = await response.data;
+  return data;
+}
+
 // Products Apis
 
 export const getAllProducts = async () => {

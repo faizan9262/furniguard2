@@ -3,7 +3,18 @@ import { Badge } from "../components/components/ui/badge";
 import { Card } from "../components/components/ui/card";
 import { FaStar } from "react-icons/fa";
 
-const DesignerCard = ({ name, experience, type, profile_img, onClick,bio,joining }) => {
+const DesignerCard = ({
+  name,
+  experience,
+  type,
+  profile_img,
+  onClick,
+  bio,
+  joining,
+  averageRating,
+  totalRatings,
+}) => {
+  const roundedRating = Math.round(averageRating || 0);
   return (
     <Card
       onClick={onClick}
@@ -11,7 +22,11 @@ const DesignerCard = ({ name, experience, type, profile_img, onClick,bio,joining
     >
       {/* Floating Profile Image */}
       <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-20 h-20 rounded-full border-4 border-[#2d9b67] shadow-md overflow-hidden z-10 bg-[#2d9b67]">
-        <img src={profile_img} alt={name} className="w-full h-full object-cover" />
+        <img
+          src={profile_img}
+          alt={name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Card Content */}
@@ -23,16 +38,17 @@ const DesignerCard = ({ name, experience, type, profile_img, onClick,bio,joining
             {type}
           </Badge>
           <Badge className="bg-white text-black shadow-sm text-xs px-3 py-1 rounded-full">
-            {experience ? experience + " Years" : "Experience"} 
+            {experience ? experience + " Years" : "Experience"}
           </Badge>
           <Badge className="bg-white text-black shadow-sm text-xs px-3 py-1 rounded-full">
-            Designer +3 
+            Designer +3
           </Badge>
         </div>
 
         {/* Highlight Quote */}
         <p className="text-sm text-primary font-normal mt-3 px-3">
-        Active On FurniGuard Since : { new Date(joining).toLocaleDateString("en-GB")} 
+          Active On FurniGuard Since :{" "}
+          {new Date(joining).toLocaleDateString("en-GB")}
         </p>
 
         {/* Highlight Quote */}
@@ -41,11 +57,20 @@ const DesignerCard = ({ name, experience, type, profile_img, onClick,bio,joining
         </p>
 
         {/* Rating Section */}
-        <div className="flex items-center gap-1 text-yellow-500 mt-2">
+        <div className="flex items-center gap-1 mt-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <FaStar key={i} className="text-sm" />
+            <FaStar
+              key={i}
+              className={`text-sm ${
+                i < roundedRating ? "text-yellow-500" : "text-muted-foreground"
+              }`}
+            />
           ))}
-          <span className="text-xs text-muted-foreground">(23 Reviews)</span>
+          <span className="text-xs text-muted-foreground">
+            {totalRatings > 0
+              ? `(${totalRatings} Review${totalRatings > 1 ? "s" : ""})`
+              : "(No reviews)"}
+          </span>
         </div>
       </div>
     </Card>

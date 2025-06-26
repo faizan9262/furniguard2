@@ -34,8 +34,8 @@ const LivingRoom = () => {
               <div key={i} className={visibilityClass}>
                 <RoomCard
                   onClick={() => {
-                    navigate(`/products/livingroom/${lv._id}`);
                     window.scroll(0, 0);
+                    navigate(`/products/livingroom/${lv._id}`);
                   }}
                   img_src={lv.image}
                   title={lv.name}

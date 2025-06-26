@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useProduct } from "../context/ProductContext";
 import { FaArrowRight, FaStar } from "react-icons/fa";
@@ -6,34 +6,51 @@ import { Card, CardContent } from "@/components/components/ui/card";
 import { Button } from "@/components/components/ui/button";
 import { Badge } from "@/components/components/ui/badge";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { toast } from "sonner";
-import { addToWishlist } from "../helper/api-communicator";
+import { addToWishlist, getProductRating } from "../helper/api-communicator";
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const product = useProduct();
   const navigate = useNavigate();
+  const [rating, setRating] = useState({});
 
   const products = product.products.find((p) => p._id === id);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      try {
+        const data = await getProductRating(id);
+        setRating(data.data.map((d) => d));
+      } catch (err) {
+        console.error("Failed to load product rating:", err.message);
+      }
+    };
+    fetchRating();
+  }, [id]);
+
+  console.log("Product Rating: ", rating);
 
   if (!products) {
     return <div>Product not found</div>;
   }
 
-  console.log("Cuurrent: ",products);
-  
+  console.log("Cuurrent: ", products);
 
-  const handleAddWishlist = async(productId)=>{
+  const handleAddWishlist = async (productId) => {
     try {
-      toast.loading("Adding to Wishlist",{id:"p-details"})
-      const data = await addToWishlist(productId)
-      console.log("Data: ",data);
-      toast.success("Successfully added to your Wishlist",{id:"p-details"})
+      toast.loading("Adding to Wishlist", { id: "p-details" });
+      const data = await addToWishlist(productId);
+      console.log("Data: ", data);
+      toast.success("Successfully added to your Wishlist", { id: "p-details" });
     } catch (error) {
       toast.error(error?.message || "Verification failed", { id: "p-details" });
     }
-  }
+  };
+
+  const roundedRating = Math.round(products.averageRating || 0);
 
   return (
     <div className="px-4 py-10 sm:px-[5%] bg-gradient-to-br from-[#effaf2] to-[#c8ebd9] min-h-screen">
@@ -76,9 +93,22 @@ const ProductDetail = () => {
           <h1 className="text-4xl font-bold text-[#2d9b67]">{products.name}</h1>
           <div className="flex items-center gap-2">
             {[...Array(5)].map((_, i) => (
-              <FaStar key={i} className="text-yellow-400" />
+              <FaStar
+                key={i}
+                className={
+                  i < roundedRating ? "text-yellow-400" : "text-gray-300"
+                }
+              />
             ))}
-            <span className="text-sm text-gray-500">(245 reviews)</span>
+
+            {products.totalRatings > 0 ? (
+              <span className="text-sm text-gray-500">
+                ({products.totalRatings} Rating
+                {products.totalRatings > 1 ? "s" : ""})
+              </span>
+            ) : (
+              <span className="text-sm text-gray-400">No ratings</span>
+            )}
           </div>
           <p className="text-lg text-gray-700 leading-relaxed">
             {products.description}
@@ -152,6 +182,55 @@ const ProductDetail = () => {
           className="w-60 h-60 object-cover rounded-xl mt-6 md:mt-0 shadow-md"
         />
       </motion.div>
+
+      <section className="space-y-6 mt-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.isArray(rating) &&
+            rating.map((t, i) => (
+              <Card
+                key={i}
+                className="p-4 shadow-md hover:shadow-lg transition-shadow border border-muted rounded-2xl"
+              >
+                <CardContent className="space-y-4">
+                  {/* Feedback text */}
+                  <p className="text-gray-700 italic text-sm line-clamp-4">
+                    “{t.reviewText}”
+                  </p>
+
+                  <div className="flex items-center gap-3 mt-4">
+                    {/* User Avatar */}
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={t.userId.profilePicture} />
+                      <AvatarFallback>
+                        {t.userId.username?.[0]?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    {/* Username and Rating */}
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-sm text-foreground">
+                        {t.userId.username}
+                      </span>
+                      <div className="flex gap-1 mt-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`h-4 w-4 ${
+                              star <= t.rating
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }`}
+                            fill={star <= t.rating ? "#facc15" : "none"}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+        </div>
+      </section>
 
       {/* Related Products */}
       <div className="mt-20">

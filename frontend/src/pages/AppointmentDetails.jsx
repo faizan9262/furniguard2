@@ -44,6 +44,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/components/ui/alert-dialog";
 import { FaRupeeSign } from "react-icons/fa";
+import RateComponent from "@/components/RateDialog";
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
@@ -110,32 +111,41 @@ const AppointmentDetailPage = () => {
             <Edit className="w-4 h-4 " />
             <span className="hidden md:block">Edit</span>
           </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 bg-red-500">
-                <CalendarX2 className="w-4 h-4" />
-                <span className="hidden md:block">Cancel</span>
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to cancel this appointment? This action
-                  cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Go Back</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleCancelAppointment}
-                  className="bg-red-500 hover:bg-red-600"
+          {currentAppointment?.status !== "completed" && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 bg-red-500"
                 >
-                  Yes, Cancel
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                  <CalendarX2 className="w-4 h-4" />
+                  <span className="hidden md:block">Cancel</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to cancel this appointment? This
+                    action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Go Back</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleCancelAppointment}
+                    className="bg-red-500 hover:bg-red-600"
+                  >
+                    Yes, Cancel
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+          {currentAppointment?.status === "completed" && (
+            <RateComponent currentAppointment={currentAppointment} />
+          )}
         </div>
       </div>
 
@@ -299,7 +309,9 @@ const AppointmentDetailPage = () => {
         {currentAppointment?.products?.map((prod) => (
           <Card
             key={prod._id}
-            onClick={() => navigate(`/products/${prod.product.category}/${prod.product._id}`)}
+            onClick={() =>
+              navigate(`/products/${prod.product.category}/${prod.product._id}`)
+            }
             className="cursor-pointer flex flex-col h-full transition-all hover:shadow-lg"
           >
             <CardHeader className="flex items-center gap-4">

@@ -82,18 +82,17 @@ const designerSchema = new mongoose.Schema({
       ],
       default: [],
     },
-  
-    // 🔽 NEW FIELDS ADDED BELOW
+    
   
     preferredLocations: {
       type: [String],
       enum: ["Home", "Studio", "Online"],
-      default: ["Online", "Home"], // or whatever default you prefer
+      default: ["Online", "Home"],
     },
   
     studioAddress: {
       type: String,
-      default: "", // optional: used when preferredLocations includes "Studio"
+      default: "", 
     }
 });
 

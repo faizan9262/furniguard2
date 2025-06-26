@@ -110,6 +110,8 @@ const Designers = () => {
                   profile_img={item.user.profilePicture}
                   experience={item.experience}
                   bio={item.bio}
+                  averageRating={item.averageRating}
+                  totalRatings={item.totalRatings}
                   joining={item.createdAt}
                 />
               </motion.div>

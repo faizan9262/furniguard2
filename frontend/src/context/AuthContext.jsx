@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState("");
   const [loading,setLoading] = useState(false)
+  const [wishlistCount, setWishlistCount] = useState(0)
 
   useEffect(() => {
     if(user){
@@ -155,7 +156,9 @@ export const AuthProvider = ({ children }) => {
     updateYourPassword,
     email,
     setEmail,
-    updateProfilePic
+    updateProfilePic,
+    wishlistCount,
+    setWishlistCount
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
