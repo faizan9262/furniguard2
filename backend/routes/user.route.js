@@ -14,13 +14,20 @@ import {
 } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/token-manager.js";
 import upload, { uploadToCloudinary } from "../middleware/multer.js";
+import adminAuth from "../middleware/adminAuth.js";
 
 const userRouter = express.Router();
 
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
-userRouter.post("/logout",verifyToken, logoutUser);
-userRouter.post("/admin", admiLogin); // Route to refresh access token
+userRouter.post("/logout", verifyToken, logoutUser);
+userRouter.post("/admin", admiLogin);
+userRouter.get("/admin/check-auth", adminAuth, (req, res) => {
+  res.json({
+    success: true,
+    message: "Authenticated as admin",
+  });
+});
 userRouter.get("/is-auth", verifyToken, verifyUser);
 userRouter.get("/send-email-otp", verifyToken, sendVerifyEmailOtp);
 userRouter.post("/verify-email-otp", verifyToken, verifyEmailOtp);

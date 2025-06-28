@@ -29,7 +29,7 @@ const Profile = () => {
   const allAppointmentsOfUser = appointment.allAppointments
 
   allAppointmentsOfUser.forEach((ap) => {
-    if (ap.status === "pending") {
+    if (ap.status !== "completed") {
       pendingAppointment += 1;
     }
   });
@@ -59,9 +59,6 @@ const Profile = () => {
     }
   };
 
-  const resetPassword = () => {
-    toast.info("Password reset link has been sent to your email");
-  };
 
   const emailVerificationOtp = async () => {
     try {

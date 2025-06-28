@@ -1,30 +1,39 @@
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
-const adminAuth = async (req,res,next) =>{
-    try {
-        const {token} = req.headers
-        if(!token){
-            res.json({
-                success:false,
-                message: "Not Authorized, Log in again"
-            })
-        }
-        const decodedToken = jwt.verify(token,process.env.JWT_SECRET)
+const adminAuth = async (req, res, next) => {
+  try {
+    const token = req.cookies["admin-token"]; // ✅ get token from cookie
+    // console.log("Admin token from cookie:", token);
 
-        if(decodedToken !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD){
-            res.json({
-                success:false,
-                message: "Not Authorized, Log in again"
-            })
-        }
-        next();
-    } catch (error) {
-        console.log(error);
-        res.json({
-            success: false,
-            message: error.message
-        })
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "No token provided. Please log in.",
+      });
     }
-}
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Optionally validate the email and password if you like
+    if (
+      decoded.email !== process.env.ADMIN_EMAIL ||
+      decoded.password !== process.env.ADMIN_PASSWORD
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid admin credentials.",
+      });
+    }
+
+    req.admin = decoded; // You can pass this forward if needed
+    next();
+  } catch (error) {
+    console.log("Admin auth error:", error.message);
+    res.status(401).json({
+      success: false,
+      message: "Unauthorized access",
+    });
+  }
+};
 
 export default adminAuth;

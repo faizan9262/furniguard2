@@ -35,11 +35,6 @@ export const AppointmentsContexProvider = (props) => {
     addAppointment
   };
 
-  
-
-
-  
-
   return (
     <AppointmentsContex.Provider value={value}>
       {props.children}

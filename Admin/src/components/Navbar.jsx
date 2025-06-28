@@ -1,9 +1,18 @@
 import React, { useContext, useState } from "react";
-import { CiMenuBurger } from "react-icons/ci";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
+import { Button } from "../components/components/ui/button";
+import {
+  BedDoubleIcon,
+  CalendarClock,
+  HeartIcon,
+  HomeIcon,
+  InfoIcon,
+  LayoutPanelLeftIcon,
+  SofaIcon,
+  User2,
+} from "lucide-react";
 
-const Navbar = ({setToken}) => {
+const Navbar = () => {
   const location = useLocation();
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
@@ -21,71 +30,121 @@ const Navbar = ({setToken}) => {
     removeToken();
   };
 
+  const isActive = (path) => {
+    const currentPath = location.pathname;
+
+    if (path === "/products") {
+      return (
+        currentPath.startsWith("/products") &&
+        !currentPath.startsWith("/products/livingroom") &&
+        !currentPath.startsWith("/products/layout")
+      );
+    }
+
+    if (path === "/rooms") {
+      return (
+        currentPath.startsWith("/products/livingroom") ||
+        currentPath === "/rooms"
+      );
+    }
+
+    if (path === "/layout") {
+      return (
+        currentPath.startsWith("/products/layout") || currentPath === "/layout"
+      );
+    }
+
+    if (path === "/designers") {
+      return currentPath.startsWith("/designers");
+    }
+
+    if (path === "/appointments") {
+      return currentPath.startsWith("/appointments");
+    }
+
+    if (path === "/notifications") {
+      return currentPath.startsWith("/notifications");
+    }
+
+    return currentPath === path;
+  };
+
   return (
-    <div
-      className={`flex items-center justify-between gap-4 text-xl sticky top-0 z-20 bg-primary text-white px-8 py-2`}
-    >
-      <CiMenuBurger
-        className={`text-white w-6 h-6 block sm:hidden cursor-pointer`}
-        onClick={toggleMenu} // Toggle the menu on click
-      />
-      <span
-        onClick={() => navigate("/")}
-        className="text-xl sm:text-2xl font-semibold shadow-lg border-2 border-secondary bg-secondary cursor-pointer rounded-full py-1 px-3 "
-      >
-        FURNIGUARD&reg;
-      </span>
+    <>
+      <header className="w-full sticky bg-[#2d9b67] top-0 px-5 z-50">
+        <div className="flex h-14 items-center justify-between">
+          {/* Logo */}
+          <div
+            onClick={() => navigate("/")}
+            className="text-xl md:text-2xl cursor-pointer bg-[#326951] text-white font-space font-bold border-2 border-white py-1 px-2 rounded-full"
+          >
+            FurniGuard &reg;
+          </div>
+          <nav className="hidden md:flex text-white  font-space gap-6">
+            <Button
+              onClick={() => navigate("/")}
+              className={`text-xl  font-semibold hover:bg-white ${
+                isActive("/")
+                  ? "bg-[#326951] border-2 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <HomeIcon /> Home
+            </Button>
 
-      {/* Desktop Menu */}
-      <ul className="hidden md:flex gap-8 font-medium">
-        <NavLink to="/">
-          <li>Home</li>
-          <hr className="border-none outline-none h-1 bg-white  rounded-full w-4/5 m-auto hidden" />
-        </NavLink>
-        <NavLink to="/products">
-          <li>Products</li>
-          <hr className="border-none outline-none h-1 bg-white  rounded-full w-4/5 m-auto hidden" />
-        </NavLink>
-        <NavLink to="/appointment">
-          <li>Appointments</li>
-          <hr className="border-none outline-none h-1 bg-white  rounded-full w-4/5 m-auto hidden" />
-        </NavLink>
-      </ul>
+            <Button
+              onClick={() => navigate("/appointments")}
+              className={`text-xl  font-semibold hover:bg-white ${
+                isActive("/appointments")
+                  ? "bg-[#326951] border-2 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <CalendarClock /> Appointments
+            </Button>
 
-      {/* Mobile Menu with slide-in from left transition */}
-      <ul
-        className={`absolute top-16 left-0 bg-secondary text-white w-1/2 ml-2 flex flex-col items-start gap-4 py-4 pl-8 sm:hidden transition-all duration-300 ease-in-out transform ${
-          menuOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
-        }`}
-        style={{ pointerEvents: menuOpen ? "auto" : "none" }} // Prevent interaction when hidden
-      >
-        <NavLink to="/" onClick={() => setMenuOpen(false)}>
-          <li>Home</li>
-        </NavLink>
-        <NavLink to="/products" onClick={() => setMenuOpen(false)}>
-          <li>Products</li>
-        </NavLink>
-        <NavLink to="/rooms" onClick={() => setMenuOpen(false)}>
-          <li>Rooms</li>
-        </NavLink>
-        <NavLink to="/layout" onClick={() => setMenuOpen(false)}>
-          <li>Layout</li>
-        </NavLink>
-        <NavLink to="/about" onClick={() => setMenuOpen(false)}>
-          <li>About</li>
-        </NavLink>
-        <NavLink to="/designers" onClick={() => setMenuOpen(false)}>
-          <li>Designers</li>
-        </NavLink>
-      </ul>
-
-      <button
-        onClick={() => setToken('')}
-        className="bg-secondary shadow-md text-white rounded-full px-5 sm:px-8 py-2 text-sm font-medium sm:font-light"
-      >
-        Log out
-      </button>
-    </div>
+            <Button
+              onClick={() => navigate("/products")}
+              className={`text-xl  font-semibold hover:bg-white ${
+                isActive("/products")
+                  ? "bg-[#326951] border-2 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <SofaIcon /> Products
+            </Button>
+            <Button
+              onClick={() => navigate("/designers")}
+              className={`text-xl font-semibold hover:bg-white ${
+                isActive("/designers")
+                  ? "bg-[#326951] border-2 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <User2 /> Designers
+            </Button>
+            <Button
+              onClick={() => navigate("/about")}
+              className={`text-xl font-semibold hover:bg-white ${
+                isActive("/about")
+                  ? "bg-[#326951] border-2 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <InfoIcon /> About
+            </Button>
+          </nav>
+          <div>
+            <p>Hey, Admin</p>
+          </div>
+        </div>
+      </header>
+    </>
   );
 };
 

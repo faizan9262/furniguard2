@@ -16,7 +16,9 @@ export const bookAppointment = async (req, res) => {
     } = req.body;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
-      return res.status(400).json({ message: "At least one product must be selected." });
+      return res
+        .status(400)
+        .json({ message: "At least one product must be selected." });
     }
 
     const user = await UserModel.findById(res.locals.jwtData.id);
@@ -24,7 +26,9 @@ export const bookAppointment = async (req, res) => {
     const products = await ProductModel.find({ _id: { $in: productIds } });
 
     if (!user)
-      return res.status(401).json({ message: "User not found or token malfunctioned." });
+      return res
+        .status(401)
+        .json({ message: "User not found or token malfunctioned." });
 
     if (user._id.toString() !== res.locals.jwtData.id)
       return res.status(401).json({ message: "Unauthorized access." });
@@ -95,17 +99,27 @@ export const bookAppointment = async (req, res) => {
   }
 };
 
-
 export const getAllAppointmentsOfUser = async (req, res) => {
   try {
-    const user = await UserModel.findById(res.locals.jwtData.id);
+    if (req.admin) {
+      const allAppointments = await Appointment.find({})
+        .populate("user", "username email profilePicture")
+        .populate({
+          path: "designer",
+          select: "bio type experience user",
+          populate: {
+            path: "user",
+            select: "username email profilePicture",
+          },
+        })
+        .populate("products.product", "name price description category image");
 
-    if (!user) {
-      return res.status(401).json({ message: "User does not exist or token is invalid." });
+      return res.status(200).json(allAppointments);
     }
 
-    if (user._id.toString() !== res.locals.jwtData.id) {
-      return res.status(401).json({ message: "Unauthorized access." });
+    const user = await UserModel.findById(res.locals.jwtData.id);
+    if (!user) {
+      return res.status(401).json({ message: "User not found." });
     }
 
     const allAppointments = await Appointment.find({
@@ -120,9 +134,9 @@ export const getAllAppointmentsOfUser = async (req, res) => {
           select: "username email profilePicture",
         },
       })
-      .populate("products.product", "name price description category image"); // ✅ fix    
+      .populate("products.product", "name price description category image");
 
-    res.status(200).json(allAppointments);
+    return res.status(200).json(allAppointments);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -131,18 +145,14 @@ export const getAllAppointmentsOfUser = async (req, res) => {
   }
 };
 
-
-export const cancelAppointment = async(req,res)=>{
+export const cancelAppointment = async (req, res) => {
   try {
-    const{appointmentId} = req.body
+    const { appointmentId } = req.body;
     const user = await UserModel.findById(res.locals.jwtData.id);
     // console.log(user._id.toString() , res.locals.jwtData.id);
-    
 
     if (!appointmentId) {
-      return res
-        .status(401)
-        .json({ message: "Appointment not found" });
+      return res.status(401).json({ message: "Appointment not found" });
     }
     if (!user) {
       return res
@@ -154,27 +164,27 @@ export const cancelAppointment = async(req,res)=>{
       return res.status(401).json({ message: "Unauthorized Access" });
     }
 
-    const appointment = await Appointment.findById(appointmentId)
+    const appointment = await Appointment.findById(appointmentId);
 
     if (!appointment) {
-      return res
-        .status(401)
-        .json({ message: "Appointment not found" });
+      return res.status(401).json({ message: "Appointment not found" });
     }
 
-    await UserModel.findByIdAndUpdate(appointment.user,{
-      $pull:{appointments:appointmentId}
-    })
+    await UserModel.findByIdAndUpdate(appointment.user, {
+      $pull: { appointments: appointmentId },
+    });
 
-    await Designer.findByIdAndUpdate(appointment.designer,{
-      $pull :{appointments:appointmentId}
-    })
+    await Designer.findByIdAndUpdate(appointment.designer, {
+      $pull: { appointments: appointmentId },
+    });
 
-    await Appointment.findByIdAndDelete(appointmentId)
+    await Appointment.findByIdAndDelete(appointmentId);
 
     res.status(200).json({ message: "Appointment cancelled" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error while cancelling appointment" });
+    res
+      .status(500)
+      .json({ message: "Server error while cancelling appointment" });
   }
-}
+};

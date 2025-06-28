@@ -21,19 +21,9 @@ export const ProductContextProvider = (props) => {
     // console.log("Products Array:",products);
   },[products])
 
-  
-
-
-
   const value = {
     products
   };
-
-  
-
-
-  
-
   return (
     <ProductContext.Provider value={value}>
       {props.children}

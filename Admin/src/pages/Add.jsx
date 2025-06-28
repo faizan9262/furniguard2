@@ -4,44 +4,46 @@ import axios from "axios";
 import { BsHouseAddFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 
-export const backendUrl = import.meta.env.VITE_BACKEND_URL
-const Add = ({token}) => {
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const Add = ({ token }) => {
   const [product_img, setProduct_Img] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("flooring");
 
-  const onSubmitHandler = async (e) =>{
-    e.preventDefault()
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
 
     try {
-      const formData = new FormData()
+      const formData = new FormData();
 
-      formData.append("name",name)
-      formData.append("description",description)
-      formData.append("category",category)
-      formData.append("price",price)
-      formData.append("product_img",product_img)
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("price", price);
+      formData.append("product_img", product_img);
 
-      const response = await axios.post(backendUrl + '/api/products/add' , formData,{headers:{token}})
+      const response = await axios.post(
+        backendUrl + "/api/products/add",
+        formData,
+        { withCredentials: true }
+      );
 
-      if(response.data.success){
-        setName('')
-        setDescription('');
-        setPrice('');
+      if (response.data.success) {
+        setName("");
+        setDescription("");
+        setPrice("");
         setProduct_Img(false);
-        toast.success(response.data.message)
-      }else{
-        toast.error(response.data.message)
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
       }
-
     } catch (error) {
       console.log(response.data.message);
       toast.error(response.data.message);
     }
-
-  }
+  };
   return (
     <div className="min-h-screen mx-4 sm:mx-[10%]">
       <h1 className="text-4xl text-primary font-semibold">Add Product Here</h1>
@@ -53,7 +55,11 @@ const Add = ({token}) => {
               <label htmlFor="product_img">
                 <img
                   className="w-40"
-                  src={!product_img ? assets.upload : URL.createObjectURL(product_img)}
+                  src={
+                    !product_img
+                      ? assets.upload
+                      : URL.createObjectURL(product_img)
+                  }
                   alt=""
                 />
                 <input
@@ -121,7 +127,11 @@ const Add = ({token}) => {
               </div>
             </div>
           </div>
-          <button type='submit' className='flex gap-2 items-center justify-center w-28 py-2 mt-4 bg-primary rounded-full hover:bg-secondary hover:scale-105 transition-all duration-300 text-white'>ADD
+          <button
+            type="submit"
+            className="flex gap-2 items-center justify-center w-28 py-2 mt-4 bg-primary rounded-full hover:bg-secondary hover:scale-105 transition-all duration-300 text-white"
+          >
+            ADD
             <BsHouseAddFill />
           </button>
         </form>

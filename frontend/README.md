@@ -13,3 +13,5 @@ If you are developing a production application, we recommend using TypeScript wi
 
 // Related prodcut scrolling issue to solve
 // random and limited related products to be implement
+// appriciation msg after rating
+// product list to be called from admin context in admin.

@@ -1,12 +1,105 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*{
-    font-family: Outfit;
+* {
+  font-family: Outfit;
 }
 
-.active hr{
-    @apply block
+.active hr {
+  @apply block;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+  --background: oklch(0.19 0.014 310);        /* Elegant deep plum-gray */
+  --foreground: oklch(0.93 0.015 310);        /* Soft lavender-white */
+
+  --card: oklch(0.23 0.012 320);              /* Slightly elevated surface */
+  --card-foreground: oklch(0.94 0.015 310);   /* Maintains readability */
+
+  --popover: oklch(0.26 0.013 315);           /* Slight contrast to card */
+  --popover-foreground: oklch(0.95 0.015 310);
+
+  --primary: oklch(0.68 0.14 90);             /* Refined soft amber */
+  --primary-foreground: oklch(0.18 0.01 310); /* Subtle dark match */
+
+  --secondary: oklch(0.32 0.012 330);         /* Muted rose taupe */
+  --secondary-foreground: oklch(0.95 0.015 310);
+
+  --muted: oklch(0.28 0.01 315);              /* Light border tone */
+  --muted-foreground: oklch(0.7 0.01 315);
+
+  --accent: oklch(0.65 0.12 100);             /* Sand-gold beige */
+  --accent-foreground: oklch(0.17 0.01 310);
+
+  --destructive: oklch(0.53 0.11 25);         /* Dusty clay */
+  --destructive-foreground: oklch(0.96 0.015 310);
+
+  --border: oklch(0.28 0.01 315 / 20%);
+  --input: oklch(0.25 0.01 315 / 20%);
+  --ring: oklch(0.72 0.14 250); /* Cool blue tone */
+
+  --chart-1: oklch(0.68 0.13 95);             /* Bright cream-gold */
+  --chart-2: oklch(0.57 0.11 70);             /* Soft olive-gold */
+  --chart-3: oklch(0.49 0.12 35);             /* Warm muted brown */
+  --chart-4: oklch(0.63 0.14 105);            /* Buttery beige */
+  --chart-5: oklch(0.66 0.11 75);             /* Gentle brass tan */
+
+  --sidebar: oklch(0.21 0.012 320);           /* Slightly elevated background */
+  --sidebar-foreground: oklch(0.95 0.015 310);
+  --sidebar-primary: oklch(0.68 0.14 90);
+  --sidebar-primary-foreground: oklch(0.18 0.01 310);
+  --sidebar-accent: oklch(0.65 0.12 100);
+  --sidebar-accent-foreground: oklch(0.17 0.01 310);
+  --sidebar-border: oklch(0.26 0.01 315 / 20%);
+  --sidebar-ring: oklch(0.68 0.14 90);
+}
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

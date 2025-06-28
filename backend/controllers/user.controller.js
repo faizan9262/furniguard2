@@ -74,7 +74,7 @@ export const registerUser = async (req, res) => {
 
     if (role === "designer") {
       const designer = new Designer({ user: user._id });
-      await designer.save()
+      await designer.save();
       user.designerProfile = designer._id;
       await user.save();
     }
@@ -102,7 +102,7 @@ export const registerUser = async (req, res) => {
     };
 
     if (populatedUser.role === "designer" && populatedUser.designerProfile) {
-      responseData.designerProfile = populatedUser.designerProfile
+      responseData.designerProfile = populatedUser.designerProfile;
     }
 
     return res.status(201).json(responseData);
@@ -168,10 +168,12 @@ export const admiLogin = async (req, res) => {
         expiresIn: "7d",
       });
 
-      res.cookie("token", token, {
+      // console.log("Admin Toekn in controller: ",token);
+
+      res.cookie("admin-token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        secure: false, 
+        sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
@@ -241,7 +243,7 @@ export const verifyUser = async (req, res) => {
       email: user.email,
       profilePic: user.profilePicture,
       emailVerified: user.emailVerified,
-      role:user.role
+      role: user.role,
     });
   } catch (error) {
     console.error(error);
