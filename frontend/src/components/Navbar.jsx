@@ -72,7 +72,7 @@ const Navbar = () => {
     return currentPath === path;
   };
 
-  console.log("Name: ", auth.user);
+  // console.log("Name: ", auth.user);
 
   return (
     <header className="w-full sticky bg-[#2d9b67] top-0 px-5 z-50">
@@ -266,7 +266,6 @@ const Navbar = () => {
             </Button>
           )}
 
-          {/* Mobile Menu */}
           {auth.isLoggedIn && auth.user.role !== "designer" && (
             <Sheet open={open} onOpenChange={setOpen}>
               {" "}

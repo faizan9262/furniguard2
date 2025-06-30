@@ -50,7 +50,7 @@ const AppointmentCard = ({
   return (
     <Card
       onClick={onClick}
-      className="group flex items-start gap-6 hover:shadow-xl transition-shadow duration-300 cursor-pointer p-4 sm:p-6 rounded-3xl"
+      className="group flex border-gray-300 items-start gap-6 hover:shadow-xl transition-shadow duration-300 cursor-pointer p-4 sm:p-6 rounded-3xl"
     >
       {/* Product Preview */}
 
@@ -70,7 +70,7 @@ const AppointmentCard = ({
               {product[0]?.product?.description}
             </p>
             <div className="flex items-center justify-start gap-1">
-              <Badge className="text-primary bg-primary/10">
+              <Badge className="text-primary  bg-primary/10">
                 {product[0]?.product?.category?.charAt(0).toUpperCase() +
                   product[0]?.product?.category?.slice(1)}
               </Badge>

@@ -30,38 +30,26 @@ import {
   SelectValue,
 } from "../components/components/ui/select";
 import { Input } from "../components/components/ui/input";
+import { useAdmin } from "../context/AdminContext";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
-  const [list, setList] = useState([]);
+  
   const [filteredList, setFilteredList] = useState([]);
   const [category, setCategory] = useState("flooring");
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate()
 
-  const fetchList = async () => {
-    try {
-      const response = await axios.get(`${backendUrl}/api/products/list`);
-      if (response.data.success) {
-        const allProducts = response.data.ratedProducts;
-        setList(allProducts);
-        setFilteredList(
-          allProducts.filter((item) => item.category === category)
-        );
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      toast.error("Failed to fetch products.");
-    }
-  };
+  const products = useAdmin()
 
   useEffect(() => {
-    fetchList();
-  }, []);
-
-  useEffect(() => {
-    const filtered = list.filter((item) => item.category === category);
+    const filtered = products.list.filter((item) => item.category === category);
     setFilteredList(filtered);
-  }, [category, list]);
+    // console.log("Filter products: ",filtered);
+  }, [category, products.list]);
+
+  // console.log("Products in products page: ",products.list);
+  
 
   const categoryIcons = {
     flooring: <TbWood className="text-lg mr-2" />, // Wood floor icon
@@ -89,7 +77,10 @@ const Products = () => {
     "wallpaper",
   ];
 
-  const filteredProducts = list?.filter((product) => {
+  
+  
+
+  const filteredProducts = products.list?.filter((product) => {
     const matchCategory =
       !category || category === "all" || product.category === category;
 
@@ -166,6 +157,7 @@ const Products = () => {
         <div className="grid gap-8 cursor-pointer sm:grid-cols-2 lg:grid-cols-3">
           {filteredProducts.map((item) => (
             <div
+            onClick={()=> navigate(`/products/${item.category}/${item._id}`)}
               key={item._id}
               className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group"
             >

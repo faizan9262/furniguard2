@@ -254,6 +254,15 @@ export const getAllAppointments = async () => {
   }
   const data = await response.data;
   return data;
+}
+
+export const getAllAppointmentsOfDesigner = async () => {
+  const response = await axios.get("/appointment/designer/get-all");
+  if (response.status !== 200) {
+    throw new Error("Unable to Load All Appointments");
+  }
+  const data = await response.data;
+  return data;
 };
 
 export const createNewAppointment = async ({ appointmentData }) => {

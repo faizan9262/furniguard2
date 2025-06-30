@@ -4,10 +4,11 @@ import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/components/ui/button";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
-
+  const auth = useAuth()
   return (
     <div
       className="relative bg-cover bg-center h-screen flex justify-center items-center overflow-hidden"
@@ -98,7 +99,7 @@ const Header = () => {
           <Button 
             onClick={() => navigate('/new-appointment')} 
             variant="secondary" 
-            className="bg-[#2d9b67] hover:bg-[#326951] text-white text-base sm:text-lg font-normal py-4 sm:py-6 px-6 sm:px-8 flex items-center gap-2 group w-full sm:w-auto justify-center"
+            className={`bg-[#2d9b67] hover:bg-[#326951] text-white text-base sm:text-lg font-normal py-4 sm:py-6 px-6 sm:px-8 ${auth?.user?.role === "user" ? "flex": "hidden"} items-center gap-2 group w-full sm:w-auto justify-center`}
           >
             Book Your Session Now
             <motion.span

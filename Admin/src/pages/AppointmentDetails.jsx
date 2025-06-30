@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -24,7 +24,9 @@ import {
   Wallet,
   DollarSign,
   Percent,
+  DeleteIcon,
 } from "lucide-react";
+import { MdDelete } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAdmin } from "../context/AdminContext";
 import { Button } from "../components/components/ui/button";
@@ -40,10 +42,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/components/ui/alert-dialog";
-import { cancelAppointment } from "../helper/apis.js";
+import { cancelAppointment, updateStatus } from "../helper/apis.js";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/components/ui/select";
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [newStatus, setNewStatus] = useState("");
+  const [reason, setReason] = useState("");
   if (!id)
     return <div className="text-center py-10">No appointment selected.</div>;
 
@@ -53,12 +73,13 @@ const AppointmentDetailPage = () => {
     (ap) => ap._id === id
   );
 
-  console.log("Current: ", currentAppointment);
+  console.log("Current ID: ", currentAppointment?._id);
+  console.log("Current Status: ", newStatus);
 
   const handleCancelAppointment = async () => {
     try {
       toast.loading("Canceling Your Appointment", { id: "cancel-ap" });
-      await cancelAppointment(currentAppointment._id);
+      await cancelAppointment(currentAppointment._id,reason);
       toast.success("Appointment Cancelled", { id: "cancel-ap" });
       appointment.removeAppointment(currentAppointment._id);
       navigate("/appointments");
@@ -66,6 +87,29 @@ const AppointmentDetailPage = () => {
       console.error(error);
       toast.error(error.message || "Something went wrong", { id: "cancel-ap" });
     }
+  };
+
+  const handleUpdateStatus = async () => {
+    try {
+      toast.loading("Updating status...", { id: "update-status" });
+      const res = await updateStatus(newStatus, currentAppointment._id);
+      console.log("Data from update status: ", res);
+      currentAppointment.status = res?.updatedAppointment?.status;
+      toast.success("Status updated successfully", { id: "update-status" });
+      setOpenEditDialog(false);
+    } catch (err) {
+      toast.error("Failed to update status", { id: "update-status" });
+      console.error(err);
+    }
+  };
+
+  // Inside component
+
+  // Status flow logic
+  const getNextStatusOptions = (currentStatus) => {
+    if (currentStatus === "pending") return ["confirmed"];
+    if (currentStatus === "confirmed") return ["completed"];
+    return [];
   };
 
   return (
@@ -103,56 +147,126 @@ const AppointmentDetailPage = () => {
             <span className="hidden md:block">Download</span>
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 bg-[#2d9b67]/20 border border-gray-200 shadow-md hover:bg-white transition-all duration-300 text-[#2d9b67]"
-          >
-            <Edit className="w-4 h-4" />
-            <span className="hidden md:block">Edit</span>
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 bg-red-500 transition-all border border-gray-200 shadow-md duration-300 text-white hover:bg-red-600"
-          >
-            <CalendarX2 className="w-4 h-4" />
-            <span className="hidden md:block">Cancel</span>
-          </Button>
-
           {currentAppointment?.status !== "completed" && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
+            <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+              <DialogTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-2 bg-red-500"
+                  className="gap-2 bg-[#2d9b67]/20 border border-gray-200 shadow-md hover:bg-white transition-all duration-300 text-[#2d9b67]"
                 >
-                  <CalendarX2 className="w-4 h-4" />
-                  <span className="hidden md:block">Cancel</span>
+                  <Edit className="w-4 h-4" />
+                  <span className="hidden md:block">Edit</span>
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to cancel this appointment? This
-                    action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Go Back</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleCancelAppointment}
-                    className="bg-red-500 hover:bg-red-600"
+              </DialogTrigger>
+              <DialogContent className="text-primary">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-semibold">
+                    Update Appointment Status
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div className="mt-4">
+                  <Select onValueChange={(val) => setNewStatus(val)}>
+                    <SelectTrigger className="w-full border border-gray-300 rounded-md shadow-sm text-[#2d9b67] bg-white hover:border-[#2d9b67] focus:ring-2 focus:ring-[#2d9b67] focus:outline-none">
+                      <SelectValue placeholder="Select new status" />
+                    </SelectTrigger>
+
+                    <SelectContent className="bg-white border border-gray-200 shadow-lg rounded-md text-[#326951]">
+                      {getNextStatusOptions(currentAppointment?.status).map(
+                        (status) => (
+                          <SelectItem
+                            key={status}
+                            value={status}
+                            className="cursor-pointer transition-all rounded-md px-2 py-1"
+                          >
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <DialogFooter className="mt-4">
+                  <Button
+                    onClick={handleUpdateStatus}
+                    disabled={!newStatus}
+                    className="bg-[#2d9b67] text-white hover:bg-[#287d55]"
                   >
-                    Yes, Cancel
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                    Update
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           )}
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 bg-red-500">
+                {currentAppointment?.status !== "completed" ? (
+                  <CalendarX2 className="w-4 h-4" />
+                ) : (
+                  <MdDelete className="w-4 h-4" />
+                )}
+                <span className="hidden md:block">
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel"
+                    : "Delete"}
+                </span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="text-primary">
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel Appointment"
+                    : "Delete Appointment"}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-primary-foreground mb-4">
+                  Are you sure you want to{" "}
+                  {currentAppointment?.status !== "completed"
+                    ? "cancel"
+                    : "delete"}{" "}
+                  this appointment? This action cannot be undone.
+                </AlertDialogDescription>
+
+                {/* Reason Textarea */}
+                <div>
+                  <label
+                    htmlFor="reason"
+                    className="text-sm font-medium block mb-1"
+                  >
+                    Reason <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    className="w-full p-2 border rounded text-sm text-primary border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                    rows={3}
+                    placeholder="Enter reason for cancellation/deletion..."
+                  />
+                </div>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel className="text-white border-gray-300 hover:bg-white bg-primary">
+                  Go Back
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleCancelAppointment}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  disabled={!reason.trim()}
+                >
+                  Yes,{" "}
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel"
+                    : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
 
@@ -311,7 +425,7 @@ const AppointmentDetailPage = () => {
           Here are all products selected for this appointment.
         </p>
       </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {currentAppointment?.products?.map((prod) => (
           <Card
             key={prod._id}
@@ -323,7 +437,9 @@ const AppointmentDetailPage = () => {
             <CardHeader className="flex flex-row items-center gap-4">
               <Sofa className="text-primary w-6 h-6" />
               <div>
-                <CardTitle className="text-xl text-primary">Product Details</CardTitle>
+                <CardTitle className="text-xl text-primary">
+                  Product Details
+                </CardTitle>
                 <p className="text-lg text-primary-foreground">
                   {prod.product.name}
                 </p>

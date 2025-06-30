@@ -11,7 +11,9 @@ Currently, two official plugins are available:
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
+// Todo
+
 // Related prodcut scrolling issue to solve
 // random and limited related products to be implement
 // appriciation msg after rating
-// product list to be called from admin context in admin.
+// appointment delete from and admin and reason message from admin and sent mail to user and designer with reason.

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -42,24 +42,29 @@ import {
   AlertDialogTrigger,
 } from "@/components/components/ui/alert-dialog";
 import RateComponent from "@/components/RateDialog";
+import { MdDelete, MdDeleteOutline } from "react-icons/md";
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
+  const appointment = useAppointment();
+  const [reason, setReason] = useState("");
+  const navigate = useNavigate();
   if (!id)
     return <div className="text-center py-10">No appointment selected.</div>;
 
-  const appointment = useAppointment();
-  const navigate = useNavigate();
-  const currentAppointment = appointment.allAppointments.find(
-    (ap) => ap._id === id
-  );
+  const availableAppointments =
+    appointment?.allAppointments?.length > 0
+      ? appointment.allAppointments
+      : appointment?.DesignerAllAppointments || [];
 
-  console.log("Current: ", currentAppointment);
+  const currentAppointment = availableAppointments.find((ap) => ap._id === id); 
+
+  console.log("Current:", currentAppointment);
 
   const handleCancelAppointment = async () => {
     try {
       toast.loading("Canceling Your Appointment", { id: "cancel-ap" });
-      await cancelAppointment(currentAppointment._id);
+      await cancelAppointment(currentAppointment._id,reason);
       toast.success("Appointment Cancelled", { id: "cancel-ap" });
       appointment.removeAppointment(currentAppointment._id);
       navigate("/appointments");
@@ -102,42 +107,72 @@ const AppointmentDetailPage = () => {
             <Download className="w-4 h-4" />
             <span className="hidden md:block">Download</span>
           </Button>
-          <Button variant="outline" size="sm" className="gap-2 bg-primary/20">
-            <Edit className="w-4 h-4 " />
-            <span className="hidden md:block">Edit</span>
-          </Button>
-          {currentAppointment?.status !== "completed" && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 bg-red-500"
-                >
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2 bg-red-500">
+                {currentAppointment?.status !== "completed" ? (
                   <CalendarX2 className="w-4 h-4" />
-                  <span className="hidden md:block">Cancel</span>
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to cancel this appointment? This
-                    action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Go Back</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleCancelAppointment}
-                    className="bg-red-500 hover:bg-red-600"
+                ) : (
+                  <MdDelete className="w-4 h-4" />
+                )}
+                <span className="hidden md:block">
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel"
+                    : "Delete"}
+                </span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="text-primary">
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel Appointment"
+                    : "Delete Appointment"}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-primary-foreground mb-4">
+                  Are you sure you want to{" "}
+                  {currentAppointment?.status !== "completed"
+                    ? "cancel"
+                    : "delete"}{" "}
+                  this appointment? This action cannot be undone.
+                </AlertDialogDescription>
+
+                {/* Reason Textarea */}
+                <div>
+                  <label
+                    htmlFor="reason"
+                    className="text-sm font-medium block mb-1"
                   >
-                    Yes, Cancel
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+                    Reason <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    className="w-full p-2 border rounded text-sm text-primary border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                    rows={3}
+                    placeholder="Enter reason for cancellation/deletion..."
+                  />
+                </div>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel className="text-white border-gray-300 hover:bg-white bg-primary">
+                  Go Back
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleCancelAppointment}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  disabled={!reason.trim()}
+                >
+                  Yes,{" "}
+                  {currentAppointment?.status !== "completed"
+                    ? "Cancel"
+                    : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           {currentAppointment?.status === "completed" && (
             <RateComponent currentAppointment={currentAppointment} />
           )}

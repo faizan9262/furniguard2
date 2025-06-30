@@ -20,6 +20,76 @@ export const htmlContent = (otp) => {
 `;
 };
 
+export const appointmentDeletedEmail = ({
+  appointmentData,
+  designer,
+  user,
+  reason,
+  type,
+}) => {
+  return `
+  <div style="max-width: 600px; margin: auto; padding: 30px; background-color: #f9f9f9; font-family: Arial, sans-serif; color: #333; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <div style="text-align: center;">
+      <h2 style="color: #e53935;">Appointment Cancelled</h2>
+
+      <p style="font-size: 16px;">Hello ${
+        type === "user" ? user.username : designer.user.username
+      },</p>
+
+      <p style="font-size: 16px;">
+        We regret to inform you that the following appointment has been <strong>deleted</strong>.
+      </p>
+
+      <div style="margin: 20px auto; padding: 15px 25px; background-color: #fff; border: 1px solid #e53935; border-radius: 6px; text-align: left; display: inline-block;">
+        <p style="margin: 0; font-size: 14px;"><strong>Created At:</strong> ${appointmentData.updatedAt.toLocaleString(
+          "en-IN",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }
+        )}</p>
+        <p style="margin: 0; font-size: 14px;"><strong>Scheduled Date:</strong> ${appointmentData.appointmentDate.toLocaleString(
+          "en-IN",
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          }
+        )}</p>
+        <p style="margin: 0; font-size: 14px;"><strong>User Name:</strong> ${
+          user.username
+        }</p>
+        <p style="margin: 0; font-size: 14px;"><strong>Designer Name:</strong> ${
+          designer.user.username
+        }</p>
+        <p style="margin: 0; font-size: 14px;"><strong>Mode:</strong> ${
+          appointmentData.appointmentMode
+        }</p>
+        <p style="margin: 0; font-size: 14px;"><strong>Address:</strong> ${
+          appointmentData.locationAddress
+        }</p>
+      </div>
+
+      <p style="font-size: 14px; color: #d32f2f; margin-top: 10px;">
+        <strong>Reason:</strong> ${reason}
+      </p>
+
+      <p style="font-size: 14px; color: #777;">If you believe this was a mistake, please contact our support team.</p>
+
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;" />
+      <p style="font-size: 12px; color: #999;">FurniGuard | www.furniguard.com</p>
+    </div>
+  </div>
+  `;
+};
+
 export const htmlResetContent = (resetLink) => {
   return `
     <div style="max-width: 600px; margin: auto; padding: 30px; background-color: #f4f4f4; font-family: Arial, sans-serif; color: #333; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">

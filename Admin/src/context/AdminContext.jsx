@@ -1,12 +1,16 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getAllAppointments, getAllDesigners } from '../helper/apis';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  getAllAppointments,
+  getAllDesigners,
+  getAllProducts,
+} from "../helper/apis.js";
 
 export const AdminContex = createContext();
 
 export const AdminContexProvider = (props) => {
-  
- const [designers, setDesigners] = useState([]);
- const [allAppointments,setAllAppointments] = useState([])
+  const [designers, setDesigners] = useState([]);
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
     const getAllDesignerFromDB = async () => {
@@ -17,24 +21,43 @@ export const AdminContexProvider = (props) => {
     getAllDesignerFromDB();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
+    const fetchList = async () => {
+      try {
+        const response = await getAllProducts();
+        console.log("Products response: ",response);
+        
+        if (response.success) {
+          const allProducts = response.ratedProducts;
+          // console.log("All products: ",allProducts);
+          setList(allProducts);    
+        } else {
+          // toast.error(response.data.message);
+        }
+      } catch (error) {
+        // toast.error("Failed to fetch products.");
+      }
+    };
+    fetchList();
+  }, []);
+
+  useEffect(() => {
     // console.log("Designers: ",designers);
-  })
+    // console.log("List: ", list);
+  },[list]);
 
- 
-  useEffect(()=>{
-    const getAllAppointmentsOfUser = async()=>{
-      const data = await getAllAppointments() 
-      console.log("Data:",data);
-      setAllAppointments(data)
-    }
-    getAllAppointmentsOfUser()
-  },[])
+  useEffect(() => {
+    const getAllAppointmentsOfUser = async () => {
+      const data = await getAllAppointments();
+      console.log("Data:", data);
+      setAllAppointments(data);
+    };
+    getAllAppointmentsOfUser();
+  }, []);
 
-  useEffect(()=>{
-    console.log("Appointments Array:",allAppointments);
-  },[allAppointments])
-
+  useEffect(() => {
+    console.log("Appointments Array:", allAppointments);
+  }, [allAppointments]);
 
   const removeAppointment = (id) => {
     setAllAppointments((prev) =>
@@ -44,14 +67,14 @@ export const AdminContexProvider = (props) => {
 
   const value = {
     designers,
-    removeAppointment, 
-    allAppointments
+    removeAppointment,
+    allAppointments,
+    list,
+    setList,
   };
 
   return (
-    <AdminContex.Provider value={value}>
-      {props.children}
-    </AdminContex.Provider>
+    <AdminContex.Provider value={value}>{props.children}</AdminContex.Provider>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useProduct } from "../context/ProductContext";
+import { useAdmin } from "../context/AdminContext";
 import { FaArrowRight, FaStar } from "react-icons/fa";
 import { Card, CardContent } from "@/components/components/ui/card";
 import { Button } from "@/components/components/ui/button";
@@ -8,18 +8,19 @@ import { Badge } from "@/components/components/ui/badge";
 import { motion } from "framer-motion";
 import { Heart, Star } from "lucide-react";
 import { toast } from "sonner";
-import { addToWishlist, getProductRating } from "../helper/api-communicator";
+import { getProductRating } from "../helper/apis.js";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const product = useProduct();
+  const product = useAdmin();
   const navigate = useNavigate();
   const [rating, setRating] = useState({});
 
   const [showAllRatings, setShowAllRatings] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3); 
 
+  console.log("List in details page: ",product.list);
   useEffect(() => {
     const updateCount = () => {
       const width = window.innerWidth;
@@ -33,8 +34,10 @@ const ProductDetail = () => {
     return () => window.removeEventListener("resize", updateCount);
   }, []);
 
-  const products = product.products.find((p) => p._id === id);
-  const relatedProducts = product.products.filter(
+  
+
+  const products = product?.list?.find((p) => p._id === id);
+  const relatedProducts = product?.list?.filter(
     (p) => p._id !== products._id && p.category === products.category
   );
 
@@ -54,17 +57,6 @@ const ProductDetail = () => {
   if (!products) {
     return <div>Product not found</div>;
   }
-
-  const handleAddWishlist = async (productId) => {
-    try {
-      toast.loading("Adding to Wishlist", { id: "p-details" });
-      const data = await addToWishlist(productId);
-      console.log("Data: ", data);
-      toast.success("Successfully added to your Wishlist", { id: "p-details" });
-    } catch (error) {
-      toast.error(error?.message || "Verification failed", { id: "p-details" });
-    }
-  };
 
   const roundedRating = Math.round(products.averageRating || 0);
 
@@ -131,46 +123,19 @@ const ProductDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="bg-primary/20">
+            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
               Eco-Friendly
             </Badge>
-            <Badge variant="outline" className="bg-primary/20">
+            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
               Durable
             </Badge>
-            <Badge variant="outline" className="bg-primary/20">
+            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
               Customizable
             </Badge>
           </div>
 
           <div className="text-2xl font-semibold text-[#326951]">
             Starting From ₹ {products.price}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-start mt-4">
-            {/* Consult Now Button */}
-            <Button
-              onClick={() =>
-                navigate("/new-appointment", {
-                  state: {
-                    category: products.category,
-                    productId: products._id,
-                  },
-                })
-              }
-              className="bg-[#2d9b67] hover:bg-[#277b59] text-white rounded-xl px-6 py-2 text-lg shadow-md transition-transform hover:scale-[1.02]"
-            >
-              Consult Now <FaArrowRight className="ml-2" />
-            </Button>
-
-            {/* Add to Wishlist Button */}
-            <Button
-              variant="outline"
-              className="border-[#2d9b67] text-[#2d9b67] hover:bg-[#e5f6ee] hover:border-[#2d9b67] rounded-xl px-5 py-2 text-sm sm:text-base font-medium flex items-center gap-2 shadow-sm transition-all duration-200"
-              onClick={() => handleAddWishlist(products._id)}
-            >
-              <Heart className="w-4 h-4" />
-              Save to Wishlist
-            </Button>
           </div>
         </motion.div>
       </div>
@@ -279,8 +244,8 @@ const ProductDetail = () => {
                   Elegant & modern design crafted for durability.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <Badge variant="outline">{p.category}</Badge>
-                  <Badge variant="outline">Modern</Badge>
+                  <Badge variant="outline" className="text-primary-foreground bg-primary/20 border-none">{p.category}</Badge>
+                  <Badge variant="outline" className="text-primary-foreground bg-primary/20 border-none">Modern</Badge>
                 </div>
               </div>
               <div className="absolute top-3 right-3 bg-[#2d9b67] text-white px-2 py-1 text-xs rounded-full">

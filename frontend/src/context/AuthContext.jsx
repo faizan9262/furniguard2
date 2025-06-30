@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }) => {
             name: data.name,
             profilePic: data.profilePic,
             isEmailVerified: data.emailVerified,
-            role:data.role
+            role:data.role,
+            id:data.id
           });
           setLoading(false)
           setIsLoggedIn(true)

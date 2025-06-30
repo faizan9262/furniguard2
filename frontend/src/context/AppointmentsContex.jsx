@@ -1,15 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getAllAppointments,  } from '../helper/api-communicator.js';
+import { getAllAppointments,getAllAppointmentsOfDesigner  } from '../helper/api-communicator.js';
 
 export const AppointmentsContex = createContext();
 
 export const AppointmentsContexProvider = (props) => {
   const [allAppointments,setAllAppointments] = useState([])
+  const [DesignerAllAppointments,setDesignerAllAppointmentsOfDesigner] = useState([])
  
   useEffect(()=>{
     const getAllAppointmentsOfUser = async()=>{
       const data = await getAllAppointments() 
-      // console.log("Data:",data);
+      // console.log("Ap Data:",data);
       setAllAppointments(data)
     }
     getAllAppointmentsOfUser()
@@ -18,6 +19,19 @@ export const AppointmentsContexProvider = (props) => {
   useEffect(()=>{
     // console.log("Aoopintments Array:",allAppointments);
   },[allAppointments])
+
+  useEffect(()=>{
+    const getAppointmentsOfDesigner = async()=>{
+      const data = await getAllAppointmentsOfDesigner() 
+      // console.log("Ap Data Designer:",data);
+      setDesignerAllAppointmentsOfDesigner(data)
+    }
+    getAppointmentsOfDesigner()
+  },[])
+
+  useEffect(()=>{
+    // console.log("Aoopintments Array Designer:",DesignerAllAppointments);
+  },[DesignerAllAppointments])
 
 
   const removeAppointment = (id) => {
@@ -32,7 +46,8 @@ export const AppointmentsContexProvider = (props) => {
   const value = {
     allAppointments,
     removeAppointment,
-    addAppointment
+    addAppointment,
+    DesignerAllAppointments
   };
 
   return (

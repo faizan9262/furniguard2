@@ -17,23 +17,26 @@ const statusOptions = ["all", "pending", "confirmed", "completed"];
 
 const Appointments = () => {
   const appointments = useAppointment();
-  const allAppointmentsOfUser = [...appointments.allAppointments].sort(
-    (a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)
-  );
-
-  console.log("All Ap: ",appointments.allAppointments);
-  
   const [statusFilter, setStatusFilter] = useState("all");
   const navigate = useNavigate();
 
-  const filteredAppointments = allAppointmentsOfUser.filter((item) => {
-    const statusMatch = statusFilter === "all" || item.status === statusFilter;
+  const activeAppointmentsRaw =
+    appointments?.allAppointments?.length > 0
+      ? appointments.allAppointments
+      : appointments?.DesignerAllAppointments || [];
 
+  const activeAppointments = [...activeAppointmentsRaw].sort(
+    (a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate)
+  );
+
+  const filteredAppointments = activeAppointments.filter((item) => {
+    const statusMatch = statusFilter === "all" || item.status === statusFilter;
     return statusMatch;
   });
 
-  console.log("Filtered: ",filteredAppointments);
-  
+  // console.log("All Ap: ", appointments?.DesignerAllAppointments);
+
+  // console.log("Filtered: ", filteredAppointments);
 
   return (
     <div className="mx-4 sm:mx-[10%] min-h-screen my-5">
@@ -60,15 +63,17 @@ const Appointments = () => {
               </SelectContent>
             </Select>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-1 bg-primary text-white"
-            onClick={()=>navigate('/new-appointment')}
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span className="hidden md:block">New Appointment</span>
-          </Button>
+          {appointments?.allAppointments?.length > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1 bg-primary text-white"
+              onClick={() => navigate("/new-appointment")}
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span className="hidden md:block">New Appointment</span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -87,7 +92,7 @@ const Appointments = () => {
                 <AppointmentCard
                   user={item.user}
                   designer={item.designer}
-                  product={item.products?.map((p)=> p)}
+                  product={item.products?.map((p) => p)}
                   date={item.appointmentDate}
                   status={item.status}
                   notes={item.notes}

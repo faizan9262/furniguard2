@@ -95,6 +95,7 @@ export const registerUser = async (req, res) => {
 
     const responseData = {
       message: "User registered successfully",
+      id: populatedUser._id,
       name: populatedUser.username,
       email: populatedUser.email,
       profilePic: populatedUser.profilePicture,
@@ -143,6 +144,7 @@ export const loginUser = async (req, res) => {
 
     return res.status(200).json({
       message: "Login successful",
+      id: user._id,
       name: user.username,
       email: user.email,
       profilePic: user.profilePicture,
@@ -244,6 +246,7 @@ export const verifyUser = async (req, res) => {
       profilePic: user.profilePicture,
       emailVerified: user.emailVerified,
       role: user.role,
+      id: user._id,
     });
   } catch (error) {
     console.error(error);

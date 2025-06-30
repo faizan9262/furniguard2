@@ -15,6 +15,8 @@ import Designers from "./pages/Designers";
 import DesignerDetails from "./pages/DesignerDetails";
 import AppointmentDetailPage from "./pages/AppointmentDetails";
 import ProductDetail from "./components/ProductDetail";
+import About from "./pages/About";
+import Notifications from "./pages/Notifications";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(null); // null = checking
@@ -49,7 +51,6 @@ function App() {
 
   return (
     <div>
-      <ToastContainer />
       {!authenticated ? (
         <Login setAuthenticated={setAuthenticated} />
       ) : (
@@ -57,11 +58,13 @@ function App() {
           <Navbar setAuthenticated={setAuthenticated} />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
             <Route path="/add" element={<Add />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:category/:id" element={<ProductDetail />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/appointments/:id" element={<AppointmentDetailPage />} />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/designers" element={<Designers />} />
             <Route path="/designers/:id" element={<DesignerDetails />} />
           </Routes>

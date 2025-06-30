@@ -50,11 +50,20 @@ export const getAllAppointments = async () => {
   return data;
 };
 
-export const cancelAppointment = async (appointmentId) => {
-  const response = await axios.post("/appointment/cancel", { appointmentId });
+export const cancelAppointment = async (appointmentId,reason) => {
+  const response = await axios.post("/appointment/admin/delete", { appointmentId ,reason});
   if (response.status !== 200) {
-    throw new Error("Unable Cancel Appointment");
+    throw new Error("Unable to Cancel Appointment bt Admin");
   }
   const data = await response.data;
   return data;
 };
+
+export const updateStatus = async (status,appointmentId)=>{
+  const response = await axios.post("/appointment/admin/update-status", { status,appointmentId });
+  if (response.status !== 200) {
+    throw new Error("Unable Update Appointment Status");
+  }
+  const data = await response.data;
+  return data; 
+}

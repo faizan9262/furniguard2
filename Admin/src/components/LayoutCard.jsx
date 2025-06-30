@@ -35,11 +35,9 @@ const LayoutCard = ({ img_scr, title, onClick,tag, description }) => {
         </div>
 
         {/* Description */}
-        <p className="text-sm text-secondary leading-relaxed mt-4 line-clamp-3">
+        <p className="text-sm text-primary-foreground leading-relaxed mt-4 line-clamp-3">
           {description}
         </p>
-
-        {/* Decorative corner */}
         <div className="absolute bottom-3 right-3 w-8 h-8 bg-primary/10 rotate-45 rounded-lg" />
       </div>
     </div>

@@ -10,8 +10,6 @@ import {
   SelectItem,
 } from "../components/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/components/ui/button";
-import { PlusCircle } from "lucide-react";
 
 const statusOptions = ["all", "pending", "confirmed", "completed"];
 
@@ -38,7 +36,7 @@ const Appointments = () => {
     <div className="mx-4 sm:mx-[10%] min-h-screen my-5">
       <div className="flex items-center justify-between mb-6">
         <p className="text-md md:text-3xl font-semibold md:font-bold text-primary-foreground">
-          {statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}{" "}
+          Manage {statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}{" "}
           Appointments
         </p>
         <div className="flex items-center justify-center gap-3">
