@@ -11,10 +11,10 @@ Currently, two official plugins are available:
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 
-// Todo
+# Todo
 
-// Related prodcut scrolling issue to solve
-// random and limited related products to be implement
-// appriciation msg to user after rating
-// Designer profile reload issue to solve
-// set current designer in context using usestate, and update that state later.
+### Related prodcut scrolling issue to solve.
+### Random and limited related products to be implement.
+### appriciation msg to user after rating
+### Designer profile reload issue to solve
+### set current designer in context using usestate, and update that state later.
