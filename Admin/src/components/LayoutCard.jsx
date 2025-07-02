@@ -1,11 +1,11 @@
 import React from "react";
 import { Badge } from "./components/ui/badge";
 
-const LayoutCard = ({ img_scr, title, onClick,tag, description }) => {
+const LayoutCard = ({ img_scr, title, onClick,tag, description,duration }) => {
   return (
     <div
       onClick={onClick}
-      className="relative flex flex-col sm:flex-row overflow-visible sm:overflow-hidden rounded-3xl group cursor-pointer transition-all hover:shadow-2xl"
+      className="relative  flex flex-col sm:flex-row overflow-visible sm:overflow-hidden rounded-3xl group cursor-pointer transition-all hover:shadow-2xl"
     >
       {/* Background Container */}
       <div className="relative w-full sm:w-1/2 h-56 sm:h-auto">
@@ -35,6 +35,11 @@ const LayoutCard = ({ img_scr, title, onClick,tag, description }) => {
         </div>
 
         {/* Description */}
+        {duration?.length > 0 && (
+          <p className="text-sm text-primary-foreground leading-relaxed mt-4 line-clamp-3">
+            Duration: {duration}
+          </p>
+        )}
         <p className="text-sm text-primary-foreground leading-relaxed mt-4 line-clamp-3">
           {description}
         </p>

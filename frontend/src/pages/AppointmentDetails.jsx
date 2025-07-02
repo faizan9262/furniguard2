@@ -43,10 +43,13 @@ import {
 } from "@/components/components/ui/alert-dialog";
 import RateComponent from "@/components/RateDialog";
 import { MdDelete, MdDeleteOutline } from "react-icons/md";
+import { useAuth } from "../context/AuthContext";
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
   const appointment = useAppointment();
+  const auth = useAuth();
+  const isDesigner = auth?.user?.role === "designer";
   const [reason, setReason] = useState("");
   const navigate = useNavigate();
   if (!id)
@@ -57,14 +60,17 @@ const AppointmentDetailPage = () => {
       ? appointment.allAppointments
       : appointment?.DesignerAllAppointments || [];
 
-  const currentAppointment = availableAppointments.find((ap) => ap._id === id); 
+  const currentAppointment = availableAppointments.find((ap) => ap._id === id);
 
-  console.log("Current:", currentAppointment);
+  // console.log(
+  //   "Current:",
+  //   currentAppointment?.products.map((p) => p.product.name)
+  // );
 
   const handleCancelAppointment = async () => {
     try {
       toast.loading("Canceling Your Appointment", { id: "cancel-ap" });
-      await cancelAppointment(currentAppointment._id,reason);
+      await cancelAppointment(currentAppointment._id, reason);
       toast.success("Appointment Cancelled", { id: "cancel-ap" });
       appointment.removeAppointment(currentAppointment._id);
       navigate("/appointments");
@@ -73,6 +79,8 @@ const AppointmentDetailPage = () => {
       toast.error(error.message || "Something went wrong", { id: "cancel-ap" });
     }
   };
+
+  // console.log("Designer? ", isDesigner);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
@@ -223,6 +231,20 @@ const AppointmentDetailPage = () => {
           )}
 
           {currentAppointment?.appointmentMode &&
+            currentAppointment?.products !== 0 && (
+              <div className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
+                <Sofa className="w-4 h-4 text-primary" />
+                <p>
+                  Products :{" "}
+                  {currentAppointment?.products
+                    .map(
+                      (p) => p.product.name + " [" + p.product.category + "] "
+                    )
+                    .join(", ")}
+                </p>
+              </div>
+            )}
+          {currentAppointment?.appointmentMode &&
             currentAppointment.gst !== 0 && (
               <div className="text-sm text-muted-foreground mt-2 flex items-center gap-2">
                 <Percent className="w-4 h-4 text-primary" />
@@ -287,9 +309,11 @@ const AppointmentDetailPage = () => {
 
         <Card>
           <CardHeader
-            onClick={() =>
-              navigate(`/designers/${currentAppointment?.designer?._id}`)
-            }
+            onClick={() => {
+              isDesigner
+                ? navigate(`/profile`)
+                : navigate(`/designers/${currentAppointment?.designer?._id}`);
+            }}
             className="flex items-start gap-4 cursor-pointer"
           >
             <Avatar>

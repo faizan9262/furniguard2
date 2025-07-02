@@ -80,7 +80,9 @@ const DesignerDetails = () => {
     fetchRating();
   }, [id]);
 
-  console.log("Rating length: ", rating.length);
+  const designerProjects = designer?.projects?.map((p)=> p)
+
+  console.log("Designer projects: ", designerProjects);
 
   if (!designer) return <p className="text-center mt-10">Designer not found</p>;
 
@@ -141,20 +143,21 @@ const DesignerDetails = () => {
           Featured Projects
         </h2>
         <div className="grid mx-10 sm:grid-cols-2 gap-4">
-          {sampleProjects.map((project, idx) => (
+          {designerProjects.map((project, idx) => (
             <a
               key={idx}
-              href={project.link}
+              href={project.links[0]}
               target="_blank"
               rel="noreferrer"
               className="hover:scale-[1.03] transition-transform duration-300"
             >
               <LayoutCard
-                img_scr={project.image}
+                img_scr={project.images[0]}
                 description={project.description}
                 className="w-full h-full object-cover"
                 title={project.title}
                 tag={"Project"}
+                duration={project.duration}
               />
             </a>
           ))}

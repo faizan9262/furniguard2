@@ -16,29 +16,36 @@ const upload = multer({
 
 export const uploadToCloudinary = (folder = "Melodify") => {
   return async (req, res, next) => {
-    if (!req.file) return res.status(400).json({ message: "No file provided" });
+    if (!req.files || !req.files.length) {
+      return res.status(400).json({ message: "No file provided" });
+    }
 
     try {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder,
-          resource_type: "image",
-        },
-        (error, result) => {
-          if (error) return res.status(500).json({ message: "Upload failed", error });
+      const uploadedImages = [];
 
-          req.file = {
-            path: result.secure_url,
-            filename: result.public_id,
-          };
-          next();
-        }
-      );
+      for (const file of req.files) {
+        const stream = streamifier.createReadStream(file.buffer);
 
-      streamifier.createReadStream(req.file.buffer).pipe(stream);
+        const result = await new Promise((resolve, reject) => {
+          const cloudinaryStream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: "image" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+
+          stream.pipe(cloudinaryStream);
+        });
+
+        uploadedImages.push(result.secure_url);
+      }
+
+      req.images = uploadedImages; // 🔥 send URLs to controller
+      next();
     } catch (err) {
       console.error("Cloudinary Upload Error:", err);
-      res.status(500).json({ message: "Upload error" });
+      return res.status(500).json({ message: "Upload error" });
     }
   };
 };

@@ -15,5 +15,6 @@ If you are developing a production application, we recommend using TypeScript wi
 
 // Related prodcut scrolling issue to solve
 // random and limited related products to be implement
-// appriciation msg after rating
-// appointment delete from and admin and reason message from admin and sent mail to user and designer with reason.
+// appriciation msg to user after rating
+// Designer profile reload issue to solve
+// set current designer in context using usestate, and update that state later.

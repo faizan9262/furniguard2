@@ -206,22 +206,22 @@ export const submitCombinedRating = async (ratingData, designerId) => {
   }
 };
 
-export const getDesignerRating = async (designerId)=>{
+export const getDesignerRating = async (designerId) => {
   const response = await axios.get(`/ratings/designer/${designerId}`);
   if (response.status !== 200) {
     throw new Error("Unable to Load Designer Ratings");
   }
   const data = await response.data;
   return data;
-}
-export const getProductRating = async (productId)=>{
+};
+export const getProductRating = async (productId) => {
   const response = await axios.get(`/ratings/product/${productId}`);
   if (response.status !== 200) {
     throw new Error("Unable to Load Product Ratings");
   }
   const data = await response.data;
   return data;
-}
+};
 
 // Products Apis
 
@@ -245,6 +245,41 @@ export const getAllDesigners = async () => {
   return data;
 };
 
+export const editDesignerProfile = async (formdata) => {
+  const response = await axios.post("/designers/update-profile", formdata)
+
+  if (response.status !== 200) {
+    throw new Error("Unable to Update your Profile.");
+  }
+
+  return response.data;
+};
+
+export const addProject = async (formdata) => {
+  const response = await axios.post("/designers/add-project", formdata, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  if (response.status !== 200) {
+    throw new Error("Unable to Add Project.");
+  }
+
+  return response.data;
+};
+
+export const deleteProject = async (projectId) => {
+  const response = await axios.post("/designers/project/delete",{projectId});
+
+  if (response.status !== 200) {
+    throw new Error("Unable to Delete Project.");
+  }
+
+  return response.data;
+};
+
+
 // Appointment Apis
 
 export const getAllAppointments = async () => {
@@ -254,7 +289,7 @@ export const getAllAppointments = async () => {
   }
   const data = await response.data;
   return data;
-}
+};
 
 export const getAllAppointmentsOfDesigner = async () => {
   const response = await axios.get("/appointment/designer/get-all");

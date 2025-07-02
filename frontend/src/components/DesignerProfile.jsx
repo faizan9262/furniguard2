@@ -1,11 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaUser,
   FaEnvelope,
-  FaCalendarAlt,
   FaStar,
-  FaPhone,
   FaEdit,
   FaKey,
   FaSignOutAlt,
@@ -17,17 +15,32 @@ import { Card, CardHeader, CardContent } from "@/components/components/ui/card";
 import { useDesiner } from "../context/DesignerContex";
 import { useAppointment } from "../context/AppointmentsContex";
 import { useAuth } from "../context/AuthContext";
+import LayoutCard from "./LayoutCard";
+import { LiaUserEditSolid } from "react-icons/lia";
+import { RiFunctionAddFill } from "react-icons/ri";
+import { toast } from "sonner";
+import AddProjectDialog from "./ProjectDialog";
+import EditDesignerProfileDialog from "./DesignerProfileDialog";
+import { IoLogoWhatsapp } from "react-icons/io";
 
-const DesignerProfile = ({ designer }) => {
+const DesignerProfile = () => {
   const navigate = useNavigate();
-  const user = designer?.user;
-
+  const [open, setOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
   const auth = useAuth();
+  const design = useDesiner();
+  const designer = design.currentDesigner[0];
+  const user = designer?.user;
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   let pendingAppointment = 0;
   const appointment = useAppointment();
   const allAppointmentsOfUser = appointment?.allAppointments;
+
+  useEffect(() => {
+    setProjects(designer?.projects);
+    // console.log("Projects : ",projects);
+  }, [designer]);
 
   allAppointmentsOfUser?.forEach((ap) => {
     if (ap.status !== "completed") {
@@ -42,7 +55,6 @@ const DesignerProfile = ({ designer }) => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     try {
       toast.loading("Updating Your Profile", { id: "update-profile" });
 
@@ -78,6 +90,9 @@ const DesignerProfile = ({ designer }) => {
     toast.success("Logged out successfully");
     navigate("/login");
   };
+
+  const designerProjects = projects;
+  // console.log("Project: ", designerProjects);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#effaf2] to-[#c8ebd9] py-12 px-4 flex flex-col items-center justify-center">
@@ -134,17 +149,23 @@ const DesignerProfile = ({ designer }) => {
               <FaUser className="inline mr-2" /> {auth?.user?.name || "User"}
             </h2>
             <Badge
-                     variant="Outline"
-                     className={`mt-4 bg-primary/10 font-bold text-[#2d9b67] text-center`}
-                   >
-                     {designer?.type}
-                   </Badge>
-            <p className="text-gray-700 text-center">
-              <FaEnvelope className="inline mr-2 text-[#2d9b67]" />
-              {auth?.user?.email || "email@example.com"}
-            </p>
+              variant="Outline"
+              className={`mt-4 bg-primary/10 font-bold text-[#2d9b67] text-center`}
+            >
+              {designer?.type}
+            </Badge>
+            <div className="flex flex-col items-start">
+              <p className="text-gray-700 text-center">
+                <IoLogoWhatsapp className="inline mr-2 text-[#2d9b67]" />
+                {designer?.phone || "email@example.com"}
+              </p>
+              <p className="text-gray-700 text-center">
+                <FaEnvelope className="inline mr-2 text-[#2d9b67]" />
+                {auth?.user?.email || "email@example.com"}
+              </p>
+            </div>
           </CardHeader>
-          <CardContent className="mt-6 space-y-4">
+          <CardContent className="space-y-4">
             {!auth?.user?.isEmailVerified && (
               <Button
                 variant="outline"
@@ -179,9 +200,21 @@ const DesignerProfile = ({ designer }) => {
         >
           <Card className="rounded-3xl shadow-xl bg-white/80 backdrop-blur-md h-full">
             <CardHeader className="text-center">
-              <h3 className="text-2xl font-semibold text-[#2d9b67]">
-                Profile Overview
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-semibold text-[#2d9b67]">
+                  Profile Overview
+                </h3>
+                <EditDesignerProfileDialog>
+                  <Button
+                    variant="outline"
+                    className="w-1/6 bg-primary/20 text-[#2d9b67] hover:bg-[#277b59]"
+                    onClick={() => navigate("/appointments")}
+                  >
+                    <LiaUserEditSolid className="" />{" "}
+                    <span className="hidden md:block">Edit Profile</span>
+                  </Button>
+                </EditDesignerProfileDialog>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Bio & Experience */}
@@ -191,12 +224,32 @@ const DesignerProfile = ({ designer }) => {
                   {designer?.bio || "No bio provided."}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[45%]">
+              <div className="flex flex-wrap gap-6">
+                <div className="bg-[#e3f5ea] max-h-28 md:max-h-24 scroll-smooth scrollbar-hide overflow-y-auto rounded-xl p-4 w-full sm:w-[48%]">
+                  <h4 className="text-[#326951] font-medium">Expertise</h4>
+                  <div className="flex gap-2 flex-wrap">
+                    {designer?.expertise?.length > 0
+                      ? designer.expertise.map((ex, idx) => (
+                          <Badge key={idx} className="bg-primary mt-1 text-white">
+                            {ex}
+                          </Badge>
+                        ))
+                      : "Not Available"}
+                  </div>
+                </div>
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
+                  <h4 className="text-[#326951] font-medium">Studio Address</h4>
+                  <p className="text-sm">
+                    {designer?.studioAddress || "Not provided"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-6">
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
                   <h4 className="text-[#326951] font-medium">Experience</h4>
                   <p className="text-sm">{designer?.experience} years</p>
                 </div>
-                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[45%]">
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
                   <h4 className="text-[#326951] font-medium">Average Rating</h4>
                   <p className="text-sm flex items-center gap-2">
                     <FaStar className="text-yellow-500" />{" "}
@@ -205,8 +258,8 @@ const DesignerProfile = ({ designer }) => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[45%]">
+              <div className="flex flex-wrap gap-6">
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
                   <h4 className="text-[#326951] font-medium">
                     Preferred Locations
                   </h4>
@@ -215,23 +268,73 @@ const DesignerProfile = ({ designer }) => {
                       "Not specified"}
                   </p>
                 </div>
-                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[45%]">
-                  <h4 className="text-[#326951] font-medium">Studio Address</h4>
-                  <p className="text-sm">
-                    {designer?.studioAddress || "Not provided"}
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
+                  <h4 className="text-[#326951] font-medium">Mobile Number</h4>
+                  <p className="text-sm flex items-center gap-2">
+                    +91 {designer?.phone || 0}
                   </p>
                 </div>
               </div>
-              <Button
-                className="w-full bg-[#2d9b67] text-white hover:bg-[#277b59]"
-                onClick={() => navigate("/appointments")}
-              >
-                <FaCalendarAlt className="mr-2" /> View Appointments
-              </Button>
             </CardContent>
           </Card>
         </motion.div>
       </motion.div>
+      <section className="w-full max-w-7xl mt-10">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-secondary">
+            Your Featured Projects
+          </h2>
+          <AddProjectDialog
+            projects={designerProjects}
+            open={open}
+            setOpen={setOpen}
+            designerProjects={projects}
+            setProjects={setProjects}
+          >
+            <Button
+              variant="outline"
+              className="w-1/6 sm:w-[10%] bg-primary/20 text-[#2d9b67] hover:bg-[#277b59]"
+            >
+              <RiFunctionAddFill className="" />{" "}
+              <span className="hidden md:block">Add Project</span>
+            </Button>
+          </AddProjectDialog>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {designerProjects?.length > 0
+            ? designerProjects?.map((project, idx) => (
+                <div
+                  key={idx}
+                  rel="noreferrer"
+                  className="hover:scale-[1.03] transition-transform duration-300"
+                >
+                  <LayoutCard
+                    projectId={project._id}
+                    img_scr={project?.images[0]}
+                    description={project.description}
+                    className="w-full h-full object-cover"
+                    title={project.title}
+                    tag="Project"
+                    duration={project.duration}
+                    setProjects={setProjects}
+                  />
+                </div>
+              ))
+            : "No Projects Found."}
+        </div>
+        <div className="bg-yellow-100 dark:bg-yellow-200/10 my-8 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-500/40 px-4 py-3 rounded-xl text-sm">
+          <p className="font-medium">Note:</p>
+          <p>
+            You cannot modify or Edit Projects Details. In case of any mistake
+            or want to edit, please
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              {" "}
+              Delete{" "}
+            </span>
+            the Project and Re-upload.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };

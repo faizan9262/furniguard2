@@ -4,6 +4,7 @@ const projectSchema = new mongoose.Schema({
   images: {
     type: [String],
     default: [],
+    required:true
   },
   links: {
     type: [String],
@@ -12,10 +13,12 @@ const projectSchema = new mongoose.Schema({
   title: {
     type: String,
     default: "Untitled Project",
+    required:true
   },
   description: {
     type: String,
     default: "No description available",
+    required:true
   },
   duration: {
     type: String,

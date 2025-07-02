@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 const Home = () => {
    const auth = useAuth()
    const userRole = auth?.user?.role
-   console.log("Type: ",userRole);
+  //  console.log("Type: ",userRole);
    
   return (
     <>

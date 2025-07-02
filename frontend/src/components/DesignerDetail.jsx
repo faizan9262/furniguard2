@@ -4,45 +4,17 @@ import { Button } from "../components/components/ui/button";
 import { Card, CardContent } from "../components/components/ui/card";
 import { motion } from "framer-motion";
 import LayoutCard from "./LayoutCard";
-import { FaArrowRight, FaStar } from "react-icons/fa";
+import { FaArrowRight, FaEnvelope, FaStar } from "react-icons/fa";
 import { useDesiner } from "../context/DesignerContex";
 import { getDesignerRating } from "../helper/api-communicator.js";
 import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar";
 import { Star } from "lucide-react";
-
-const sampleProjects = [
-  {
-    title: "Minimalist Living Room Sanctuary",
-    image:
-      "https://www.bhg.com/thmb/k-SOGurrVsJLF87LSgFndZZHpvk=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/20190521_meredith_015_preview-4cafea707ac344e18df0f94b6fff3356.jpg",
-    description:
-      "Neutral palette, clean lines, and natural light combine to create a calm and elegant living space.",
-  },
-  {
-    title: "Spa-Inspired Bathroom Retreat",
-    image:
-      "https://assets.vogue.com/photos/67dd2aa9423f1e0521dbdcba/master/w_1920,c_limit/Chango%20-%20Modern%20Hamptons%20Living%20Room%20Wide%20-%20courtesy%20of%20Sarah%20Elliott.jpg",
-    description:
-      "Sleek surfaces and soft textures form a luxurious, wellness-focused bathroom aesthetic.",
-  },
-  {
-    title: "Japandi Coze Corner",
-    image:
-      "https://cdn-bnokp.nitrocdn.com/QNoeDwCprhACHQcnEmHgXDhDpbEOlRHH/assets/images/optimized/rev-7de7212/www.decorilla.com/online-decorating/wp-content/uploads/2023/07/Minimalist-mid-century-modern-living-room-ideas.jpg",
-    description:
-      "Blending Japanese minimalism and Scandinavian warmth for a serene and functional nook.",
-  },
-  {
-    title: "Bright Airy Minimal Interior",
-    image:
-      "https://cdn-bnokp.nitrocdn.com/QNoeDwCprhACHQcnEmHgXDhDpbEOlRHH/assets/images/optimized/rev-7de7212/www.decorilla.com/online-decorating/wp-content/uploads/2023/07/Minimalist-living-room-ideas-with-modern-decor.jpg",
-    description:
-      "Open layout and soft tones maximize light and space for a peaceful, minimalist setting.",
-  },
-];
+import { useAuth } from "../context/AuthContext";
+import { IoLogoWhatsapp } from "react-icons/io";
 
 const DesignerDetail = () => {
   const { id } = useParams();
+  const auth = useAuth()
   const navigate = useNavigate();
   const DesignerContex = useDesiner();
   const designer = DesignerContex.designers.find((d) => d._id === id);
@@ -59,7 +31,7 @@ const DesignerDetail = () => {
       else setVisibleCount(4);
     };
 
-    updateCount(); 
+    updateCount();
     window.addEventListener("resize", updateCount);
     return () => window.removeEventListener("resize", updateCount);
   }, []);
@@ -76,8 +48,10 @@ const DesignerDetail = () => {
     fetchRating();
   }, [id]);
 
-  console.log("Rating length: ",rating.length);
-  
+  // console.log("Rating length: ",rating.length);
+  const designerProjects = designer?.projects.map((p) => p);
+
+  console.log("Projects: ", designerProjects);
 
   if (!designer) return <p className="text-center mt-10">Designer not found</p>;
 
@@ -88,20 +62,25 @@ const DesignerDetail = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="flex flex-col sm:flex-row items-center gap-10"
+        className="flex flex-col sm:flex-row items-center gap-8 sm:gap-10 p-4 sm:p-6 bg-white rounded-xl shadow-md"
       >
-        <div className="w-40 h-40 sm:w-52 sm:h-52">
+        {/* Profile Picture */}
+        <div className="w-36 h-36 sm:w-48 sm:h-48">
           <img
             src={designer.user.profilePicture}
             alt={designer.user.username}
-            className="w-full h-full object-cover rounded-full shadow-xl border-4 border-primary"
+            className="w-full h-full object-cover rounded-full shadow-lg border-4 border-primary"
           />
         </div>
-        <div className="space-y-4 text-center sm:text-left">
-          <h1 className="text-4xl sm:text-5xl font-bold text-primary">
+
+        {/* Profile Info */}
+        <div className="flex-1 space-y-4 text-center sm:text-left">
+          <h1 className="text-3xl sm:text-5xl font-bold text-primary">
             {designer.user.username}
           </h1>
-          <div className="flex items-center justify-center sm:justify-start gap-1 mt-1">
+
+          {/* Rating */}
+          <div className="flex items-center justify-center sm:justify-start gap-1">
             {Array.from({ length: 5 }).map((_, i) => (
               <FaStar
                 key={i}
@@ -114,23 +93,88 @@ const DesignerDetail = () => {
             ))}
             <span className="text-xs text-muted-foreground ml-2">
               {designer.totalRatings > 0
-                ? `(${designer.totalRatings} Review${
+                ? `(${designer.totalRatings} Review$${
                     designer.totalRatings > 1 ? "s" : ""
                   })`
                 : "(No reviews)"}
             </span>
           </div>
 
-          <p className="text-xl font-medium bg-secondary/10 text-secondary px-4 py-1 rounded-full inline-block border border-secondary">
-            {designer.type} ~ {designer.experience + " Years"}
+          {/* Type and Experience */}
+          <p className="text-lg font-medium capitalize bg-secondary/10 text-secondary px-4 py-1 rounded-full inline-block border border-secondary">
+            {designer.type} &bull; {designer.experience} Years
           </p>
-          <p className="text-gray-600 max-w-2xl">
-            Passionate about crafting timeless, personalized spaces. I merge
-            aesthetics with functionality for modern lifestyles and premium
-            comfort.
+
+          {/* Bio */}
+          <p className="text-gray-600 font-semibold italic max-w-xl mx-auto sm:mx-0">
+            {designer.bio ? `"${designer.bio}"` : "Bio not available"}
           </p>
+
+          {/* Contact and Studio Info */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-sm text-left">
+            <div className="flex items-start justify-start gap-6">
+              <div>
+                <p className="text-muted-foreground font-medium flex items-center gap-2"><IoLogoWhatsapp className="text-primary"/>Phone</p>
+                <p className="text-secondary font-semibold">
+                  {designer.phone || "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground flex gap-2 items-center font-medium"><FaEnvelope className="text-primary" />Email</p>
+                <p className="text-secondary font-semibold">
+                  {designer?.user?.email || "N/A"}
+                </p>
+              </div>
+            </div>
+            <div>
+              <p className="text-muted-foreground font-medium">
+                Studio Address
+              </p>
+              <p className="text-primary font-semibold">
+                {designer.studioAddress || "Not provided"}
+              </p>
+            </div>
+            <div className="sm:col-span-2 ">
+              <p className="text-muted-foreground font-medium">Expertise</p>
+              <div className="flex flex-wrap overflow-y-auto scrollbar-hide max-h-24 gap-2 mt-1">
+                {designer.expertise?.length > 0 ? (
+                  designer.expertise.map((item, i) => (
+                    <span
+                      key={i}
+                      className="bg-primary/10 text-primary text-xs px-3 py-1 rounded-full border border-primary"
+                    >
+                      {item}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-400 italic">Not Available</span>
+                )}
+              </div>
+            </div>
+            <div className="sm:col-span-2">
+              <p className="text-muted-foreground font-medium">
+                Preferred Locations
+              </p>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {designer.preferredLocations?.length > 0 ? (
+                  designer.preferredLocations.map((loc, i) => (
+                    <span
+                      key={i}
+                      className="bg-secondary/10 text-secondary text-xs px-3 py-1 rounded-full border border-secondary"
+                    >
+                      {loc}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-400 italic">Not Available</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Button */}
           <Button
-            className="rounded-full bg-primary text-white hover:bg-secondary transition-all"
+            className="mt-6 rounded-full bg-primary text-white hover:bg-secondary transition-all"
             onClick={() => navigate("/register")}
           >
             Consult Now <FaArrowRight className="ml-2" />
@@ -144,20 +188,21 @@ const DesignerDetail = () => {
           Featured Projects
         </h2>
         <div className="grid mx-10 sm:grid-cols-2 gap-4">
-          {sampleProjects.map((project, idx) => (
+          {designerProjects.map((project, idx) => (
             <a
               key={idx}
-              href={project.link}
+              href={project.links[0]}
               target="_blank"
               rel="noreferrer"
               className="hover:scale-[1.03] transition-transform duration-300"
             >
               <LayoutCard
-                img_scr={project.image}
+                img_scr={project.images[0]}
                 description={project.description}
                 className="w-full h-full object-cover"
                 title={project.title}
                 tag={"Project"}
+                duration={project.duration}
               />
             </a>
           ))}
