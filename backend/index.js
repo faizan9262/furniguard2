@@ -19,7 +19,7 @@ dotevn.config();
 
 const app = express();
 const httpServer = createServer(app);
-const allowedOrigins = ['http://localhost:5173','http://localhost:5174']
+const allowedOrigins = ['https://furniguard-frontend.vercel.app/','http://localhost:5173','http://localhost:5174']
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
