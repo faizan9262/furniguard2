@@ -200,7 +200,7 @@ const Inbox = () => {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       onClick={() => updateReadStatus(otherPerson)}
-                      className="flex items-center justify-between backdrop-blur-md bg-white/60 p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer"
+                      className={`flex items-center justify-between backdrop-blur-md bg-white/60 p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer`}
                     >
                       <div className="flex items-center gap-4">
                         <img
@@ -209,23 +209,23 @@ const Inbox = () => {
                           className="w-12 h-12 rounded-full object-cover border border-white"
                         />
                         <div>
-                          <p className="font-semibold text-primary flex items-center gap-2">
+                          <p className="font-semibold text-gray-900 flex items-center gap-2">
                             {otherPerson?.username || otherPerson?.name}
                           </p>
-                          <p className="text-sm text-gray-600 line-clamp-1">
+                          <p className="text-sm text-gray-900 line-clamp-1">
                             {chat?.message || "No messages yet."}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-end gap-1">
-                        <p className="text-xs text-gray-400 whitespace-nowrap">
+                      <div className="flex flex-col items-end justify-center gap-1">
+                        <p className="text-xs text-gray-900 whitespace-nowrap">
                           {(() => {
                             const timeDiffInSeconds =
                               (Date.now() - new Date(chat.time)) / 1000;
 
                             if (timeDiffInSeconds < 60) {
-                              return "just now";
+                              return "Just now";
                             }
 
                             return formatDistanceToNowStrict(
@@ -238,7 +238,7 @@ const Inbox = () => {
                         </p>
 
                         {isUnread && (
-                          <div className="flex gap-1 text-primary font-semibold text-sm items-center p-2 rounded-full">
+                          <div className="flex gap-1 text-primary font-semibold text-xs items-center rounded-full">
                             <FaDotCircle size={12} /> New Chat
                           </div>
                         )}

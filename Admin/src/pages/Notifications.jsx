@@ -8,13 +8,11 @@ import {
   AvatarImage,
 } from "../components/components/ui/avatar";
 import { Skeleton } from "../components/components/ui/skeleton";
-import {
-  UserIcon,
-  Paintbrush,
-} from "lucide-react";
+import { UserIcon} from "lucide-react";
 import { BsMessenger } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { GrUserWorker } from "react-icons/gr";
+import adminSocket from "../adminSocket";
 
 const Notifications = () => {
   const [chats, setChats] = useState([]);
@@ -39,11 +37,27 @@ const Notifications = () => {
     fetchChats();
   }, []);
 
+  useEffect(() => {
+    const handleNewMessage = (data) => {
+      setChats((prevChats) => {
+        const alreadyExists = prevChats.some((chat) => chat._id === data._id);
+        if (!alreadyExists) return [data, ...prevChats];
+        return prevChats.map((chat) => (chat._id === data._id ? data : chat));
+      });
+    };
+
+    adminSocket.on("receive-message", handleNewMessage);
+
+    return () => {
+      adminSocket.off("receive-message", handleNewMessage);
+    };
+  }, []);
+
   const filteredChats = chats
     .filter(
       (chat) =>
-        chat.from?.username.toLowerCase().includes(search.toLowerCase()) ||
-        chat.to?.username.toLowerCase().includes(search.toLowerCase())
+        chat.from?.username?.toLowerCase().includes(search.toLowerCase()) ||
+        chat.to?.username?.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       return sort === "new"

@@ -154,25 +154,33 @@ const ChatBox = () => {
   }, [receiverId]);
 
   return (
-    <div className="fixed inset-0 top-14 flex flex-col bg-white">
-      <div className="sticky top-14 z-30 bg-white flex items-center gap-4 px-6 py-2 shadow border-b">
-        <Button
-          onClick={() => navigate("/inbox")}
-          variant="outline"
-          className="  "
+    <div className="fixed inset-0 top-0 flex flex-col bg-white">
+      <div className="sticky top-0 z-30 bg-white flex items-center gap-4  justify-between px-6 py-2 shadow border-b">
+        <div className="flex items-center gap-4">
+          <Button
+            onClick={() => navigate("/inbox")}
+            variant="outline"
+            className="  "
+          >
+            <ArrowLeft className="text-primary" />
+          </Button>
+          <img
+            src={receiver?.profilePicture}
+            alt="Receiver"
+            className="w-10 h-10 rounded-full object-cover border"
+          />
+          <div>
+            <h2 className="text-lg text-primary font-semibold">
+              {receiver?.name || "Loading..."}
+            </h2>
+            <p className="text-sm text-secondary">Online</p>
+          </div>
+        </div>
+        <div
+          onClick={() => navigate("/")}
+          className="text-xl md:text-2xl cursor-pointer bg-[#326951] text-white font-space font-bold border-2 py-1 px-2 rounded-full"
         >
-          <ArrowLeft className="text-primary" />
-        </Button>
-        <img
-          src={receiver?.profilePicture}
-          alt="Receiver"
-          className="w-10 h-10 rounded-full object-cover border"
-        />
-        <div>
-          <h2 className="text-lg text-primary font-semibold">
-            {receiver?.name || "Loading..."}
-          </h2>
-          <p className="text-sm text-secondary">Online</p>
+          FurniGuard &reg;
         </div>
       </div>
 

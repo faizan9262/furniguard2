@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
 import Layout from "./pages/Layout.jsx";
@@ -10,7 +10,6 @@ import Login from "./pages/Login.jsx";
 import DesignerDetail from "./components/DesignerDetail.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import Rooms from "./pages/Rooms.jsx";
-import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import Appointments from "./pages/Appointments.jsx";
@@ -27,6 +26,7 @@ import Inbox from "./pages/Inbox.jsx";
 
 function App() {
   const auth = useAuth();
+  const location = useLocation();
   // console.log("Role:", auth?.user?.role);
 
   useEffect(() => {
@@ -52,12 +52,13 @@ function App() {
       socket.emit("join", auth?.user?.id);
     }
     console.log("Joined: ");
-    
   }, [auth?.user?.id]);
+
+  const hideNavbar = location.pathname.startsWith("/chat/");
 
   return (
     <>
-      <Navbar />
+      {!hideNavbar && <Navbar />}
       <div>
         <Routes>
           <Route path="/" element={<Home />} />

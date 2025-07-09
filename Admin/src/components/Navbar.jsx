@@ -4,6 +4,7 @@ import { Button } from "../components/components/ui/button";
 import {
   BedDoubleIcon,
   Bell,
+  BellRing,
   CalendarClock,
   HeartIcon,
   HomeIcon,
@@ -110,7 +111,6 @@ const Navbar = () => {
               <HomeIcon /> Home
             </Button>
 
-           
             <Button
               onClick={() => navigate("/appointments")}
               className={`text-xl  font-semibold hover:bg-white ${
@@ -156,8 +156,8 @@ const Navbar = () => {
             >
               <InfoIcon /> About
             </Button>
-             <Button
-              onClick={() => navigate("/notifications")}
+            <Button
+              onClick={() => navigate("/inbox")}
               className={`text-xl  font-semibold rounded-full p-2 border-2 border-white bg-primary-foreground hover:bg-white ${
                 isActive("/notifications")
                   ? "bg-white border-2 scale-110 border-white"
@@ -165,7 +165,11 @@ const Navbar = () => {
               }`}
               variant="ghost"
             >
-              <BsMessenger className={`w-6 h-6 ${isActive?"text-primary":"text-white"}`} />
+              <BellRing
+                className={`w-6 h-6 ${
+                  isActive ? "text-primary" : "text-white"
+                }`}
+              />
             </Button>
             <Button
               onClick={handleLogout}
@@ -174,20 +178,19 @@ const Navbar = () => {
             >
               <LogOutIcon className="w-6 h-6 text-white" />
             </Button>
-            
           </nav>
           <p className="mx-6 text-white font-semibold text-lg">Hey, Admin</p>
-            <Button
-              onClick={() => navigate("/notifications")}
-              className={`text-xl md:hidden font-semibold rounded-full p-2 border-2 border-white bg-white hover:bg-primary-foreground ${
-                isActive("/notifications")
-                  ? "bg-[#326951] border-2 scale-110 border-white"
-                  : "text-white"
-              }`}
-              variant="ghost"
-            >
-              <Bell className="w-6 h-6 text-primary" />
-            </Button>
+          <Button
+            onClick={() => navigate("/notifications")}
+            className={`text-xl md:hidden font-semibold rounded-full p-2 border-2 border-white bg-white hover:bg-primary-foreground ${
+              isActive("/notifications")
+                ? "bg-[#326951] border-2 scale-110 border-white"
+                : "text-white"
+            }`}
+            variant="ghost"
+          >
+            <BellRing className="w-6 h-6 text-primary" />
+          </Button>
           <Sheet open={open} onOpenChange={setOpen}>
             {" "}
             {/* ✅ Step 2: controlled */}

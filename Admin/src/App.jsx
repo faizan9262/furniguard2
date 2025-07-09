@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 import Appointments from "./pages/Appointments";
 import Navbar from "./components/Navbar";
@@ -23,6 +23,7 @@ import { useAdmin } from "./context/AdminContext";
 function App() {
   const [authenticated, setAuthenticated] = useState(null); // null = checking
   const admin = useAdmin()
+  const location =  useLocation()
   useEffect(() => {
     const handleConnect = () => {
       console.log("Connected with ID:", adminSocket.id);
@@ -50,7 +51,6 @@ function App() {
 
   useEffect(() => {
     adminSocket.emit("join", "admin");
-    console.log("Joined: ");
   }, []);
 
   useEffect(() => {
@@ -80,13 +80,15 @@ function App() {
     return <div className="text-center p-10">Checking auth...</div>;
   }
 
+  const hideNavbar = location.pathname.startsWith("/chat/");
+
   return (
     <div>
       {!authenticated ? (
         <Login setAuthenticated={setAuthenticated} />
       ) : (
         <>
-          <Navbar setAuthenticated={setAuthenticated} />
+          {!hideNavbar && <Navbar setAuthenticated={setAuthenticated} />}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/chat/:senderId/:receiverId" element={<ChatBox />} />

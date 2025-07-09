@@ -71,7 +71,7 @@ const Appointments = () => {
             <SelectTrigger className="w-[200px] mt-4 sm:mt-0 border-r-4 border-b-4 border-primary text-primary">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-primary text-white">
               {statusOptions.map((status) => (
                 <SelectItem key={status} value={status} className="capitalize">
                   {status}
