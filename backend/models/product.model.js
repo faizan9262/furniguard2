@@ -10,8 +10,8 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
+    images: {
+      type: [String],
       required: true,
     },
     category: {
@@ -20,11 +20,6 @@ const productSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: true,
-    },
-    designer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "DesignerModel",
       required: true,
     },
   },

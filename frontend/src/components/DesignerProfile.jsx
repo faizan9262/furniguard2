@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import AddProjectDialog from "./ProjectDialog";
 import EditDesignerProfileDialog from "./DesignerProfileDialog";
 import { IoLogoWhatsapp } from "react-icons/io";
+import { TbBulb } from "react-icons/tb";
 
 const DesignerProfile = () => {
   const navigate = useNavigate();
@@ -204,16 +205,7 @@ const DesignerProfile = () => {
                 <h3 className="text-2xl font-semibold text-[#2d9b67]">
                   Profile Overview
                 </h3>
-                <EditDesignerProfileDialog>
-                  <Button
-                    variant="outline"
-                    className="w-1/6 bg-primary/20 text-[#2d9b67] hover:bg-[#277b59]"
-                    onClick={() => navigate("/appointments")}
-                  >
-                    <LiaUserEditSolid className="" />{" "}
-                    <span className="hidden md:block">Edit Profile</span>
-                  </Button>
-                </EditDesignerProfileDialog>
+                <EditDesignerProfileDialog />
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -225,12 +217,15 @@ const DesignerProfile = () => {
                 </p>
               </div>
               <div className="flex flex-wrap gap-6">
-                <div className="bg-[#e3f5ea] max-h-28 md:max-h-24 scroll-smooth scrollbar-hide overflow-y-auto rounded-xl p-4 w-full sm:w-[48%]">
+                <div className="bg-[#e3f5ea] rounded-xl p-4 w-full sm:w-[48%]">
                   <h4 className="text-[#326951] font-medium">Expertise</h4>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex gap-2 flex-wrap max-h-28 md:max-h-16 scroll-smooth scrollbar-hide overflow-y-auto">
                     {designer?.expertise?.length > 0
                       ? designer.expertise.map((ex, idx) => (
-                          <Badge key={idx} className="bg-primary mt-1 text-white">
+                          <Badge
+                            key={idx}
+                            className="bg-primary mt-1 text-white"
+                          >
                             {ex}
                           </Badge>
                         ))
@@ -322,17 +317,20 @@ const DesignerProfile = () => {
               ))
             : "No Projects Found."}
         </div>
-        <div className="bg-yellow-100 dark:bg-yellow-200/10 my-8 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-500/40 px-4 py-3 rounded-xl text-sm">
-          <p className="font-medium">Note:</p>
-          <p>
-            You cannot modify or Edit Projects Details. In case of any mistake
-            or want to edit, please
-            <span className="font-semibold text-red-600 dark:text-red-400">
-              {" "}
-              Delete{" "}
-            </span>
-            the Project and Re-upload.
-          </p>
+        <div className="bg-primary/20 my-8 text-primary border-l-[6px] border-primary dark:border-yellow-500/40 px-4 py-3 rounded-lg text-sm">
+          <div className="flex items-center gap-1">
+            <TbBulb size={18} />
+            <p className="font-medium">TIP</p>
+          </div>
+            <p>
+              You cannot modify or Edit Projects Details. In case of any mistake
+              or want to edit, please
+              <span className="font-semibold text-red-600 dark:text-red-400">
+                {" "}
+                Delete{" "}
+              </span>
+              the Project and Re-upload.
+            </p>
         </div>
       </section>
     </div>

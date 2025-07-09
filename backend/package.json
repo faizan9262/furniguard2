@@ -29,6 +29,8 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "react-google-login": "^5.2.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "streamifier": "^0.1.1",
     "validator": "^13.12.0"
   }

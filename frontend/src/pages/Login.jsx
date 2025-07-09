@@ -1,13 +1,27 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {toast} from 'sonner'
+import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "../components/components/ui/card";
+import { Input } from "../components/components/ui/input";
+import { Label } from "../components/components/ui/label";
+import { Button } from "../components/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
+
 const Login = () => {
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const auth = useAuth()
-  const navigate = useNavigate()
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,69 +32,85 @@ const Login = () => {
     if (!email || !password) {
       return toast.error("All fields are required");
     }
+
     try {
-      toast.loading("Siging In", { id: "login" });
+      toast.loading("Signing In...", { id: "login" });
       await auth.login(email, password);
-      toast.success("Sign in Successfully", { id: "login" });
+      toast.success("Signed in successfully", { id: "login" });
       navigate("/");
     } catch (error) {
-      console.log(error);
-      toast.error(error.message, { id: "login" });
+      toast.error(error.message || "Login failed", { id: "login" });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="bg-slate-200">
-        <div className="mx-4 sm:mx-[10%] min-h-screen flex items-center justify-center relative">
-          {/* Overlay Loader */}
-          <div className="w-full sm:w-2/5 flex flex-col p-4 shadow-lg gap-3 bg-white items-center rounded-lg z-10">
-            <div className="flex justify-between gap-4 items-center">
+    <div className="min-h-screen flex items-center justify-center bg-muted px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-md">
+        <Card className="shadow-xl border border-primary">
+          <CardHeader>
+            <div className="flex justify-between items-center">
               <span
                 onClick={() => navigate("/")}
-                className="text-xl sm:text-2xl font-semibold shadow-lg border-2 border-secondary text-white bg-secondary cursor-pointer rounded-full py-1 px-3 "
+                className="text-xl sm:text-2xl font-semibold shadow-lg border-2 border-secondary text-white bg-secondary cursor-pointer rounded-full py-1 px-3"
               >
                 FURNIGUARD&reg;
               </span>
-              <h1 className="text-xl sm:text-3xl text-primary font-medium">Login Here</h1>
+              <CardTitle className="text-xl sm:text-2xl text-primary">
+                Login Here
+              </CardTitle>
             </div>
-            <div className="w-full flex flex-col gap-2 sm:gap-4 mt-2">
-              <div className="flex flex-col mx-4 gap-1">
-                <label className="text-sm sm:text-lg text-primary mx-2 sm:mx-3">Email</label>
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  name="email"
-                  className="w-full text-sm sm:text-base py-2 text-primary outline-none rounded-full px-3 bg-slate-100 border-2 border-primary"
-                  type="email"
-                  placeholder="Enter Email"
-                />
-              </div>
-              <div className="flex flex-col mx-4 gap-1">
-                <label className="text-sm sm:text-lg text-primary mx-2 sm:mx-3">Password</label>
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
+          </CardHeader>
+
+          <CardContent className="space-y-4">
+            <div className="grid w-full items-center gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="grid w-full gap-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
                   name="password"
-                  className="w-full text-sm sm:text-base py-2 text-primary outline-none rounded-full px-3 bg-slate-100 border-2 border-primary"
-                  type="password"
-                  placeholder="Enter Password"
+                  type={showPass ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((prev) => !prev)}
+                  className="absolute right-2 top-2.5 text-muted-foreground hover:text-primary transition"
+                >
+                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
-            <div className="flex px-4 flex-col w-full items-center gap-4 justify-between">
-            
-                <button className="flex items-center justify-center gap-2 bg-primary text-white rounded-full px-5 w-full py-2 text-base sm:text-lg font-medium shadow-md hover:bg-secondary transition-all duration-300">
-                  Log in
-                </button>
-              <p className="text-sm sm:text-base text-primary cursor-pointer">
-                <Link to={"/register"}>Don't have an account?</Link>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+          </CardContent>
+
+          <CardFooter className="flex flex-col gap-3">
+            <Button type="submit" className="w-full">
+              Log In
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-primary underline">
+                Register
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   );
 };
 

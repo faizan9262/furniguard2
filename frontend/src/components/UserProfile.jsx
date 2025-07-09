@@ -18,6 +18,7 @@ import { PiListHeart } from "react-icons/pi";
 import { Button } from "@/components/components/ui/button";
 import { useDesiner } from "../context/DesignerContex";
 import { useAppointment } from "../context/AppointmentsContex";
+import { toast } from "sonner";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -29,7 +30,6 @@ const UserProfile = () => {
   let pendingAppointment = 0;
   const appointment = useAppointment();
   const allAppointmentsOfUser = appointment?.allAppointments;
- 
 
   allAppointmentsOfUser?.forEach((ap) => {
     if (ap.status !== "completed") {
@@ -43,17 +43,21 @@ const UserProfile = () => {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    
     if (!file) return;
+
+    setSelectedFile(file); // show preview immediately
 
     try {
       toast.loading("Updating Your Profile", { id: "update-profile" });
 
       const formData = new FormData();
       formData.append("profile", file);
+      console.log("Form Data:", formData.get("profile"));
+      console.log("Form Data:", formData);
+
 
       const data = await auth.updateProfilePic(formData);
-
-      setSelectedFile(null);
 
       toast.success("Profile Updated", { id: "update-profile" });
     } catch (error) {
@@ -81,7 +85,6 @@ const UserProfile = () => {
     navigate("/login");
   };
 
- 
   return (
     <div className="min-h-screen bg-gradient-to-r from-[#effaf2] to-[#c8ebd9] py-12 px-4 flex flex-col items-center justify-center">
       <motion.div

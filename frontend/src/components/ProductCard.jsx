@@ -18,13 +18,11 @@ const ProductCard = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="cursor-pointer shadow-md flex rounded-xl overflow-hidden"
+      className="cursor-pointer shadow-md rounded-xl overflow-hidden"
     >
       <div className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
         {/* Floating Price Tag on Hover */}
-        <div
-          className="absolute top-3 right-3 bg-[#2d9b67] text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md transition-all duration-300"
-        >
+        <div className="absolute top-3 right-3 bg-[#2d9b67] text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md transition-all duration-300">
           ₹{price}
         </div>
 

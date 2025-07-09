@@ -107,11 +107,9 @@ export default function AddProjectDialog({
           />
 
           <div className="space-y-2">
-            <label className="font-medium text-sm">
-              Project Links (comma separated)
-            </label>
+            <label className="font-medium text-sm">Project Link</label>
             <Input
-              placeholder="https://link1.com, https://link2.com"
+              placeholder="https://link.com"
               value={links.join(", ")}
               onChange={(e) =>
                 setLinks(e.target.value.split(",").map((link) => link.trim()))

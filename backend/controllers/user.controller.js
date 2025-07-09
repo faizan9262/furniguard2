@@ -1,6 +1,5 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../models/user.model.js";
 import dotenv from "dotenv";
 import { createToken } from "../utils/token-manager.js";
 import {
@@ -11,6 +10,7 @@ import {
 import { sendMail } from "../utils/sendmail.js";
 import { generateOtp } from "../utils/generateOtp.js";
 import { Designer } from "../models/designer.model.js";
+import { UserModel } from "../models/user.model.js";
 dotenv.config();
 
 const COOKIE_NAME = "auth-cookie";
@@ -198,6 +198,28 @@ export const admiLogin = async (req, res) => {
     });
   }
 };
+
+export const adminLogout = (req, res) => {
+  try {
+    res.clearCookie("admin-token", {
+      httpOnly: true,
+      secure: false, // set to true in production if using HTTPS
+      sameSite: "lax",
+    });
+
+    res.json({
+      success: true,
+      message: "Admin logged out successfully",
+    });
+  } catch (error) {
+    console.log("Logout Error: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong during logout",
+    });
+  }
+};
+
 
 export const logoutUser = async (req, res) => {
   try {
@@ -498,6 +520,7 @@ export const updatePassword = async (req, res) => {
 
 export const changeProfilePic = async (req, res) => {
   try {
+    // console.log("Request file:", req.file.path);
     const user = await UserModel.findById(res.locals.jwtData.id);
     if (!user) {
       return res
@@ -510,6 +533,8 @@ export const changeProfilePic = async (req, res) => {
     }
 
     const userId = user._id;
+
+    
 
     if (!req.file || !req.file.path) {
       return res.status(400).json({ message: "No file uploaded" });

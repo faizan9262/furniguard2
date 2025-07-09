@@ -18,23 +18,21 @@ const ProductDetail = () => {
   const [rating, setRating] = useState({});
 
   const [showAllRatings, setShowAllRatings] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(3); 
+  const [visibleCount, setVisibleCount] = useState(3);
 
-  console.log("List in details page: ",product.list);
+  console.log("List in details page: ", product.list);
   useEffect(() => {
     const updateCount = () => {
       const width = window.innerWidth;
-      if (width < 640) setVisibleCount(2); 
-      else if (width < 1024) setVisibleCount(3); 
-      else setVisibleCount(4); 
+      if (width < 640) setVisibleCount(2);
+      else if (width < 1024) setVisibleCount(3);
+      else setVisibleCount(4);
     };
 
-    updateCount(); 
+    updateCount();
     window.addEventListener("resize", updateCount);
     return () => window.removeEventListener("resize", updateCount);
   }, []);
-
-  
 
   const products = product?.list?.find((p) => p._id === id);
   const relatedProducts = product?.list?.filter(
@@ -53,12 +51,15 @@ const ProductDetail = () => {
     fetchRating();
   }, [id]);
 
-
   if (!products) {
     return <div>Product not found</div>;
   }
 
   const roundedRating = Math.round(products.averageRating || 0);
+
+  const [activeImage, setActiveImage] = useState(
+    products?.images?.length > 0 ? products.images[0] : products.image
+  );
 
   return (
     <div className="px-4 py-10 sm:px-[5%] bg-gradient-to-br from-[#effaf2] to-[#c8ebd9] min-h-screen">
@@ -71,21 +72,29 @@ const ProductDetail = () => {
           transition={{ duration: 0.6 }}
           className="space-y-4"
         >
+          {/* Large Image Preview */}
           <div className="aspect-[4/3] max-h-[400px] w-full rounded-xl overflow-hidden shadow-xl">
             <img
-              src={products.image}
-              alt={products.name}
+              src={activeImage}
+              alt="Main Preview"
               className="w-full h-full object-cover"
             />
           </div>
 
+          {/* Thumbnails */}
           <div className="grid grid-cols-4 gap-3">
-            {[...Array(4)].map((_, i) => (
+            {(products?.images?.length > 0
+              ? products.images
+              : [products.image]
+            ).map((image, i) => (
               <img
                 key={i}
-                src={products.image}
+                src={image}
                 alt={`Thumb ${i}`}
-                className="rounded-md object-cover w-full h-20 shadow"
+                onClick={() => setActiveImage(image)}
+                className={`rounded-md object-cover w-full h-20 shadow cursor-pointer transition-all duration-200 hover:scale-105 ${
+                  activeImage === image ? "ring-2 ring-primary" : ""
+                }`}
               />
             ))}
           </div>
@@ -98,7 +107,9 @@ const ProductDetail = () => {
           transition={{ duration: 0.6 }}
           className="space-y-6"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-[#2d9b67]">{products.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#2d9b67]">
+            {products.name}
+          </h1>
           <div className="flex items-center gap-2">
             {[...Array(5)].map((_, i) => (
               <FaStar
@@ -123,13 +134,22 @@ const ProductDetail = () => {
           </p>
 
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
+            <Badge
+              variant="outline"
+              className="bg-primary/20 text-primary-foreground border-none"
+            >
               Eco-Friendly
             </Badge>
-            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
+            <Badge
+              variant="outline"
+              className="bg-primary/20 text-primary-foreground border-none"
+            >
               Durable
             </Badge>
-            <Badge variant="outline" className="bg-primary/20 text-primary-foreground border-none">
+            <Badge
+              variant="outline"
+              className="bg-primary/20 text-primary-foreground border-none"
+            >
               Customizable
             </Badge>
           </div>
@@ -234,7 +254,7 @@ const ProductDetail = () => {
               onClick={() => navigate(`/products/${p.category}/${p._id}`)}
             >
               <img
-                src={p.image}
+                src={p.image || p.images[0]}
                 alt=""
                 className="w-full h-60 object-cover rounded-xl mb-3"
               />
@@ -244,8 +264,18 @@ const ProductDetail = () => {
                   Elegant & modern design crafted for durability.
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  <Badge variant="outline" className="text-primary-foreground bg-primary/20 border-none">{p.category}</Badge>
-                  <Badge variant="outline" className="text-primary-foreground bg-primary/20 border-none">Modern</Badge>
+                  <Badge
+                    variant="outline"
+                    className="text-primary-foreground bg-primary/20 border-none"
+                  >
+                    {p.category}
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="text-primary-foreground bg-primary/20 border-none"
+                  >
+                    Modern
+                  </Badge>
                 </div>
               </div>
               <div className="absolute top-3 right-3 bg-[#2d9b67] text-white px-2 py-1 text-xs rounded-full">

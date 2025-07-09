@@ -14,10 +14,13 @@ import { IoLogoWhatsapp } from "react-icons/io";
 
 const DesignerDetail = () => {
   const { id } = useParams();
-  const auth = useAuth()
+  const auth = useAuth();
+  
   const navigate = useNavigate();
   const DesignerContex = useDesiner();
   const designer = DesignerContex.designers.find((d) => d._id === id);
+  console.log("Designer: ", designer?.user?._id);
+  
   const [rating, setRating] = useState({});
 
   const [showAllRatings, setShowAllRatings] = useState(false);
@@ -114,13 +117,19 @@ const DesignerDetail = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-sm text-left">
             <div className="flex items-start justify-start gap-6">
               <div>
-                <p className="text-muted-foreground font-medium flex items-center gap-2"><IoLogoWhatsapp className="text-primary"/>Phone</p>
+                <p className="text-muted-foreground font-medium flex items-center gap-2">
+                  <IoLogoWhatsapp className="text-primary" />
+                  Phone
+                </p>
                 <p className="text-secondary font-semibold">
                   {designer.phone || "N/A"}
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground flex gap-2 items-center font-medium"><FaEnvelope className="text-primary" />Email</p>
+                <p className="text-muted-foreground flex gap-2 items-center font-medium">
+                  <FaEnvelope className="text-primary" />
+                  Email
+                </p>
                 <p className="text-secondary font-semibold">
                   {designer?.user?.email || "N/A"}
                 </p>
@@ -178,6 +187,18 @@ const DesignerDetail = () => {
             onClick={() => navigate("/register")}
           >
             Consult Now <FaArrowRight className="ml-2" />
+          </Button>
+          <Button
+            className="mt-6 rounded-full bg-primary text-white hover:bg-secondary transition-all"
+            onClick={() =>
+              navigate(
+                `/chat/${designer?.user?._id}/${
+                  auth?.user?.role === "designer" ? "user" : "designer"
+                }`,{state: { user: { name: designer?.user?.username, profilePicture:designer?.user?.profilePicture } } }
+              )
+            }
+          >
+            Talk Now <FaArrowRight className="ml-2" />
           </Button>
         </div>
       </motion.div>

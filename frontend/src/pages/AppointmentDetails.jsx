@@ -44,6 +44,7 @@ import {
 import RateComponent from "@/components/RateDialog";
 import { MdDelete, MdDeleteOutline } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
+import { TbBulb } from "react-icons/tb";
 
 const AppointmentDetailPage = () => {
   const { id } = useParams();
@@ -397,17 +398,20 @@ const AppointmentDetailPage = () => {
           </Card>
         ))}
       </div>
-      <div className="bg-yellow-100 dark:bg-yellow-200/10 text-yellow-800 dark:text-yellow-200 border border-yellow-300 dark:border-yellow-500/40 px-4 py-3 rounded-xl text-sm">
-        <p className="font-medium">Note:</p>
-        <p>
-          You cannot modify or update this appointment. In case of any mistake,
-          please
-          <span className="font-semibold text-red-600 dark:text-red-400">
-            {" "}
-            cancel{" "}
-          </span>
-          this appointment and create a new one.
-        </p>
+      <div className="bg-primary/20 my-8 text-primary border-l-[6px] border-primary dark:border-yellow-500/40 px-4 py-3 rounded-lg text-sm">
+        <div className="flex items-center gap-1">
+          <TbBulb size={18} />
+          <p className="font-medium">TIP</p>
+        </div>
+          <p>
+            You cannot modify or update this Appointment. In case of any mistake
+            or want to Update, please
+            <span className="font-semibold text-red-600 dark:text-red-400">
+              {" "}
+              Cancel{" "}
+            </span>
+            the Appointment and book again.
+          </p>
       </div>
     </div>
   );

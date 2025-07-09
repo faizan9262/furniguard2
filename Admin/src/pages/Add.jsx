@@ -1,28 +1,49 @@
 import React, { useState } from "react";
-import { assets } from "../assets/assets";
 import axios from "axios";
-import { BsHouseAddFill } from "react-icons/bs";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
+import { LuImageUp } from "react-icons/lu";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "../components/components/ui/card";
+import { Input } from "../components/components/ui/input";
+import { Label } from "../components/components/ui/label";
+import { Button } from "../components/components/ui/button";
+import { Textarea } from "../components/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/components/ui/select";
+import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
-const Add = ({ token }) => {
-  const [product_img, setProduct_Img] = useState(false);
+const AddProduct = () => {
+  const [product_imgs, setProduct_Imgs] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("flooring");
+  const navigate = useNavigate();
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     try {
+      toast.loading("Adding product...", { id: "addProduct" });
       const formData = new FormData();
-
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
       formData.append("price", price);
-      formData.append("product_img", product_img);
+      product_imgs.forEach((img) => {
+        formData.append("product_img", img);
+      });
 
       const response = await axios.post(
         backendUrl + "/api/products/add",
@@ -31,116 +52,153 @@ const Add = ({ token }) => {
       );
 
       if (response.data.success) {
+        toast.success("Product added successfully", { id: "addProduct" });
         setName("");
         setDescription("");
         setPrice("");
-        setProduct_Img(false);
-        toast.success(response.data.message);
+        setProduct_Imgs(null);
+        navigate("/products");
       } else {
+        console.error("Failed to add product", response.data.message);
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(response.data.message);
-      toast.error(response.data.message);
+      console.log(error);
+      toast.error("Something went wrong while adding product. Try again.", {
+        id: "addProduct",
+      });
     }
   };
+
+  const removeImage = (index) => {
+    setProduct_Imgs((prev) => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <div className="min-h-screen mx-4 sm:mx-[10%]">
-      <h1 className="text-4xl text-primary font-semibold">Add Product Here</h1>
-      <div className="bg-stone-100 mt-5 rounded-lg shadow-md p-4 flex">
-        <form className="flex-1" onSubmit={onSubmitHandler}>
-          <div>
-            <p className="text-2xl my-3 text-gray-600">Add Image Here</p>
-            <div className="flex">
-              <label htmlFor="product_img">
-                <img
-                  className="w-40"
-                  src={
-                    !product_img
-                      ? assets.upload
-                      : URL.createObjectURL(product_img)
-                  }
-                  alt=""
-                />
-                <input
-                  onChange={(e) => setProduct_Img(e.target.files[0])}
-                  type="file"
-                  id="product_img"
-                  hidden
-                />
-              </label>
-            </div>
+    <div className="min-h-screen bg-[#f5fdf9] px-4 sm:px-10 py-10 flex flex-col items-center">
+      <Card className="w-full max-w-3xl border border-muted-foreground/20 shadow-sm">
+        <form onSubmit={onSubmitHandler}>
+          <CardHeader>
+            <CardTitle className="text-primary text-2xl">
+              Add New Product
+            </CardTitle>
+          </CardHeader>
 
-            <div className="w-full">
-              <p className="my-2 text-2xl text-gray-600">Product name</p>
-              <input
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-                className="w-full max-w-[500px] px-3 py-2"
-                type="text"
-                placeholder="Type here"
-                required
-              />
-            </div>
+          <CardContent className="space-y-5">
+            <div className="grid gap-2 text-primary">
+              <Label htmlFor="product_img">Product Images</Label>
+              <div className="flex flex-wrap gap-4">
+                {product_imgs.map((img, index) => (
+                  <div key={index} className="w-28 h-28 relative">
+                    <div key={index} className="w-28 h-28 relative group">
+                      <img
+                        src={URL.createObjectURL(img)}
+                        alt={`preview-${index}`}
+                        className="w-full h-full object-cover rounded-md border"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full text-xs p-1 hidden group-hover:flex"
+                        title="Remove"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
 
-            <div className="w-full">
-              <p className="my-2 text-2xl text-gray-600">Product description</p>
-              <textarea
-                onChange={(e) => setDescription(e.target.value)}
-                value={description}
-                className="w-full max-w-[500px] px-3 py-2"
-                type="text"
-                placeholder="Write content description here"
-                required
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row mt-5 gap-4 w-full sm:gap-8">
-              <div>
-                <p className="my-2 text-2xl text-gray-600">Product Category</p>
-                <select
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-5 py-2"
+                <label
+                  htmlFor="product_img"
+                  className="w-28 h-28 flex items-center justify-center border border-dashed rounded-md cursor-pointer hover:bg-primary/10 transition"
                 >
-                  <option value="flooring">Flooring</option>
-                  <option value="livingroom">Living Room</option>
-                  <option value="kitchen">Kitchen</option>
-                  <option value="stairs">Stairs</option>
-                  <option value="lights">Lights</option>
-                  <option value="textile">Textile</option>
-                  <option value="layout">Layout</option>
-                  <option value="furniture">Furniture</option>
-                  <option value="bathroom">Bathroom</option>
-                  <option value="wallpaper">Wallpaper</option>
-                </select>
+                  <LuImageUp className="text-muted-foreground text-2xl" />
+                  <input
+                    id="product_img"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    hidden
+                    onChange={(e) =>
+                      setProduct_Imgs((prev) => [
+                        ...prev,
+                        ...Array.from(e.target.files),
+                      ])
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="grid gap-2 text-primary">
+              <Label htmlFor="name">Product Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Luxury Wooden Chair"
+                required
+              />
+            </div>
+
+            <div className="grid gap-2 text-primary">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Detailed product description..."
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid gap-2 text-primary">
+                <Label htmlFor="category">Category</Label>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger id="category" className="w-full">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white text-primary">
+                    <SelectItem value="flooring">Flooring</SelectItem>
+                    <SelectItem value="livingroom">Living Room</SelectItem>
+                    <SelectItem value="kitchen">Kitchen</SelectItem>
+                    <SelectItem value="stairs">Stairs</SelectItem>
+                    <SelectItem value="lights">Lights</SelectItem>
+                    <SelectItem value="textile">Textile</SelectItem>
+                    <SelectItem value="layout">Layout</SelectItem>
+                    <SelectItem value="furniture">Furniture</SelectItem>
+                    <SelectItem value="bathroom">Bathroom</SelectItem>
+                    <SelectItem value="wallpaper">Wallpaper</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <p className="my-2 text-2xl text-gray-600">Product Price</p>
-                <input
-                  onChange={(e) => setPrice(e.target.value)}
-                  value={price}
-                  className="w-ful; px-5 py-2 sm:w-[120px]"
+              <div className="grid gap-2 text-primary">
+                <Label htmlFor="price">Price (₹)</Label>
+                <Input
+                  id="price"
                   type="number"
-                  placeholder="250"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="2500"
                 />
               </div>
             </div>
-          </div>
-          <button
-            type="submit"
-            className="flex gap-2 items-center justify-center w-28 py-2 mt-4 bg-primary rounded-full hover:bg-secondary hover:scale-105 transition-all duration-300 text-white"
-          >
-            ADD
-            <BsHouseAddFill />
-          </button>
+          </CardContent>
+
+          <CardFooter className="mt-6">
+            <Button
+              type="submit"
+              className="w-full sm:w-auto bg-primary text-white hover:bg-primary-foreground"
+            >
+              Add Product
+            </Button>
+          </CardFooter>
         </form>
-        <div className="items-center flex-1 flex">
-          <img className="w-96" src={assets.logo} alt="" />
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };
 
-export default Add;
+export default AddProduct;

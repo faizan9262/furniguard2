@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { PlusCircle, X } from "lucide-react";
 import { editDesignerProfile } from "../helper/api-communicator.js";
 import { useDesiner } from "../context/DesignerContex";
+import { LiaUserEditSolid } from "react-icons/lia";
 
 const types = [
   "interior designer",
@@ -101,9 +102,10 @@ export default function EditDesignerProfileDialog() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="bg-primary/10 text-[#2d9b67] hover:bg-[#277b59]"
+          className="bg-primary/20 text-[#2d9b67] hover:bg-[#277b59]"
         >
-          Edit Profile
+          <LiaUserEditSolid className="" />{" "}
+          <span className="hidden md:block">Edit Profile</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-sm:max-w-sm max-sm:px-4">
@@ -184,7 +186,7 @@ export default function EditDesignerProfileDialog() {
                 className="px-3 py-2"
                 disabled={!expertiseInput.trim()}
               >
-                <PlusCircle/>
+                <PlusCircle />
               </Button>
             </div>
 

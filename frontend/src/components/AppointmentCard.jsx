@@ -127,7 +127,7 @@ const AppointmentCard = ({
               <p className="text-sm font-medium text-primary">
                 {designer?.user?.username}
               </p>
-              <p className="text-sm text-muted-foreground">{designer?.type}</p>
+              <p className="text-sm text-muted-foreground line-clamp-1">{designer?.type}</p>
             </div>
           </div>
         </div>

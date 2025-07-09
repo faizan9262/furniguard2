@@ -131,8 +131,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-  const updateProfilePic = async (imageUrl) => {
-    const data = await updateProfile(imageUrl);
+  const updateProfilePic = async (formData) => {
+    const data = await updateProfile(formData);
     // console.log("User",data);
     if (data) {
       setUser((prevUser) => ({

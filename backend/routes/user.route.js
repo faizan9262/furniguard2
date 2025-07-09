@@ -1,6 +1,7 @@
 import express from "express";
 import {
   admiLogin,
+  adminLogout,
   changeProfilePic,
   loginUser,
   logoutUser,
@@ -21,7 +22,8 @@ const userRouter = express.Router();
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
 userRouter.post("/logout", verifyToken, logoutUser);
-userRouter.post("/admin", admiLogin);
+userRouter.post("/admin/login", admiLogin);
+userRouter.get("/admin/logout", adminLogout);
 userRouter.get("/admin/check-auth", adminAuth, (req, res) => {
   res.json({
     success: true,

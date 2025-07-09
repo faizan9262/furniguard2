@@ -10,7 +10,7 @@ import Login from "./pages/Login.jsx";
 import DesignerDetail from "./components/DesignerDetail.jsx";
 import ProductDetail from "./components/ProductDetail.jsx";
 import Rooms from "./pages/Rooms.jsx";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import Profile from "./pages/Profile.jsx";
 import Wishlist from "./pages/Wishlist.jsx";
 import Appointments from "./pages/Appointments.jsx";
@@ -19,15 +19,50 @@ import PasswordUpdate from "./pages/PasswordUpdate.jsx";
 import PasswordReset from "./pages/PasswordReset.jsx";
 import AppointmentDetailPage from "./pages/AppointmentDetails.jsx";
 import NewAppointment from "./pages/NewAppointment.jsx";
-import DesignerNotifications from "./pages/DesignerNotifications.jsx";
+import { useEffect } from "react";
+import socket from "./socket.js";
+import ChatBox from "./pages/Chatbox.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
+import Inbox from "./pages/Inbox.jsx";
 
 function App() {
+  const auth = useAuth();
+  // console.log("Role:", auth?.user?.role);
+
+  useEffect(() => {
+    const handleConnect = () => {
+      console.log("Connected with ID:", socket.id);
+    };
+
+    const handleDisconnect = () => {
+      console.log("Disconnected from socket");
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (auth?.user?.id) {
+      socket.emit("join", auth?.user?.id);
+    }
+    console.log("Joined: ");
+    
+  }, [auth?.user?.id]);
+
   return (
     <>
       <Navbar />
       <div>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/chat/:receiverId/:receiverRole" element={<ChatBox />} />
+          <Route path="/inbox" element={<Inbox />} />
           <Route path="/products" element={<Products />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/products/:category/:id" element={<ProductDetail />} />
@@ -41,7 +76,6 @@ function App() {
 
           <Route path="/designers" element={<Designers />} />
           <Route path="/designers/:id" element={<DesignerDetail />} />
-          <Route path="/notifications" element={<DesignerNotifications />} />
 
           <Route path="/wishlist" element={<Wishlist />} />
 

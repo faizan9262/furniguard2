@@ -9,6 +9,7 @@ import {
   HomeIcon,
   InfoIcon,
   LayoutPanelLeftIcon,
+  LogOutIcon,
   Menu,
   SofaIcon,
   User2,
@@ -18,6 +19,11 @@ import {
   SheetContent,
   SheetTrigger,
 } from "../components/components/ui/sheet";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { backendUrl } from "../pages/Add";
+import { BsMessenger } from "react-icons/bs";
+import { GrUserWorker } from "react-icons/gr";
 
 const Navbar = () => {
   const location = useLocation();
@@ -34,8 +40,24 @@ const Navbar = () => {
     setMenuOpen(!menuOpen); // Toggle the menu open/close
   };
 
-  const handleLogout = () => {
-    removeToken();
+  const handleLogout = async () => {
+    try {
+      toast.loading("Logging out...", { toastId: "logout" });
+      const response = await axios.get(backendUrl + "/api/user/admin/logout", {
+        withCredentials: true,
+      });
+      if (response.data.success) {
+        console.log("Logout successful");
+        toast.success("Logged out successfully", { toastId: "logout" });
+        navigate("/login");
+      } else {
+        console.error("Logout failed", response.data.message);
+        toast.error("Logout failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Logout failed", error);
+      toast.error("Logout failed. Please try again.");
+    }
   };
 
   const isActive = (path) => {
@@ -48,7 +70,6 @@ const Navbar = () => {
         !currentPath.startsWith("/products/layout")
       );
     }
-
 
     if (path === "/designers") {
       return currentPath.startsWith("/designers");
@@ -89,17 +110,7 @@ const Navbar = () => {
               <HomeIcon /> Home
             </Button>
 
-            <Button
-              onClick={() => navigate("/notifications")}
-              className={`text-xl  font-semibold hover:bg-white ${
-                isActive("/notifications")
-                  ? "bg-[#326951] border-2 border-white"
-                  : "text-white"
-              }`}
-              variant="ghost"
-            >
-              <Bell /> Notifications
-            </Button>
+           
             <Button
               onClick={() => navigate("/appointments")}
               className={`text-xl  font-semibold hover:bg-white ${
@@ -132,7 +143,7 @@ const Navbar = () => {
               }`}
               variant="ghost"
             >
-              <User2 /> Designers
+              <GrUserWorker /> Designers
             </Button>
             <Button
               onClick={() => navigate("/about")}
@@ -145,8 +156,38 @@ const Navbar = () => {
             >
               <InfoIcon /> About
             </Button>
+             <Button
+              onClick={() => navigate("/notifications")}
+              className={`text-xl  font-semibold rounded-full p-2 border-2 border-white bg-primary-foreground hover:bg-white ${
+                isActive("/notifications")
+                  ? "bg-white border-2 scale-110 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <BsMessenger className={`w-6 h-6 ${isActive?"text-primary":"text-white"}`} />
+            </Button>
+            <Button
+              onClick={handleLogout}
+              className={`text-xl p-2 border-2 border-white font-semibold bg-primary-foreground hover:bg-white rounded-full text-white`}
+              variant="ghost"
+            >
+              <LogOutIcon className="w-6 h-6 text-white" />
+            </Button>
+            
           </nav>
           <p className="mx-6 text-white font-semibold text-lg">Hey, Admin</p>
+            <Button
+              onClick={() => navigate("/notifications")}
+              className={`text-xl md:hidden font-semibold rounded-full p-2 border-2 border-white bg-white hover:bg-primary-foreground ${
+                isActive("/notifications")
+                  ? "bg-[#326951] border-2 scale-110 border-white"
+                  : "text-white"
+              }`}
+              variant="ghost"
+            >
+              <Bell className="w-6 h-6 text-primary" />
+            </Button>
           <Sheet open={open} onOpenChange={setOpen}>
             {" "}
             {/* ✅ Step 2: controlled */}
@@ -161,9 +202,9 @@ const Navbar = () => {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="bg-primary h-[45%] rounded-sm m-3 border-2 border-white w-53"
+              className="bg-primary h-[50%] rounded-md m-3 border-2 border-white w-53"
             >
-              <nav className="flex flex-col items-start font-space gap-4 mt-10">
+              <nav className="flex flex-col items-start font-space gap-4">
                 <Button
                   onClick={() => navigate("/")}
                   className={`text-xl font-semibold ${
@@ -218,6 +259,13 @@ const Navbar = () => {
                   variant="ghost"
                 >
                   <InfoIcon /> About
+                </Button>
+                <Button
+                  onClick={handleLogout}
+                  className={`text-xl font-semibold bg-primary-foreground rounded-full text-white`}
+                  variant="ghost"
+                >
+                  <LogOutIcon /> Logout
                 </Button>
               </nav>
             </SheetContent>

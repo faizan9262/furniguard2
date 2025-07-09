@@ -195,3 +195,6 @@ const About = () => {
 };
 
 export default About;
+
+
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;

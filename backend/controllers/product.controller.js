@@ -7,58 +7,39 @@ const addProduct = async (req, res) => {
   try {
     const { name, description, category, price } = req.body;
 
-    // Corrected: Accessing single uploaded image
-    const product_img = req.file;
+    // ⛳ Cloudinary middleware attaches this
+    const imageUrls = req.images;
 
-    let imageUrl = "";
-    if (product_img) {
-      try {
-        let result = await cloudinary.uploader.upload(product_img.path, {
-          resource_type: "image",
-        });
-        imageUrl = result.secure_url; // Store the image URL
-      } catch (error) {
-        console.log(error);
-        // Return after sending the error response to prevent further execution
-        return res.json({
-          success: false,
-          message: error.message,
-        });
-      }
-    } else {
-      // Return after sending the error response if no image is provided
+    if (!imageUrls || !imageUrls.length) {
       return res.json({
         success: false,
-        message: "No image file provided",
+        message: "Image upload failed or no images provided",
       });
     }
 
-    // Prepare product data
     const productData = {
       name,
       description,
       category,
       price,
-      image: imageUrl,
+      images: imageUrls, // ⬅ Store array of URLs
     };
 
-    // Save the product in the database
     const product = new ProductModel(productData);
     await product.save();
 
-    // Return success response after saving product
     return res.json({
       success: true,
       message: "Product added successfully",
     });
   } catch (error) {
-    // Return error response in case of any other error
     return res.json({
       success: false,
       message: error.message,
     });
   }
 };
+
 
 const listProducts = async (req, res) => {
   try {

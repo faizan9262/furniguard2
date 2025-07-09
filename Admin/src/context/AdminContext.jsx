@@ -8,6 +8,7 @@ import {
 export const AdminContex = createContext();
 
 export const AdminContexProvider = (props) => {
+  const [messages, setMessages] = useState([]);
   const [designers, setDesigners] = useState([]);
   const [allAppointments, setAllAppointments] = useState([]);
   const [list, setList] = useState([]);
@@ -25,7 +26,7 @@ export const AdminContexProvider = (props) => {
     const fetchList = async () => {
       try {
         const response = await getAllProducts();
-        console.log("Products response: ",response);
+        // console.log("Products response: ",response);
         
         if (response.success) {
           const allProducts = response.ratedProducts;
@@ -49,14 +50,14 @@ export const AdminContexProvider = (props) => {
   useEffect(() => {
     const getAllAppointmentsOfUser = async () => {
       const data = await getAllAppointments();
-      console.log("Data:", data);
+      // console.log("Data:", data);
       setAllAppointments(data);
     };
     getAllAppointmentsOfUser();
   }, []);
 
   useEffect(() => {
-    console.log("Appointments Array:", allAppointments);
+    // console.log("Appointments Array:", allAppointments);
   }, [allAppointments]);
 
   const removeAppointment = (id) => {
@@ -71,6 +72,8 @@ export const AdminContexProvider = (props) => {
     allAppointments,
     list,
     setList,
+    messages,
+    setMessages
   };
 
   return (

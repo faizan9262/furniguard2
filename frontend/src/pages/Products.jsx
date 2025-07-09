@@ -148,7 +148,7 @@ const Products = () => {
           filteredProducts.map((product) => (
             <ProductCard
               key={product._id}
-              img_src={product.image}
+              img_src={product.image || product.images[0]}
               title={product.name}
               description={product.description}
               category={product.category}

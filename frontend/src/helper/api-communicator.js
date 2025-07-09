@@ -15,7 +15,7 @@ export const loginUser = async (email, password) => {
 
 export const signupUser = async (name, email, password) => {
   try {
-    const response = await axios.post("/user/signup", {
+    const response = await axios.post("/user/register", {
       name,
       email,
       password,
@@ -132,9 +132,9 @@ export const updatePassword = async (oldPassword, newPassword) => {
   }
 };
 
-export const updateProfile = async (imageUrl) => {
+export const updateProfile = async (formdata) => {
   try {
-    const response = await axios.post(`/user/update-profile-pic`, imageUrl);
+    const response = await axios.post(`/user/update-profile-pic`, formdata);
     return response.data;
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
@@ -246,7 +246,7 @@ export const getAllDesigners = async () => {
 };
 
 export const editDesignerProfile = async (formdata) => {
-  const response = await axios.post("/designers/update-profile", formdata)
+  const response = await axios.post("/designers/update-profile", formdata);
 
   if (response.status !== 200) {
     throw new Error("Unable to Update your Profile.");
@@ -270,7 +270,7 @@ export const addProject = async (formdata) => {
 };
 
 export const deleteProject = async (projectId) => {
-  const response = await axios.post("/designers/project/delete",{projectId});
+  const response = await axios.post("/designers/project/delete", { projectId });
 
   if (response.status !== 200) {
     throw new Error("Unable to Delete Project.");
@@ -278,7 +278,6 @@ export const deleteProject = async (projectId) => {
 
   return response.data;
 };
-
 
 // Appointment Apis
 
@@ -316,6 +315,29 @@ export const cancelAppointment = async (appointmentId) => {
   const response = await axios.post("/appointment/cancel", { appointmentId });
   if (response.status !== 200) {
     throw new Error("Unable Cancel Appointment");
+  }
+  const data = await response.data;
+  return data;
+};
+
+
+// Chats and messages
+
+export const getUserInbox = async (userRole, userId) => {
+  const response = await axios.get(`/message/inbox/${userRole}/${userId}`);
+  if (response.status !== 200) {
+    throw new Error("Unable To Load Chats");
+  }
+  const data = await response.data;
+  return data;
+};
+
+
+export const fetchMessages = async (from, receiverId) => {
+  const response = await axios.get(`/message/convo/${from}/${receiverId}`);
+  // console.log("Response: ",response.data);s
+  if (response.status !== 200) {
+    throw new Error("Unable To Load Messages");
   }
   const data = await response.data;
   return data;

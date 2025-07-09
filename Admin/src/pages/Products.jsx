@@ -1,27 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "sonner";
-import { backendUrl } from "./Add";
-
+import React, { useState, useEffect } from "react";
+import { Button } from "../components/components/ui/button";
 import {
-  TbWood,
-  TbSofa,
-  TbToolsKitchen2,
-  TbStairs,
-  TbBulb,
-  TbLayoutDashboard,
-  TbArmchair,
-  TbBath,
-  TbWallpaper,
-  TbWashMachine,
-} from "react-icons/tb";
-
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/components/ui/card";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../components/components/ui/table";
+import { Input } from "../components/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -29,42 +16,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/components/ui/select";
-import { Input } from "../components/components/ui/input";
 import { useAdmin } from "../context/AdminContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import axios from "axios";
+import { backendUrl } from "./Add";
+import { Badge } from "@/components/components/ui/badge";
+import { DeleteIcon, EditIcon, PlusCircle, TrashIcon } from "lucide-react";
+import e from "cors";
+import { MdAdd } from "react-icons/md";
 
 const Products = () => {
-  
+  const { list, setList } = useAdmin();
   const [filteredList, setFilteredList] = useState([]);
-  const [category, setCategory] = useState("flooring");
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate()
-
-  const products = useAdmin()
+  const [category, setCategory] = useState("all");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const filtered = products.list.filter((item) => item.category === category);
+    const filtered = list.filter((product) => {
+      const matchCategory = category === "all" || product.category === category;
+      const matchSearch =
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    });
     setFilteredList(filtered);
-    // console.log("Filter products: ",filtered);
-  }, [category, products.list]);
+  }, [list, searchQuery, category]);
 
-  // console.log("Products in products page: ",products.list);
-  
-
-  const categoryIcons = {
-    flooring: <TbWood className="text-lg mr-2" />, // Wood floor icon
-    livingroom: <TbSofa className="text-lg mr-2" />, // Sofa icon
-    kitchen: <TbToolsKitchen2 className="text-lg mr-2" />, // Kitchen tools
-    stairs: <TbStairs className="text-lg mr-2" />, // Stairs icon
-    lights: <TbBulb className="text-lg mr-2" />, // Bulb (light)
-    textile: <TbWashMachine className="text-lg mr-2" />, // Towel for textile
-    layout: <TbLayoutDashboard className="text-lg mr-2" />, // Layout dashboard
-    furniture: <TbArmchair className="text-lg mr-2" />, // Armchair
-    bathroom: <TbBath className="text-lg mr-2" />, // Bathtub
-    wallpaper: <TbWallpaper className="text-lg mr-2" />, // Wallpaper pattern
+  const handleDelete = async (id) => {
+    try {
+      const res = await axios.delete(`${backendUrl}/api/products/${id}`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        setList(list.filter((item) => item._id !== id));
+        toast.success("Product deleted successfully");
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete product");
+    }
   };
 
   const categories = [
+    "all",
     "flooring",
     "livingroom",
     "kitchen",
@@ -77,40 +75,23 @@ const Products = () => {
     "wallpaper",
   ];
 
-  
-  
-
-  const filteredProducts = products.list?.filter((product) => {
-    const matchCategory =
-      !category || category === "all" || product.category === category;
-
-    const title = product?.title || product?.name || "";
-    const description = product?.description || "";
-
-    const matchSearch =
-      title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      description.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchCategory && matchSearch;
-  });
-
   return (
-    <div className="px-6 sm:px-12 py-10 min-h-screen bg-gradient-to-br from-[#f1f5f9] to-[#e0f2f1]">
-      {/* Header */}
+    <div className="h-full px-4 sm:px-12 py-10 bg-[#f7fcf9]">
+      <h1 className="text-3xl font-bold text-primary mb-6 text-center">
+        Manage Products
+      </h1>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row justify-center items-center sm:items-center gap-4 mb-10">
-        {/* Search Input */}
+      <div className="flex  gap-4 mb-6 justify-center items-center">
         <Input
           placeholder="Search products..."
-          className="w-full sm:w-[40%] border border-[#2d9b67] bg-white text-[#1c4532] placeholder:text-[#2d9b67] rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2d9b67] shadow-sm"
+          className="w-full border-r-4 border-b-4 border-[#2d9b67] bg-white text-[#1c4532] placeholder:text-[#2d9b67] rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2d9b67] shadow-sm"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
-        {/* Category Dropdown */}
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-[200px] border-2 border-[#2d9b67] bg-white text-[#2d9b67] font-medium shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#2d9b67] transition rounded-lg">
+          <SelectTrigger className="w-[200px] border-r-4 border-b-4 border-[#2d9b67] bg-white text-[#2d9b67] font-medium shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#2d9b67] transition rounded-lg">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white border-2 border-[#2d9b67] text-[#2d9b67] rounded-md shadow-lg">
@@ -118,76 +99,153 @@ const Products = () => {
               <SelectItem
                 key={cat}
                 value={cat}
-                className="hover:bg-[#2d9b67]/10 focus:bg-[#2d9b67]/20 text-[#2d9b67] font-medium px-4 py-2 transition-all cursor-pointer flex items-center"
+                className="hover:bg-[#2d9b67]/10 focus:bg-[#2d9b67]/20 text-[#2d9b67] font-medium px-4 py-2 transition-all cursor-pointer capitalize"
               >
-                <span className="flex items-center">
-                  {categoryIcons[cat]}
-                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                </span>
+                {cat}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-      </div>
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1c4532] tracking-tight">
-          {category.charAt(0).toUpperCase() + category.slice(1)} Collection
-        </h1>
-        <p className="text-[#2d9b67] text-sm mt-1 italic">
-          {category === "kitchen"
-            ? "Cook up beauty and functionality 🍳"
-            : category === "bathroom"
-            ? "Refresh your sanctuary 🛁"
-            : category === "furniture"
-            ? "Style meets comfort 🪑"
-            : category === "lights"
-            ? "Illuminate your vision 💡"
-            : category === "wallpaper"
-            ? "Style your walls, style your soul 🖼️"
-            : "Explore our hand-picked finest pieces ✨"}
-        </p>
+        <Button
+          variant="default"
+          className="text-white flex gap-2 font-semibold"
+          onClick={()=> navigate('/add')}
+        >
+          <PlusCircle className="text-white" /> Add
+        </Button>
       </div>
 
-      {/* Products Grid */}
-      {filteredProducts.length === 0 ? (
-        <p className="text-gray-500 text-center mt-20 text-lg">
-          No products found in this category
-        </p>
+      {/* No Products */}
+      {filteredList.length === 0 ? (
+        <p className="text-center text-muted-foreground">No products found.</p>
       ) : (
-        <div className="grid gap-8 cursor-pointer sm:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((item) => (
-            <div
-            onClick={()=> navigate(`/products/${item.category}/${item._id}`)}
-              key={item._id}
-              className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group"
-            >
-              {/* Price Tag */}
-              <div className="absolute top-3 right-3 bg-[#2d9b67] text-white text-xs px-3 py-1 rounded-full font-semibold transition-all duration-300 shadow-md">
-                ₹{item.price}
-              </div>
+        <>
+          {/* TABLE: Desktop Only */}
+          <div className="overflow-x-auto border rounded-xl bg-white shadow hidden md:block">
+            <Table>
+              <TableHeader className="bg-primary/20 text-primary backdrop-blur-md">
+                <TableRow>
+                  <TableHead className="text-left">Image</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredList.map((product) => (
+                  <TableRow
+                    onClick={() =>
+                      navigate(`/products/${product.category}/${product._id}`)
+                    }
+                    key={product._id}
+                  >
+                    <TableCell>
+                      <img
+                        src={product.images?.[0] || product.image}
+                        alt={product.name}
+                        className="w-20 h-20 rounded-md object-cover shadow-xl"
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium text-primary">
+                      {product.name}
+                    </TableCell>
+                    <TableCell className="capitalize text-primary">
+                      {product.category}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className="bg-primary/20 text-primary text-sm">
+                        ₹{product.price}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex gap-2 justify-end">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-primary border-primary hover:bg-primary hover:text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/admin/products/edit/${product._id}`);
+                          }}
+                        >
+                          <EditIcon className="w-4 h-4 mr-1" /> Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="bg-red-500 text-white hover:bg-red-600"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(product._id);
+                          }}
+                        >
+                          <TrashIcon className="w-4 h-4 mr-1" /> Delete
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
 
-              {/* Category Label */}
-              <div className="absolute top-0 left-0 bg-gradient-to-r from-[#2d9b67] to-[#47b881] text-white text-xs px-3 py-1 rounded-br-2xl font-medium tracking-wide">
-                {item.category}
+          {/* MOBILE CARDS */}
+          <div className="md:hidden flex flex-col gap-3 mt-4">
+            {filteredList.map((product) => (
+              <div
+                key={product._id}
+                onClick={() =>
+                  navigate(`/products/${product.category}/${product._id}`)
+                }
+                className="border rounded-xl bg-white px-4 py-3 shadow-sm space-y-2"
+              >
+                <div className="flex gap-4 items-center">
+                  <img
+                    src={product.images?.[0] || product.image}
+                    alt={product.name}
+                    className="w-16 h-16 rounded-md object-cover"
+                  />
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-semibold text-primary">
+                      {product.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {product.category}
+                    </p>
+                    <Badge className="bg-primary/10 text-primary text-xs">
+                      ₹{product.price}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-col gap-2 items-end">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="border-primary text-primary hover:bg-primary hover:text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/admin/products/edit/${product._id}`);
+                      }}
+                    >
+                      <EditIcon className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="destructive"
+                      className="bg-red-500 text-white hover:bg-red-600"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(product._id);
+                      }}
+                    >
+                      <TrashIcon className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
-
-              {/* Image */}
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-44 object-cover rounded-t-2xl border-b border-gray-200"
-              />
-
-              {/* Details */}
-              <div className="p-4">
-                <CardTitle className="text-xl font-semibold text-primary mb-1">
-                  {item.name}
-                </CardTitle>
-                <p className="text-sm text-gray-500">{item.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
