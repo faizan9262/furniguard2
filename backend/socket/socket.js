@@ -5,7 +5,7 @@ import { ReadStatus } from "../models/readstatus.model.js";
 export const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: ["http://localhost:5173", "http://localhost:5174"],
+      origin: ["http://localhost:5173", "http://localhost:5174","https://furniguard-frontend.vercel.app"],
       credentials: true,
     },
   });
