@@ -23,6 +23,7 @@ const allowedOrigins = ['https://furniguard-frontend.vercel.app','http://localho
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.options("*", cors());
 mongoDBConnect();
