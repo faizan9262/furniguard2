@@ -128,7 +128,7 @@ const DesignerSelectorCard = ({
                   </p>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {(selectedDesignerDetails?.expertise?.length > 0
-                      ? selectedDesignerDetails?.expertise
+                      ? selectedDesignerDetails?.expertise.slice(0,3)
                       : []
                     ).map((skill, index) => (
                       <span

@@ -1,16 +1,17 @@
-import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "../components/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNowStrict } from "date-fns";
-import { getUserInbox } from "../helper/api-communicator.js";
+import { getAdminInbox } from "../helper/apis.js";
 import axios from "axios";
 import { FaDotCircle } from "react-icons/fa";
-import socket from "../socket";
+import { useAdmin } from "../context/AdminContext";
+import adminSocket from "../adminSocket";
+import { Input } from "@/components/components/ui/input";
 
 const Inbox = () => {
-  const auth = useAuth();
+  const adminConetext = useAdmin();
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,8 +19,8 @@ const Inbox = () => {
   const [sortOrder, setSortOrder] = useState("desc");
   const navigate = useNavigate();
 
-  const userId = auth?.user?.id;
-  const userRole = auth?.user?.role;
+  const userId = adminConetext?.admin?.id;
+  const userRole = adminConetext?.admin?.role;
 
   useEffect(() => {
     if (!chats) return;
@@ -43,9 +44,9 @@ const Inbox = () => {
 
     const fetchChats = async () => {
       try {
-        const response = await getUserInbox(userRole, userId);
+        const response = await getAdminInbox(userRole, userId);
         setChats(response);
-        console.log("Fetched chats for last read:", response);
+        console.log("Fetched chats:", response);
       } catch (error) {
         console.error("Error fetching chats:", error);
       } finally {
@@ -60,7 +61,7 @@ const Inbox = () => {
     if (!userId || !userRole) return;
 
     // Join room for current user
-    socket.emit("join", userId);
+    adminSocket.emit("join", userId);
 
     const handleIncomingMessage = (newMessage) => {
       const senderId = newMessage.from;
@@ -112,24 +113,24 @@ const Inbox = () => {
       });
     };
 
-    socket.on("receive-message", handleIncomingMessage);
+    adminSocket.on("receive-message", handleIncomingMessage);
 
     return () => {
-      socket.off("receive-message", handleIncomingMessage);
+      adminSocket.off("receive-message", handleIncomingMessage);
     };
   }, [userId, userRole]);
 
   const updateReadStatus = async (person) => {
     try {
       const response = await axios.post("/message/read-status", {
-        userId: auth?.user?.id,
+        userId: adminConetext?.admin?.id,
         partnerId: person?._id,
         lastRead: new Date(),
       });
       // console.log("Updated Response: ", response);
       const status = response.data;
       navigate(
-        `/chat/${person?._id}/${userRole === "user" ? "designer" : "user"}`,
+        `/chats/${person?._id}/${userRole === "admin" ? "designer" : "user"}`,
         {
           state: {
             user: {
@@ -138,7 +139,7 @@ const Inbox = () => {
               _id: person?._id,
             },
             status,
-          },
+          }
         }
       );
     } catch (error) {
@@ -150,30 +151,26 @@ const Inbox = () => {
   // console.log("Auth use: ", auth?.user);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#effaf2] to-[#d2e9db] py-10 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-secondary text-center mb-8">
-          Chats
-        </h2>
-
+    <div className="">
+      <div className="">
         {/* Search + Sort Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 w-full">
-          <input
-            type="text"
-            placeholder="Search by name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border-r-4 border-b-4 shadow-md border border-primary/40"
-          />
-
-          <select
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            className="w-full sm:w-40 px-4 py-2 rounded-md border-r-4 border-b-4 shadow-md border border-primary/40"
-          >
-            <option value="desc">Newest first</option>
-            <option value="asc">Oldest first</option>
-          </select>
+        <div className="flex flex-col sm:flex-row items-center justify-start gap-4 mb-8 w-full">
+          <div className="flex gap-3 w-full sm:w-auto">
+            <Input
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border-b-4 border-r-4 border-primary/40 rounded-lg text-primary"
+            />
+            <select
+              className="border-b-4 border-r-4 border-primary/40 border rounded-lg text-primary text-sm px-2 focus:outline-none"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <option value="new">Newest First</option>
+              <option value="old">Oldest First</option>
+            </select>
+          </div>
         </div>
 
         {/* Chat List */}
@@ -188,7 +185,8 @@ const Inbox = () => {
                 // Inside your filteredChats.map loop
                 filteredChats.map((chat) => {
                   const otherPerson = chat?.user || chat?.designer;
-                  const isOwnMessage = chat?.sender === auth?.user?.id;
+                  const isOwnMessage =
+                    chat?.sender === adminConetext?.admin?.id;
 
                   const isUnread =
                     !isOwnMessage &&
@@ -202,7 +200,7 @@ const Inbox = () => {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       onClick={() => updateReadStatus(otherPerson)}
-                      className={`flex items-center justify-between backdrop-blur-md bg-white/60 p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer`}
+                      className={`flex items-center justify-between bg-primary/20 backdrop-blur-md  p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-[1.01] transition-transform cursor-pointer`}
                     >
                       <div className="flex items-center gap-4">
                         <img

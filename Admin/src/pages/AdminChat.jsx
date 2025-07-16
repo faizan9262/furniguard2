@@ -1,14 +1,15 @@
-import { useAuth } from "../context/AuthContext.jsx";
-import socket from "../socket.js";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Textarea } from "@/components/components/ui/textarea.jsx";
 import { ArrowLeft, SendHorizontal } from "lucide-react";
-import { fetchMessages } from "../helper/api-communicator.js";
 import { Button } from "@/components/components/ui/button.jsx";
+import { useAdmin } from "../context/AdminContext.jsx";
+import adminSocket from "../adminSocket.js";
+import { fetchMessages } from "../helper/apis.js";
 
-const ChatBox = () => {
+const AdminChat = () => {
+  const { receiverId, receiverRole } = useParams();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef(null);
@@ -23,25 +24,27 @@ const ChatBox = () => {
   const designer = location.state?.user;
   const receiver = chats || designer;
 
-  const { receiverId, receiverRole } = useParams();
-  const auth = useAuth();
-  const from = auth?.user?.id;
+  const adminContext = useAdmin();
+  const from = adminContext?.admin?.id;
 
-  const fromModel = auth?.user?.role === "designer" ? "Designer" : "UserModel";
+  console.log("Reciver Id", receiverRole);
+
+  const fromModel =
+    adminContext?.admin?.role === "designer" ? "Designer" : "UserModel";
   const toModel = receiverRole === "designer" ? "Designer" : "UserModel";
 
   const textareaRef = useRef(null);
 
   const handleTyping = () => {
     if (!isTyping) {
-      socket.emit("typing", { from, to: receiverId });
+      adminSocket.emit("typing", { from, to: receiverId });
       setIsTyping(true);
     }
 
     clearTimeout(typingTimeoutRef.current);
 
     typingTimeoutRef.current = setTimeout(() => {
-      socket.emit("stop-typing", { from, to: receiverId });
+      adminSocket.emit("stop-typing", { from, to: receiverId });
       setIsTyping(false);
     }, 500);
   };
@@ -71,8 +74,6 @@ const ChatBox = () => {
 
   useEffect(() => {
     // console.log("Messages updated:", messages);
-    // console.log("Msg From: ", messages.slice(-1)[0]?.from);
-    // console.log("Auth user: ", auth?.user?.id);
   }, [messages]);
 
   useEffect(() => {
@@ -108,8 +109,8 @@ const ChatBox = () => {
       }
     };
 
-    socket.on("receive-message", handleReceive);
-    return () => socket.off("receive-message", handleReceive);
+    adminSocket.on("receive-message", handleReceive);
+    return () => adminSocket.off("receive-message", handleReceive);
   }, [from, receiverId]);
 
   useEffect(() => {
@@ -118,6 +119,9 @@ const ChatBox = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+    console.log("From model: ",fromModel);
+    console.log("To model: ",toModel);
+    
 
     const newMessage = {
       from,
@@ -126,7 +130,7 @@ const ChatBox = () => {
       fromModel,
       toModel,
     };
-    socket.emit("send-message", newMessage);
+    adminSocket.emit("send-message", newMessage);
     setInput("");
   };
   useEffect(() => {
@@ -136,36 +140,39 @@ const ChatBox = () => {
 
     return () => clearTimeout(timeout);
   }, [messages]);
-  
 
   useEffect(() => {
-    socket.on("typing", ({ from: typingUser }) => {
+    adminSocket.on("typing", ({ from: typingUser }) => {
       console.log("Typing User: ", typingUser);
       console.log("Reciver User: ", receiverId);
 
       if (typingUser === receiverId) setPartnerTyping(true);
     });
 
-    socket.on("stop-typing", ({ from: typingUser }) => {
+    adminSocket.on("stop-typing", ({ from: typingUser }) => {
       if (typingUser === receiverId) setPartnerTyping(false);
     });
 
     return () => {
-      socket.off("typing");
-      socket.off("stop-typing");
+      adminSocket.off("typing");
+      adminSocket.off("stop-typing");
     };
   }, [receiverId]);
 
+
+  // console.log("Reciver: ",receiver);s
+  
+
   return (
     <div className="fixed inset-0 top-0 flex flex-col bg-white">
-      <div className="sticky top-0 z-30 bg-white flex items-center gap-4  justify-between px-6 py-2 shadow border-b">
+      <div className="sticky top-0 z-30 bg-white flex items-center gap-4  justify-between px-6 py-2 shadow">
         <div className="flex items-center gap-4">
-          <Button
-            onClick={() => navigate("/inbox")}
+          <Button 
+            onClick={() => navigate("/notifications")}
             variant="outline"
-            className="  "
+            className="text-primary hover:text-white"
           >
-            <ArrowLeft className="text-primary" />
+            <ArrowLeft className="" />
           </Button>
           <img
             src={receiver?.profilePicture}
@@ -193,9 +200,8 @@ const ChatBox = () => {
           {messages?.map((msg, idx) => {
             const isOwn = msg.from === from;
             const profileImage = isOwn
-              ? auth?.user?.profilePic
+              ? adminContext?.admin?.profilePic
               : receiver?.profilePicture;
-
             return (
               <div
                 key={idx}
@@ -246,13 +252,13 @@ const ChatBox = () => {
           })}
 
           {partnerTyping && (
-            <div className="flex items-end gap-3 justify-start">
+            <div className="flex items-end gap-3 mb-10 justify-start">
               <img
                 src={receiver?.profilePicture}
                 className="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover"
                 alt="Typing user"
               />
-              <div className="max-w-[60%] px-4 bg-primary/20 rounded-xl text-gray-700 text-sm border border-gray-200">
+              <div className="max-w-[60%] px-4 py-2 rounded-xl text-gray-700 text-sm border border-gray-200">
                 <p className="italic animate-pulse">Typing...</p>
               </div>
             </div>
@@ -294,4 +300,4 @@ const ChatBox = () => {
   );
 };
 
-export default ChatBox;
+export default AdminChat;

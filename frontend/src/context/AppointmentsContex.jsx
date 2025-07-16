@@ -23,7 +23,7 @@ export const AppointmentsContexProvider = (props) => {
   useEffect(()=>{
     const getAppointmentsOfDesigner = async()=>{
       const data = await getAllAppointmentsOfDesigner() 
-      // console.log("Ap Data Designer:",data);
+      console.log("Ap Data Designer:",data);
       setDesignerAllAppointmentsOfDesigner(data)
     }
     getAppointmentsOfDesigner()

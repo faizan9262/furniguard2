@@ -9,10 +9,10 @@ import {
 } from "../components/components/ui/avatar";
 import { Skeleton } from "../components/components/ui/skeleton";
 import { UserIcon} from "lucide-react";
-import { BsMessenger } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { GrUserWorker } from "react-icons/gr";
 import adminSocket from "../adminSocket";
+import { FaBell } from "react-icons/fa";
 
 const Notifications = () => {
   const [chats, setChats] = useState([]);
@@ -66,21 +66,17 @@ const Notifications = () => {
     });
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h2 className="text-3xl font-bold text-[#2d9b67] flex items-center justify-center gap-2">
-          Admin Inbox
-          <BsMessenger size={24} />
-        </h2>
         <div className="flex gap-3 w-full sm:w-auto">
           <Input
             placeholder="Search by name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border-2 border-primary rounded-lg text-primary"
+            className="border-b-4 border-r-4 border-primary/40 rounded-lg text-primary"
           />
           <select
-            className="border-2 border-primary rounded-lg text-primary text-sm px-2 focus:outline-none"
+            className="border-b-4 border-r-4 border-primary/40 border rounded-lg text-primary text-sm px-2 focus:outline-none"
             value={sort}
             onChange={(e) => setSort(e.target.value)}
           >

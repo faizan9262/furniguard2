@@ -48,9 +48,9 @@ const ChatBox = () => {
           <Button
             onClick={() => navigate("/notifications")}
             variant="outline"
-            className="  "
+            className="text-primary hover:text-white"
           >
-            <ArrowLeft className="text-primary" />
+            <ArrowLeft className="" />
           </Button>
           <div className="relative w-12 h-12">
             <img

@@ -23,7 +23,6 @@ import axios from "axios";
 import { backendUrl } from "./Add";
 import { Badge } from "@/components/components/ui/badge";
 import { DeleteIcon, EditIcon, PlusCircle, TrashIcon } from "lucide-react";
-import e from "cors";
 import { MdAdd } from "react-icons/md";
 
 const Products = () => {
@@ -85,13 +84,13 @@ const Products = () => {
       <div className="flex  gap-4 mb-6 justify-center items-center">
         <Input
           placeholder="Search products..."
-          className="w-full border-r-4 border-b-4 border-[#2d9b67] bg-white text-[#1c4532] placeholder:text-[#2d9b67] rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2d9b67] shadow-sm"
+          className="w-full border-r-4 border-b-4 border-[#2d9b67]/40 bg-white text-[#1c4532] placeholder:text-[#2d9b67] rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2d9b67] shadow-sm"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
 
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-[200px] border-r-4 border-b-4 border-[#2d9b67] bg-white text-[#2d9b67] font-medium shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#2d9b67] transition rounded-lg">
+          <SelectTrigger className="w-[200px] border-r-4 border-b-4 border-[#2d9b67]/40 bg-white text-[#2d9b67] font-medium shadow-sm hover:shadow-md focus:ring-2 focus:ring-[#2d9b67] transition rounded-lg">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white border-2 border-[#2d9b67] text-[#2d9b67] rounded-md shadow-lg">

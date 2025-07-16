@@ -78,6 +78,11 @@ export const bookAppointment = async (req, res) => {
     await user.save();
 
     designer.appointments.push(appointment._id);
+    designer.availableSlots = designer.availableSlots.map((slot) =>
+      slot.date.getTime() === appointment.appointmentDate.getTime()
+        ? { ...slot, isBooked: true }
+        : slot
+    );
     await designer.save();
 
     const populatedAppointment = await Appointment.findById(appointment._id)
@@ -119,6 +124,8 @@ export const getAllAppointmentsOfUser = async (req, res) => {
       return res.status(200).json(allAppointments);
     }
 
+    
+
     const user = await UserModel.findById(res.locals.jwtData.id);
     if (!user) {
       return res.status(401).json({ message: "User not found." });
@@ -140,9 +147,7 @@ export const getAllAppointmentsOfUser = async (req, res) => {
 
     // console.log("1st AP: ", allAppointments);
 
-    return res
-      .status(200)
-      .json(allAppointments);
+    return res.status(200).json(allAppointments);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -153,11 +158,11 @@ export const getAllAppointmentsOfUser = async (req, res) => {
 
 export const getAllAppointmentsOfDesigner = async (req, res) => {
   try {
-    const designerUser = await UserModel.findById(res.locals.jwtData.id); 
-    const designerId = designerUser.designerProfile
-    const designer = await Designer.findById(designerId)
-    // console.log("Designer: ",designer);`
-    
+    const designerUser = await UserModel.findById(res.locals.jwtData.id);
+    const designerId = designerUser.designerProfile;
+    // console.log("Designer Id: ",designerId);
+    const designer = await Designer.findById(designerId);
+    // console.log("Designer: ",designer);
 
     if (!designer) {
       return res.status(401).json({ message: "Designer not found." });
@@ -177,18 +182,16 @@ export const getAllAppointmentsOfDesigner = async (req, res) => {
       })
       .populate("products.product", "name price description category image");
 
-      // console.log("APS: ",allAppointments);
-      
+    // console.log("APS: ",allAppointments);
 
     return res.status(200).json(allAppointments);
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Something went wrong while fetching designer appointments." });
+    return res.status(500).json({
+      message: "Something went wrong while fetching designer appointments.",
+    });
   }
 };
-
 
 export const updateStatusByAdminOnly = async (req, res) => {
   try {
@@ -220,7 +223,7 @@ export const updateStatusByAdminOnly = async (req, res) => {
 
 export const cancelAppointment = async (req, res) => {
   try {
-    const { appointmentId,reason } = req.body;
+    const { appointmentId, reason } = req.body;
     const user = await UserModel.findById(res.locals.jwtData.id);
     // console.log(user._id.toString() , res.locals.jwtData.id);
 
@@ -270,14 +273,14 @@ export const cancelAppointment = async (req, res) => {
     const htmlUser = appointmentDeletedEmail({
       appointmentData: appointment,
       designer,
-      user:userData,
+      user: userData,
       reason,
       type: "user",
     });
     const htmlDesigner = appointmentDeletedEmail({
       appointmentData: appointment,
       designer,
-      user:userData,
+      user: userData,
       reason,
       type: "designer",
     });
@@ -331,7 +334,7 @@ export const deleteAppointmentByAdmin = async (req, res) => {
     const user = appointment.user;
     const designer = appointment.designer;
 
-    // console.log("Appointment:", appointment);
+    console.log("Appointment:", appointment);
     // console.log("User Name:", user);
     // console.log("Designer Name: ", designer.user.username);
 

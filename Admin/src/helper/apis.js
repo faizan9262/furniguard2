@@ -17,6 +17,21 @@ export const getProductRating = async (productId)=>{
   return data;
 }
 
+
+
+export const authStatus = async () => {
+  try {
+    const response = await axios.get("/user/admin/is-auth");
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    } else {
+      throw new Error("Something went wrong while Authentication");
+    }
+  }
+};
+
 // Products Apis
 
 export const getAllProducts = async () => {
@@ -55,7 +70,7 @@ export const cancelAppointment = async (appointmentId,reason) => {
   if (response.status !== 200) {
     throw new Error("Unable to Cancel Appointment bt Admin");
   }
-  const data = await response.data;
+  const data = response.data;
   return data;
 };
 
@@ -67,3 +82,22 @@ export const updateStatus = async (status,appointmentId)=>{
   const data = await response.data;
   return data; 
 }
+
+export const getAdminInbox = async (userRole, userId) => {
+  const response = await axios.get(`/message/inbox/${userRole}/${userId}`);
+  if (response.status !== 200) {
+    throw new Error("Unable To Load Chats");
+  }
+  const data = await response.data;
+  return data;
+};
+
+export const fetchMessages = async (from, receiverId) => {
+  const response = await axios.get(`/message/convo/${from}/${receiverId}`);
+  // console.log("Response: ",response.data);s
+  if (response.status !== 200) {
+    throw new Error("Unable To Load Messages");
+  }
+  const data = await response.data;
+  return data;
+};

@@ -84,7 +84,7 @@ const Products = () => {
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-10">
         <Input
           placeholder="Search products..."
-          className="sm:w-1/2 border-2 border-[#2d9b67]"
+          className="sm:w-1/2 border-b-4 border-r-4 border-[#2d9b67]/40"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -94,7 +94,7 @@ const Products = () => {
             navigate(`/products/${value === "all" ? "" : value}`)
           }
         >
-          <SelectTrigger className="w-[200px] border-2 border-[#2d9b67] bg-white text-[#2d9b67] font-medium">
+          <SelectTrigger className="w-[200px] border-b-4 border-r-4 border-[#2d9b67]/40 bg-white text-[#2d9b67] font-medium">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent className="bg-white border-2 border-[#2d9b67] text-[#2d9b67]">

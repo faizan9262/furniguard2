@@ -76,33 +76,35 @@ const AppointmentCard = ({
         </div>
       </div>
 
-      <CardContent className="flex-1 flex flex-col gap-4">
+      <CardContent className="flex-1 w-full flex flex-col gap-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-2">
-          <h2 className="text-lg font-semibold flex flex-col gap-2 text-secondary">
-            Appointment Details
-          </h2>
-          <div className="flex md:flex-col gap-2 justify-start">
-            {/* Date Badge */}
-            <div className="flex items-center justify-start gap-1">
-              <CalendarClockIcon className="w-4 h-4 text-primary" />
-              <Badge className="text-primary bg-primary/10">
-                {new Date(date).toLocaleDateString("en-GB")}
-              </Badge>
-            </div>
+          <div className="flex w-full flex-col gap-2 justify-between">
+            <h2 className="text-lg font-semibold flex flex-col gap-2 text-secondary">
+              Appointment Details
+            </h2>
+            <div className="flex md:flex-col gap-2 justify-start">
+              {/* Date Badge */}
+              <div className="flex items-center justify-start gap-1">
+                <CalendarClockIcon className="w-4 h-4 text-primary" />
+                <Badge className="text-primary bg-primary/10">
+                  {new Date(date).toLocaleDateString("en-GB")}
+                </Badge>
+              </div>
 
-            {/* Status Badge */}
-            <div
-              className={`flex items-center px-1 md:p-1 justify-center rounded-full text-white ${bg}`}
-            >
-              {icon}
-              <Badge className="bg-transparent text-white text-xs">
-                {label}
-              </Badge>
+              {/* Status Badge */}
+              <div
+                className={`flex items-center px-1 md:p-1 justify-center rounded-full text-white ${bg}`}
+              >
+                {icon}
+                <Badge className="bg-transparent text-white text-xs">
+                  {label}
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2">
+        <div className="flex justify-between">
           {/* User Info */}
           <div className="flex items-center gap-2">
             <Avatar>
@@ -127,7 +129,9 @@ const AppointmentCard = ({
               <p className="text-sm font-medium text-primary">
                 {designer?.user?.username}
               </p>
-              <p className="text-sm text-muted-foreground line-clamp-1">{designer?.type}</p>
+              <p className="text-sm text-muted-foreground line-clamp-1">
+                {designer?.type}
+              </p>
             </div>
           </div>
         </div>

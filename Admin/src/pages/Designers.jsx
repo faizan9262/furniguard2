@@ -68,7 +68,7 @@ const Designers = () => {
           <Input
             type="text"
             placeholder="Search by name or type..."
-            className="w-full border-r-4 border-b-4 border-[#2d9b67] bg-white shadow-sm focus:ring-2 focus:ring-[#2d9b67]"
+            className="w-full border-r-4 border-b-4 border-[#2d9b67]/40 bg-white shadow-sm focus:ring-2 focus:ring-[#2d9b67]"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -78,7 +78,7 @@ const Designers = () => {
               value={experienceFilter}
               onValueChange={setExperienceFilter}
             >
-              <SelectTrigger className="w-full md:w-52 border-r-4 border-b-4 border-[#2d9b67] bg-white text-[#2d9b67] font-medium shadow-sm focus:ring-2 focus:ring-[#2d9b67]">
+              <SelectTrigger className="w-full md:w-52 border-r-4 border-b-4 border-[#2d9b67]/40 bg-white text-[#2d9b67] font-medium shadow-sm focus:ring-2 focus:ring-[#2d9b67]">
                 {experienceFilter === "" || experienceFilter === "all"
                   ? "All"
                   : `${experienceFilter} Years`}

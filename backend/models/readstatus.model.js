@@ -10,7 +10,7 @@ const readStatusSchema = new mongoose.Schema({
   partnerId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "UserModel", // could also be Designer if needed
+    ref: "UserModel",
   },
   lastRead: {
     type: Date,

@@ -19,7 +19,7 @@ const DesignerDetail = () => {
   const navigate = useNavigate();
   const DesignerContex = useDesiner();
   const designer = DesignerContex.designers.find((d) => d._id === id);
-  console.log("Designer: ", designer?.user?._id);
+  // console.log("Designer: ", designer);
   
   const [rating, setRating] = useState({});
 
@@ -184,7 +184,7 @@ const DesignerDetail = () => {
           {/* CTA Button */}
           <Button
             className="mt-6 rounded-full bg-primary text-white hover:bg-secondary transition-all"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/new-appointment")}
           >
             Consult Now <FaArrowRight className="ml-2" />
           </Button>

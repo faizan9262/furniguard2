@@ -15,14 +15,15 @@ import DesignerDetails from "./pages/DesignerDetails";
 import AppointmentDetailPage from "./pages/AppointmentDetails";
 import ProductDetail from "./components/ProductDetail";
 import About from "./pages/About";
-import Notifications from "./pages/Notifications";
 import adminSocket from "./adminSocket";
 import ChatBox from "./pages/Chatbox";
 import { useAdmin } from "./context/AdminContext";
+import AdminMessages from "./pages/AdminMessages";
+import AdminChat from "./pages/AdminChat";
 
 function App() {
   const [authenticated, setAuthenticated] = useState(null); // null = checking
-  const admin = useAdmin()
+  const adminContext = useAdmin()
   const location =  useLocation()
   useEffect(() => {
     const handleConnect = () => {
@@ -35,7 +36,7 @@ function App() {
 
     const handleReceive = (msg)=>{
       console.log("Recoved msg: ",msg);
-      admin.setMessages((prev) => [...prev, msg])
+      adminContext.setMessages((prev) => [...prev, msg])
     }
 
     adminSocket.on("connect", handleConnect);
@@ -50,8 +51,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    adminSocket.emit("join", "admin");
-  }, []);
+    adminSocket.emit("join",adminContext?.admin?.role );
+    console.log("Role in admin: ",adminContext?.admin?.role);
+    
+  }, [adminContext?.admin]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -80,18 +83,14 @@ function App() {
     return <div className="text-center p-10">Checking auth...</div>;
   }
 
-  const hideNavbar = location.pathname.startsWith("/chat/");
+  const hideNavbar = location.pathname.startsWith("/chat/") || location.pathname.startsWith("/chats/");
 
   return (
     <div>
-      {!authenticated ? (
-        <Login setAuthenticated={setAuthenticated} />
-      ) : (
         <>
           {!hideNavbar && <Navbar setAuthenticated={setAuthenticated} />}
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/chat/:senderId/:receiverId" element={<ChatBox />} />
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
             <Route path="/add" element={<Add />} />
@@ -102,12 +101,15 @@ function App() {
               path="/appointments/:id"
               element={<AppointmentDetailPage />}
             />
-            <Route path="/notifications" element={<Notifications />} />
+
+            <Route path="/chat/:senderId/:receiverId" element={<ChatBox />} />
+            <Route path="/chats/:receiverId/:receiverRole" element={<AdminChat />} />
+            <Route path="/notifications" element={<AdminMessages />} />
+
             <Route path="/designers" element={<Designers />} />
             <Route path="/designers/:id" element={<DesignerDetails />} />
           </Routes>
         </>
-      )}
     </div>
   );
 }

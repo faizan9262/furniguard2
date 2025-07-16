@@ -9,16 +9,33 @@ import {
   SelectContent,
   SelectItem,
 } from "../components/components/ui/select";
+import { LuCalendarPlus } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { Calendar } from "@/components/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/components/ui/dialog";
+import { format } from "date-fns";
+import { toast } from "sonner";
+import axios from "axios";
 
 const statusOptions = ["all", "pending", "confirmed", "completed"];
 
 const Appointments = () => {
   const appointments = useAppointment();
   const [statusFilter, setStatusFilter] = useState("all");
+  const [openSlotDialog, setOpenSlotDialog] = useState(false);
+  const [selectedDates, setSelectedDates] = useState([]);
+
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const activeAppointmentsRaw =
     appointments?.allAppointments?.length > 0
@@ -38,9 +55,74 @@ const Appointments = () => {
 
   // console.log("Filtered: ", filteredAppointments);
 
+  const slots = selectedDates.map((d) => d.toISOString());
+
+  console.log("Slots:: ", slots);
+
+  const addSlots = async () => {
+    try {
+      toast.loading("Adding Slots: ", { id: "slots" });
+      const response = await axios.post("/designers/add-slots", { slots });
+      console.log("Resposne: ", response);
+      toast.success("Slots Updated.", { id: "slots" });
+      setSelectedDates([]);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Something went wrong", { id: "slots" });
+    }
+  };
+
   return (
     <div className="mx-4 sm:mx-[10%] min-h-screen my-5">
       <div className="flex items-center justify-between mb-6">
+        {auth?.user?.role === "designer" && (
+          <Dialog open={openSlotDialog} onOpenChange={setOpenSlotDialog}>
+            <DialogTrigger asChild>
+              <Button className="flex gap-1">
+                <LuCalendarPlus />
+                Add Slots
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent className="w-[90vw] max-w-md max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-primary font-bold">
+                  Select Available Dates for Appointments
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="flex flex-col items-center gap-4">
+                <Calendar
+                  mode="multiple"
+                  selected={selectedDates}
+                  onSelect={setSelectedDates}
+                  className="rounded-md border w-full md:w-2/3 bg-primary/10"
+                  disabled={(date) =>
+                    date < new Date(new Date().setHours(0, 0, 0, 0))
+                  }
+                />
+
+                {selectedDates.length > 0 && (
+                  <ul className="text-sm text-muted-foreground">
+                    {selectedDates.map((date, i) => (
+                      <li key={i}>{format(date, "PPP")}</li>
+                    ))}
+                  </ul>
+                )}
+
+                <Button
+                  onClick={() => {
+                    addSlots(), setOpenSlotDialog(false);
+                  }}
+                  disabled={selectedDates.length === 0}
+                  className="w-full bg-primary text-white"
+                >
+                  Confirm Slots
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
         <p className="text-md md:text-3xl font-semibold md:font-bold text-secondary">
           {statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}{" "}
           Appointments

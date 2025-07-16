@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  addAvailableSolts,
   addProjectToProfile,
   deleteProjectFromProfile,
   editDesignerProfile,
@@ -19,6 +20,7 @@ designerRouter.post(
   addProjectToProfile
 );
 designerRouter.post("/",verifyToken, deleteProjectFromProfile);
+designerRouter.post("/add-slots",verifyToken, addAvailableSolts);
 designerRouter.post("/update-profile",verifyToken, editDesignerProfile);
 
 export default designerRouter;

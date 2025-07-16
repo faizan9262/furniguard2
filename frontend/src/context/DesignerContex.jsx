@@ -30,7 +30,7 @@ export const DesignerContexProvider = (props) => {
     }
   }, [designers, userId]);
 
-  // console.log("Deign: ",currentDesigner);
+  console.log("Deign: ",currentDesigner);
 
   const value = {
     designers,

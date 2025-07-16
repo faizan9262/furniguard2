@@ -9,9 +9,13 @@ import {
   CardTitle,
 } from "../components/components/ui/card";
 import { Button } from "../components/components/ui/button";
+import { useAdmin } from "../context/AdminContext";
 
 const AdminHome = () => {
   const navigate = useNavigate();
+  const adminContext = useAdmin()
+
+  console.log("Admin Id: ", adminContext.admin.id);
 
   return (
     <div className="h-full flex flex-col items-center p-6">
@@ -20,9 +24,12 @@ const AdminHome = () => {
         <div className="inline-flex items-center justify-center bg-primary/10 text-primary p-4 rounded-full">
           <TrendingUp size={40} />
         </div>
-        <h1 className="text-4xl font-bold text-primary">Admin Control Center</h1>
+        <h1 className="text-4xl font-bold text-primary">
+          Admin Control Center
+        </h1>
         <p className="text-primary-foreground text-lg">
-          Empower your platform with a growing catalog. Start by adding your latest products and watch your marketplace flourish.
+          Empower your platform with a growing catalog. Start by adding your
+          latest products and watch your marketplace flourish.
         </p>
       </div>
 
@@ -33,13 +40,18 @@ const AdminHome = () => {
             <div className="bg-primary/10 text-primary p-3 rounded-full">
               <BsPlusCircle size={26} />
             </div>
-            <CardTitle className="text-primary-foreground">Add Product</CardTitle>
+            <CardTitle className="text-primary-foreground">
+              Add Product
+            </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-muted mb-4 text-sm">
               Instantly add your newest furniture collection to the store.
             </p>
-            <Button onClick={() => navigate("/add")} className="w-full bg-primary text-white hover:bg-primary-foreground">
+            <Button
+              onClick={() => navigate("/add")}
+              className="w-full bg-primary text-white hover:bg-primary-foreground"
+            >
               Go to Add Product
             </Button>
           </CardContent>
@@ -48,9 +60,12 @@ const AdminHome = () => {
 
       {/* Motivational Message */}
       <div className="mt-12 text-center max-w-3xl">
-        <h2 className="text-2xl font-semibold text-primary">Furniguard is growing stronger every day 🚀</h2>
+        <h2 className="text-2xl font-semibold text-primary">
+          Furniguard is growing stronger every day 🚀
+        </h2>
         <p className="text-primary-foreground mt-2">
-          Stay ahead by continuously updating your catalog and exploring new trends in modern furniture.
+          Stay ahead by continuously updating your catalog and exploring new
+          trends in modern furniture.
         </p>
       </div>
     </div>

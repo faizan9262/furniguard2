@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAdmin } from "../context/AdminContext";
+import { AdminContex, useAdmin } from "../context/AdminContext";
 import {
   Table,
   TableBody,
@@ -20,6 +20,19 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "../components/components/ui/badge";
 import { TrashIcon, EyeIcon } from "lucide-react";
 import { Input } from "@/components/components/ui/input";
+import { cancelAppointment } from "../helper/apis";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/components/ui/alert-dialog";
 
 const statusOptions = ["all", "pending", "confirmed", "completed"];
 
@@ -28,12 +41,14 @@ const Appointments = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [reason, setReason] = useState("");
 
   const allAppointments = [...appointments.allAppointments].sort(
     (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
   );
 
   console.log("All APs: ", allAppointments);
+  console.log("Reason: ", reason);
 
   const filteredAppointments = allAppointments
     .filter((item) => {
@@ -49,9 +64,22 @@ const Appointments = () => {
       );
     });
 
-  // console.log("Filtered Appointments:", filteredAppointments);
+  console.log("Filtered Appointments:", filteredAppointments);
 
   // console.log("Search Query: ",searchQuery);
+
+  const handleCancelAppointment = async (apId, reason) => {
+    try {
+      toast.loading("Canceling Your Appointment", { id: "cancel-ap" });
+      await cancelAppointment(apId,reason);
+      toast.success("Appointment Cancelled", { id: "cancel-ap" });
+      appointments.setAllAppointments(prev => prev.filter(ap => ap._id !== apId));
+      navigate("/appointments");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Something went wrong", { id: "cancel-ap" });
+    }
+  };
 
   return (
     <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -64,11 +92,11 @@ const Appointments = () => {
             type="text"
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
-            className="w-full mt-4 sm:mt-0 border-r-4 border-b-4 border-primary"
+            className="w-full mt-4 sm:mt-0 border-r-4 border-b-4 border-primary/40"
             placeholder="Search by name..."
           />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[200px] mt-4 sm:mt-0 border-r-4 border-b-4 border-primary text-primary">
+            <SelectTrigger className="w-[200px] mt-4 sm:mt-0 border-r-4 border-b-4 border-primary/40 text-primary">
               <SelectValue placeholder="Select status" />
             </SelectTrigger>
             <SelectContent className="bg-primary text-white">
@@ -114,13 +142,12 @@ const Appointments = () => {
             </TableHeader>
             <TableBody>
               {filteredAppointments?.map((item) => (
-                <TableRow
-                  onClick={() => navigate(`/appointments/${item._id}`)}
-                  key={item._id}
-                  className="hover:bg-muted/40"
-                >
-                  <TableCell className="font-medium  text-sm">
-                    <div className="flex items-center gap-2">
+                <TableRow key={item._id} className="hover:bg-muted/40">
+                  <TableCell
+                    onClick={() => navigate(`/appointments/${item._id}`)}
+                    className="font-medium  text-sm"
+                  >
+                    <div className="flex items-center cursor-pointer gap-2">
                       <img
                         src={item?.user?.profilePicture}
                         alt="profile"
@@ -175,18 +202,63 @@ const Appointments = () => {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alert("Implement delete logic");
-                        }}
-                      >
-                        <TrashIcon className="w-4 h-4" />
-                        <span className="hidden sm:inline">Delete</span>
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
+                            onClick={(e) => e.stopPropagation()} // optional
+                          >
+                            <TrashIcon className="w-4 h-4" />
+                            <span className="hidden sm:inline">Delete</span>
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent className="text-primary">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Delete Appointment
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-primary-foreground mb-4">
+                              Are you sure you want to delete this appointment?
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+
+                            <div>
+                              <label
+                                htmlFor="reason"
+                                className="text-sm font-medium block mb-1"
+                              >
+                                Reason <span className="text-red-500">*</span>
+                              </label>
+                              <textarea
+                                id="reason"
+                                value={reason}
+                                onChange={(e) => setReason(e.target.value)}
+                                className="w-full p-2 border rounded text-sm text-primary border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                                rows={3}
+                                placeholder="Enter reason for deletion..."
+                              />
+                            </div>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="text-white border-gray-300 hover:bg-white bg-primary">
+                              Go Back
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() =>
+                                handleCancelAppointment(item._id, reason)
+                              }
+                              className="bg-red-500 text-white hover:bg-red-600"
+                              disabled={!reason.trim()}
+                            >
+                              Yes, Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -219,14 +291,59 @@ const Appointments = () => {
                   >
                     {item.status}
                   </Badge>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="bg-red-500 hover:bg-red-600 text-white"
-                    onClick={() => alert("Implement delete logic")}
-                  >
-                    <TrashIcon className="w-3 h-3" />
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-1"
+                        onClick={(e) => e.stopPropagation()} // optional
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                        <span className="hidden sm:inline">Delete</span>
+                      </Button>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent className="text-primary">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
+                        <AlertDialogDescription className="text-primary-foreground mb-4">
+                          Are you sure you want to delete this appointment? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+
+                        <div>
+                          <label
+                            htmlFor="reason"
+                            className="text-sm font-medium block mb-1"
+                          >
+                            Reason <span className="text-red-500">*</span>
+                          </label>
+                          <textarea
+                            id="reason"
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                            className="w-full p-2 border rounded text-sm text-primary border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                            rows={3}
+                            placeholder="Enter reason for deletion..."
+                          />
+                        </div>
+                      </AlertDialogHeader>
+
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="text-white border-gray-300 hover:bg-white bg-primary">
+                          Go Back
+                        </AlertDialogCancel>s
+                        <AlertDialogAction
+                          onClick={() => handleCancelAppointment(item._id, reason)}
+                          className="bg-red-500 text-white hover:bg-red-600"
+                          disabled={!reason.trim()}
+                        >
+                          Yes, Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
 
                 <div className="text-xs text-primary font-semibold">

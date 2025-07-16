@@ -13,7 +13,8 @@ import { Designer } from "../models/designer.model.js";
 import { UserModel } from "../models/user.model.js";
 dotenv.config();
 
-const COOKIE_NAME = "auth-cookie";
+const USER_COOKIE_NAME = "auth-cookie";
+const ADMIN_COOKIE_NAME = "admin-cookie";
 const COOKIE_OPTIONS = {
   path: "/",
   domain: "localhost",
@@ -132,10 +133,27 @@ export const loginUser = async (req, res) => {
       return res.status(403).json({ message: "Invalid credentials!" });
     }
 
+    if (user.role === "admin") {
+      const token = createToken(user._id.toString(), email, "7d");
+
+      res.clearCookie(ADMIN_COOKIE_NAME, COOKIE_OPTIONS);
+      res.cookie(ADMIN_COOKIE_NAME, token, COOKIE_OPTIONS);
+
+      return res.status(200).json({
+        id: user._id,
+        name: user.username,
+        email: user.email,
+        profilePic: user.profilePicture,
+        role: user.role,
+      });
+    }
+
     const token = createToken(user._id.toString(), email, "7d");
 
-    res.clearCookie(COOKIE_NAME, COOKIE_OPTIONS);
-    res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
+    res.clearCookie(USER_COOKIE_NAME, COOKIE_OPTIONS);
+    res.cookie(USER_COOKIE_NAME, token, COOKIE_OPTIONS);
+    console.log("Req.cookies: ",req.cookie);
+    
 
     const mailSubject = "New Login";
     const mailHtml = htmlLoginAlertContent();
@@ -143,7 +161,6 @@ export const loginUser = async (req, res) => {
     await sendMail(user.email, mailSubject, mailHtml);
 
     return res.status(200).json({
-      message: "Login successful",
       id: user._id,
       name: user.username,
       email: user.email,
@@ -158,68 +175,67 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const admiLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+// export const admiLogin = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
-    if (
-      email === process.env.ADMIN_EMAIL &&
-      password === process.env.ADMIN_PASSWORD
-    ) {
-      const token = jwt.sign({ email, password }, process.env.JWT_SECRET, {
-        expiresIn: "7d",
-      });
+//     if (
+//       email === process.env.ADMIN_EMAIL &&
+//       password === process.env.ADMIN_PASSWORD
+//     ) {
+//       const token = jwt.sign({ email, password }, process.env.JWT_SECRET, {
+//         expiresIn: "7d",
+//       });
 
-      // console.log("Admin Toekn in controller: ",token);
+//       // console.log("Admin Toekn in controller: ",token);
 
-      res.cookie("admin-token", token, {
-        httpOnly: true,
-        secure: false, 
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+//       res.cookie("admin-token", token, {
+//         httpOnly: true,
+//         secure: false,
+//         sameSite: "lax",
+//         maxAge: 7 * 24 * 60 * 60 * 1000,
+//       });
 
-      res.json({
-        success: true,
-        message: "Admin Logged In",
-      });
-    } else {
-      res.json({
-        success: false,
-        message: "Invalid Credentials",
-      });
-    }
-  } catch (error) {
-    console.log(error);
+//       res.json({
+//         success: true,
+//         message: "Admin Logged In",
+//       });
+//     } else {
+//       res.json({
+//         success: false,
+//         message: "Invalid Credentials",
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
 
-    res.json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+//     res.json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
 
-export const adminLogout = (req, res) => {
-  try {
-    res.clearCookie("admin-token", {
-      httpOnly: true,
-      secure: false, // set to true in production if using HTTPS
-      sameSite: "lax",
-    });
+// export const adminLogout = (req, res) => {
+//   try {
+//     res.clearCookie("admin-token", {
+//       httpOnly: true,
+//       secure: false, // set to true in production if using HTTPS
+//       sameSite: "lax",
+//     });
 
-    res.json({
-      success: true,
-      message: "Admin logged out successfully",
-    });
-  } catch (error) {
-    console.log("Logout Error: ", error);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong during logout",
-    });
-  }
-};
-
+//     res.json({
+//       success: true,
+//       message: "Admin logged out successfully",
+//     });
+//   } catch (error) {
+//     console.log("Logout Error: ", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Something went wrong during logout",
+//     });
+//   }
+// };
 
 export const logoutUser = async (req, res) => {
   try {
@@ -533,8 +549,6 @@ export const changeProfilePic = async (req, res) => {
     }
 
     const userId = user._id;
-
-    
 
     if (!req.file || !req.file.path) {
       return res.status(400).json({ message: "No file uploaded" });

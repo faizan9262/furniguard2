@@ -60,7 +60,8 @@ export const initSocket = (httpServer) => {
 
         io.to(to).emit("receive-message", savedMessage);
 
-        io.to("admin").emit("receive-message", savedMessage);
+        
+        // io.to().emit("receive-message", savedMessage);
       } catch (err) {
         console.error("Message save error:", err.message);
         socket.emit("error", { message: "Failed to send message." });

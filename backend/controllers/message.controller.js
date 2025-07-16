@@ -15,7 +15,26 @@ export const getConvo = async (req, res) => {
       ],
     }).sort({ time: 1 });
 
-    res.status(200).json(conversation);
+      const readStatus = await ReadStatus.findOne({
+    userId: user2Id,
+    partnerId: user1Id,
+  });
+
+  const lastRead = readStatus?.lastRead || null;
+
+  // 3. Map messages and attach isSeen
+  const conversationWithSeen = conversation.map((msg) => {
+    const isFromUser1 = msg.from.toString() === user1Id;
+    const isSeen =
+      lastRead && isFromUser1 && new Date(lastRead) >= new Date(msg.createdAt);
+    return {
+      ...msg.toObject(),
+      isSeen,
+    };
+  });
+
+   res.status(200).json(conversationWithSeen);
+
   } catch (error) {
     console.error(error);
     return res
@@ -37,7 +56,8 @@ export const getChatsForDesigner = async (req, res) => {
         { to: designerId, toModel: "Designer" },
       ],
     }).sort({ time: -1 });
-
+    
+  
     // console.log("📥 Messages for designer:", messages);
 
     // Step 2: Group by other party (user)
@@ -57,13 +77,20 @@ export const getChatsForDesigner = async (req, res) => {
         userId = msg.to.toString(); // msg to user
       }
 
+      // console.log("User it at each iteration: ",userId);
+      
+
       if (userId && !chatMap.has(userId)) {
         chatMap.set(userId, msg); // keep only latest msg per user
       }
-    }
+    }    
 
     const chatList = Array.from(chatMap.values());
     const userIds = Array.from(chatMap.keys());
+
+    // console.log("Chat list: ",chatList);
+    // console.log("User Ids list: ",userIds);
+    
 
     // Step 3: Fetch user details
     const users = await UserModel.find({ _id: { $in: userIds } })
@@ -130,6 +157,8 @@ export const getChatsForUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
+    // console.log("UserId admin: ",userId);
+    
     // Step 1: Get messages where user is involved
     const messages = await Message.find({
       $or: [
@@ -137,6 +166,9 @@ export const getChatsForUser = async (req, res) => {
         { to: userId, toModel: "UserModel" },
       ],
     }).sort({ time: -1 });
+
+    // console.log("Messages: ",messages);
+    
 
     const chatMap = new Map();
 
@@ -146,14 +178,20 @@ export const getChatsForUser = async (req, res) => {
 
       if (msg.fromModel === "Designer") {
         designerUserId = msg.from.toString();
+        
       } else if (msg.toModel === "Designer") {
         designerUserId = msg.to.toString();
       }
 
+      console.log("DesignerUserId: ",designerUserId);
+      
       if (designerUserId && !chatMap.has(designerUserId)) {
         chatMap.set(designerUserId, msg); // latest message from each designer
       }
     }
+
+    // console.log("Chat map: ",chatMap);
+    
 
     const chatList = Array.from(chatMap.values());
     const designerUserIds = Array.from(chatMap.keys());
@@ -208,6 +246,9 @@ export const getChatsForUser = async (req, res) => {
         };
       })
       .filter(Boolean); // Remove null entrie
+
+      // console.log("Chats: ",enrichedChats);
+      
 
     res.status(200).json(enrichedChats);
   } catch (error) {

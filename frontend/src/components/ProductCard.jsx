@@ -18,7 +18,7 @@ const ProductCard = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="cursor-pointer shadow-md rounded-xl overflow-hidden"
+      className="cursor-pointer rounded-xl overflow-hidden"
     >
       <div className="relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group">
         {/* Floating Price Tag on Hover */}
@@ -43,7 +43,7 @@ const ProductCard = ({
           <CardTitle className="text-xl font-semibold text-primary mb-1">
             {title}
           </CardTitle>
-          <p className="text-sm text-gray-500 line-clamp-5">{description}</p>
+          <p className="text-sm text-gray-500 line-clamp-4">{description}</p>
         </div>
       </div>
     </motion.div>

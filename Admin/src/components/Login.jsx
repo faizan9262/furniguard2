@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Eye, EyeOff, ShieldCheck, LayoutDashboard, Users, Settings } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  LayoutDashboard,
+  Users,
+  Settings,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../pages/Add";
 
@@ -15,35 +22,31 @@ import { Input } from "../components/components/ui/input";
 import { Label } from "../components/components/ui/label";
 import { Button } from "../components/components/ui/button";
 import { toast } from "sonner";
+import { useAdmin } from "../context/AdminContext";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
+  const adminContext = useAdmin()
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        backendUrl + "/api/user/admin/login",
-        { email, password },
-        { withCredentials: true }
-      );
-      if (response.data.success) {
-        console.log("Login successful");
-        toast.success("Login successful", { toastId: "admin-login" });
-        navigate("/");
-      } else {
-        console.log(response.data.message);
-        toast.error(response.data.message, { toastId: "admin-login" });
-      }
+      toast.loading("Siging in you, Admin", { id: "admin-login" });
+      const response = await adminContext.adminLogin(email,password)
+      // console.log("Response in login: ",response);
+      navigate("/");
+      toast.success("Login successful", { id: "admin-login" });
     } catch (error) {
       console.log(error);
       toast.error(error, { toastId: "admin-login" });
     }
   };
 
+
+  
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-[#2d9b67] to-[#326951] text-white">
       {/* Left Icon Info Panel */}
@@ -51,7 +54,8 @@ const AdminLogin = () => {
         <ShieldCheck size={48} className="text-white" />
         <h1 className="text-4xl font-bold">Admin Access</h1>
         <p className="max-w-md text-white/90">
-          Manage everything — appointments, users, and system settings — from a single, secure dashboard.
+          Manage everything — appointments, users, and system settings — from a
+          single, secure dashboard.
         </p>
         <div className="grid grid-cols-1 gap-4 mt-6 text-left text-white/80">
           <div className="flex items-center gap-3">

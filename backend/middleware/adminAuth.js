@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 
 const adminAuth = async (req, res, next) => {
   try {
-    const token = req.cookies["admin-token"]; // ✅ get token from cookie
+    const token = req.signedCookies["admin-cookie"];
     // console.log("Admin token from cookie:", token);
 
     if (!token) {
@@ -13,17 +13,18 @@ const adminAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.locals.jwtData = decoded;
 
     // Optionally validate the email and password if you like
-    if (
-      decoded.email !== process.env.ADMIN_EMAIL ||
-      decoded.password !== process.env.ADMIN_PASSWORD
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "Invalid admin credentials.",
-      });
-    }
+    // if (
+    //   decoded.email !== process.env.ADMIN_EMAIL ||
+    //   decoded.password !== process.env.ADMIN_PASSWORD
+    // ) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message: "Invalid admin credentials.",
+    //   });
+    // }
 
     req.admin = decoded; // You can pass this forward if needed
     next();

@@ -44,17 +44,14 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       toast.loading("Logging out...", { toastId: "logout" });
-      const response = await axios.get(backendUrl + "/api/user/admin/logout", {
+      const response = await axios.post(backendUrl + "/api/user/logout", {
         withCredentials: true,
       });
-      if (response.data.success) {
-        console.log("Logout successful");
-        toast.success("Logged out successfully", { toastId: "logout" });
-        navigate("/login");
-      } else {
-        console.error("Logout failed", response.data.message);
-        toast.error("Logout failed. Please try again.");
-      }
+      console.log("Response logout: ",response);
+      
+      console.log("Logout successful");
+      toast.success("Logged out successfully", { toastId: "logout" });
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed", error);
       toast.error("Logout failed. Please try again.");
@@ -157,7 +154,7 @@ const Navbar = () => {
               <InfoIcon /> About
             </Button>
             <Button
-              onClick={() => navigate("/inbox")}
+              onClick={() => navigate("/notifications")}
               className={`text-xl  font-semibold rounded-full p-2 border-2 border-white bg-primary-foreground hover:bg-white ${
                 isActive("/notifications")
                   ? "bg-white border-2 scale-110 border-white"

@@ -85,8 +85,10 @@ export const editDesignerProfile = async (req, res) => {
     designer.studioAddress = studioAddress || designer.studioAddress;
     await designer.save();
 
-    const updatedDesigner = await Designer.findById(designer._id)
-      .populate("user", "-password") 
+    const updatedDesigner = await Designer.findById(designer._id).populate(
+      "user",
+      "-password"
+    );
 
     res.status(200).json(updatedDesigner);
   } catch (error) {
@@ -94,6 +96,60 @@ export const editDesignerProfile = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Something went wrong during fetching all designers." });
+  }
+};
+
+export const addAvailableSolts = async (req, res) => {
+  try {
+    const { slots } = req.body;
+
+    console.log("Slots received:", slots);
+
+    const user = await UserModel.findById(res.locals.jwtData.id);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "User does not exist or token is invalid" });
+    }
+
+    const designer = await Designer.findById(user.designerProfile);
+
+    if (!designer) {
+      return res.status(404).json({ message: "Designer profile not found" });
+    }
+
+    // Convert new slots to proper format
+    const newFormattedSlots = slots.map((slot) => ({
+      date: new Date(slot),
+      isBooked: false,
+    }));
+
+    // Remove duplicates by checking if slot already exists
+    const existingDates = designer.availableSlots.map((s) =>
+      new Date(s.date).toISOString()
+    );
+
+    const filteredNewSlots = newFormattedSlots.filter(
+      (slot) => !existingDates.includes(new Date(slot.date).toISOString())
+    );
+
+    // Append new (non-duplicate) slots
+    designer.availableSlots.push(...filteredNewSlots);
+
+    await designer.save();
+
+    const updatedDesigner = await Designer.findById(designer._id).populate(
+      "user",
+      "-password"
+    );
+
+    res.status(200).json(updatedDesigner);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong during adding slots to designer profile",
+    });
   }
 };
 

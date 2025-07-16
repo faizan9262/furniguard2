@@ -61,7 +61,7 @@ const Designers = () => {
         <Input
           type="text"
           placeholder="Search by name or type..."
-          className="w-[66%] mx-0"
+          className="w-[66%] mx-0 border-primary/40 border-b-4 border-r-4" 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -71,7 +71,7 @@ const Designers = () => {
             Experience
           </Label>
           <Select onValueChange={setExperienceFilter}>
-            <SelectTrigger className="w-20 md:w-30">
+            <SelectTrigger className="w-20 md:w-30 border-b-4 border-r-4 border-primary/40">
               {experienceFilter === "" || experienceFilter === "all"
                 ? "All"
                 : `${experienceFilter} Years`}
