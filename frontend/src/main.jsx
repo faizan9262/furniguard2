@@ -11,8 +11,8 @@ import { ProductContextProvider } from "./context/ProductContext";
 import { DesignerContexProvider } from "./context/DesignerContex";
 import { AppointmentsContexProvider } from "./context/AppointmentsContex";
 
-// axios.defaults.baseURL = "https://furniguard-backend.vercel.app/api";
-axios.defaults.baseURL = "http://localhost:3000/api";
+axios.defaults.baseURL = "https://furniguard-backend.vercel.app/api";
+// axios.defaults.baseURL = "http://localhost:3000/api";
 axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById("root")).render(
