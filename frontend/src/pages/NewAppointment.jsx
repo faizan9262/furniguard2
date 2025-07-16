@@ -90,6 +90,9 @@ const NewAppointment = () => {
     }
   };
 
+  // console.log("Selected Designer: ",selectedDesigner);
+  
+
   const handleClearForm = () => {
     setSelectedCategory(null);
     setSelectedProduct(null);
@@ -166,6 +169,7 @@ const NewAppointment = () => {
         />
         <DesignerAppointmentCard
           selectedDate={selectedDate}
+          designer={selectedDesigner}
           setSelectedDate={setSelectedDate}
           appointmentMode={appointmentMode}
           setAppointmentMode={setAppointmentMode}
