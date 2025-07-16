@@ -24,6 +24,7 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
+app.options("*", cors());
 mongoDBConnect();
 conntectCloadinary();
 app.use(express.json());
